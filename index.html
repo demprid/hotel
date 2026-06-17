@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отель ДП | Введенская слобода</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: white;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #f5f5f5;
+            flex-wrap: wrap;
+        }
+        .header-icon-link {
+            display: inline-block;
+            line-height: 0;
+        }
+        .header-icon {
+            display: block;
+            height: 40px;
+            width: auto;
+        }
+        .anchor-link {
+            text-decoration: none;
+            font-size: 1rem;
+            color: #0066cc;
+            font-weight: 500;
+        }
+        .anchor-link:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 2rem 1rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .balance-block {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .balance-title {
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 1rem;
+        }
+        .balance-amount {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #2c7da0;
+            background-color: #f0f4f8;
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 1rem;
+            letter-spacing: 2px;
+        }
+        .report-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            color: #2c7da0;
+            border-bottom: 2px solid #2c7da0;
+            margin-bottom: -2px;
+        }
+        .tab-content {
+            display: none;
+            background-color: #f9f9f9;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .items-list {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            margin: 0.7rem 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+        }
+        .item-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .item-entry:last-child {
+            border-bottom: none;
+        }
+        .item-info {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        .item-reward {
+            font-weight: bold;
+            color: #2c7da0;
+            margin-right: 1rem;
+        }
+        .remove-item {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .remove-item:hover {
+            background-color: #c82333;
+        }
+        .add-panel {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .add-panel select,
+        .add-panel input {
+            padding: 0.7rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            background-color: white;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .add-panel select:focus,
+        .add-panel input:focus {
+            outline: none;
+            border-color: #2c7da0;
+            box-shadow: 0 0 0 2px rgba(44,125,160,0.2);
+        }
+        .add-panel select {
+            flex: 2;
+            min-width: 150px;
+            margin-bottom: 0;
+        }
+        .add-panel input {
+            flex: 1;
+            min-width: 80px;
+            margin-bottom: 0;
+        }
+        .add-panel button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 0 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .add-panel button:hover {
+            background-color: #218838;
+        }
+        .total-info {
+            font-weight: bold;
+            margin: 0.7rem 0;
+            padding: 0.5rem;
+            background-color: #d4edda;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        .total-info.fee {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .submit-btn {
+            background-color: #2c7da0;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        .submit-btn.fee {
+            background-color: #dc3545;
+        }
+        .submit-btn.fee:hover {
+            background-color: #c82333;
+        }
+        .message {
+            margin-top: 1rem;
+            padding: 0.7rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        .empty-list {
+            color: #999;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        .hint {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+            text-align: center;
+            background-color: #eef2f5;
+            padding: 0.4rem;
+            border-radius: 0.5rem;
+        }
+        .loading {
+            text-align: center;
+            padding: 1rem;
+            color: #2c7da0;
+            font-weight: 500;
+        }
+        .leaders-block {
+            background-color: #f9f9f9;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .leaders-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .leaders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .leaders-table th,
+        .leaders-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .leaders-table th {
+            background-color: #2c7da0;
+            color: white;
+            font-weight: 600;
+        }
+        .leaders-table .rank-1 {
+            background-color: #ffd70020;
+        }
+        .leaders-table .rank-2 {
+            background-color: #c0c0c020;
+        }
+        .leaders-table .rank-3 {
+            background-color: #cd7f3220;
+        }
+        .rank-badge {
+            font-weight: bold;
+            width: 50px;
+        }
+        .player-name {
+            font-weight: 500;
+        }
+        .player-balance {
+            font-weight: 700;
+            color: #2c7da0;
+            text-align: right;
+        }
+        .current-user-row {
+            background-color: #e8f0f5 !important;
+            font-weight: 500;
+        }
+        .refresh-leaders {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+        .refresh-leaders:hover {
+            transform: rotate(180deg);
+        }
+        .qr-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .qr-modal.open {
+            display: flex;
+        }
+        .qr-content {
+            background-color: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .qr-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+        }
+        .qr-close:hover {
+            color: #333;
+        }
+        .qr-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #2c7da0;
+        }
+        .qr-code-container {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        .qr-code-container #qrcode {
+            background: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .receipt-details {
+            background-color: #f5f7fa;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid #2c7da0;
+        }
+        .receipt-details p {
+            padding: 0.3rem 0;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .receipt-details p:last-child {
+            border-bottom: none;
+        }
+        .receipt-details .label {
+            color: #666;
+            font-weight: 400;
+        }
+        .receipt-details .value {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .receipt-details .value.amount {
+            color: #dc3545;
+            font-size: 1.1rem;
+        }
+        .qr-hint {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.5rem;
+        }
+        .qr-url {
+            font-size: 0.7rem;
+            color: #999;
+            word-break: break-all;
+            text-align: center;
+            margin-top: 0.3rem;
+            background: #f5f5f5;
+            padding: 0.3rem;
+            border-radius: 0.3rem;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="header-icon-link">
+            <img src="icon.png" alt="На главную" class="header-icon">
+        </a>
+        <a href="#balance-block" class="anchor-link">Баланс</a>
+        <a href="#leaders-block" class="anchor-link">Лидеры</a>
+    </header>
+    <main>
+        <div id="leaders-block" class="leaders-block">
+            <div class="leaders-title">
+                🏆 Топ-3 лидера 🏆
+                <button class="refresh-leaders" id="refreshLeadersBtn" title="Обновить">🔄</button>
+            </div>
+            <div id="leadersContainer">
+                <div class="loading">Загрузка таблицы лидеров...</div>
+            </div>
+        </div>
+
+        <div id="balance-block" class="balance-block">
+            <h1 class="balance-title">Мой баланс</h1>
+            <div class="balance-amount" id="balanceAmount">0 đᵽ</div>
+        </div>
+
+        <div class="report-tabs">
+            <button class="tab-btn active" data-tab="shooting">🎯 Стрельба</button>
+            <button class="tab-btn" data-tab="running">🏃 Бег</button>
+            <button class="tab-btn" data-tab="fees">💰 Взносы</button>
+        </div>
+
+        <div id="shooting" class="tab-content active">
+            <h2 style="text-align:center; margin-bottom:1rem;">📋 Подать отчёт</h2>
+            <div id="shootingItemsList" class="items-list"><div class="empty-list">Нет добавленных позиций</div></div>
+            <div class="add-panel">
+                <select id="positionSelect">
+                    <option value="">-- выберите позицию --</option>
+                    <option value="1">1В (1 балл)</option><option value="1">7Н (1 балл)</option>
+                    <option value="1">1Н (1 балл)</option><option value="1">7В (1 балл)</option>
+                    <option value="2">2Н (2 балла)</option><option value="2">6В (2 балла)</option>
+                    <option value="3">6Н (3 балла)</option><option value="3">2В (3 балла)</option>
+                    <option value="4">5В (4 балла)</option><option value="4">3Н (4 балла)</option>
+                    <option value="5">3В (5 баллов)</option><option value="5">5Н (5 баллов)</option>
+                    <option value="6">4В (6 баллов)</option><option value="6">4Н (6 баллов)</option>
+                    <option value="7">8В (7 баллов)</option><option value="7">8Н (7 баллов)</option>
+                </select>
+                <input type="number" id="shootingHitsInput" placeholder="Попаданий" min="1" max="99" value="1" step="1">
+                <button id="addShootingBtn">➕ Добавить</button>
+            </div>
+            <div id="shootingTotal" class="total-info">Итого: 0 đᵽ</div>
+            <div class="hint">💡 За каждое попадание начисляется указанное количество баллов</div>
+            <button class="submit-btn" id="submitShootingBtn">✅ Отправить отчёт</button>
+        </div>
+
+        <div id="running" class="tab-content">
+            <h2 style="text-align:center; margin-bottom:1rem;">🏃 Подать отчёт о беге</h2>
+            <div id="runningItemsList" class="items-list"><div class="empty-list">Нет добавленных серий</div></div>
+            <div class="add-panel">
+                <input type="number" id="runningLapsInput" placeholder="Количество кругов" min="1" max="50" step="1">
+                <button id="addRunningBtn">➕ Добавить серию</button>
+            </div>
+            <div id="runningTotal" class="total-info">Итого: 0 đᵽ</div>
+            <div class="hint">💡 За серию кругов без остановки баллы растут прогрессивно</div>
+            <button class="submit-btn" id="submitRunningBtn">✅ Отправить отчёт</button>
+        </div>
+
+        <div id="fees" class="tab-content">
+            <h2 style="text-align:center; margin-bottom:1rem;">💰 Оплатить взносы</h2>
+            <div style="background-color: white; border-radius: 0.75rem; padding: 1rem; margin: 1rem 0;">
+                <label style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; cursor: pointer; border-bottom: 1px solid #eee;">
+                    <input type="checkbox" id="feeTransport" value="5" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
+                    <span style="flex: 1; font-size: 1rem;">🚌 Транспорт</span>
+                    <span style="font-weight: 700; color: #dc3545;">5 đᵽ</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; cursor: pointer;">
+                    <input type="checkbox" id="feeStay" value="10" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
+                    <span style="flex: 1; font-size: 1rem;">🏠 Временное пребывание</span>
+                    <span style="font-weight: 700; color: #dc3545;">10 đᵽ</span>
+                </label>
+            </div>
+            <div id="feesItemsList" class="items-list">
+                <div class="empty-list">Нет выбранных взносов</div>
+            </div>
+            <div id="feesTotal" class="total-info fee">Итого к оплате: 0 đᵽ</div>
+            <div class="hint">💡 Поставьте галочки напротив нужных взносов. Можно выбрать оба.</div>
+            <button class="submit-btn fee" id="submitFeesBtn">💸 Оплатить отмеченные взносы</button>
+        </div>
+
+        <div id="messageBox" class="message"></div>
+        <div id="loadingIndicator" class="loading" style="display: none;">⏳ Загрузка...</div>
+    </main>
+
+    <div id="qrModal" class="qr-modal">
+        <div class="qr-content">
+            <button class="qr-close" id="qrCloseBtn">&times;</button>
+            <div class="qr-title">🧾 Квитанция об оплате</div>
+            <div class="qr-code-container">
+                <div id="qrcode"></div>
+            </div>
+            <div id="receiptDetails" class="receipt-details">
+                <p><span class="label">ФИО:</span> <span class="value" id="receiptName">—</span></p>
+                <p><span class="label">Тип взноса:</span> <span class="value" id="receiptType">—</span></p>
+                <p><span class="label">Сумма:</span> <span class="value amount" id="receiptAmount">—</span></p>
+                <p><span class="label">Дата оплаты:</span> <span class="value" id="receiptDate">—</span></p>
+                <p><span class="label">Номер операции:</span> <span class="value" id="receiptNumber">—</span></p>
+            </div>
+            <div id="qrUrlDisplay" class="qr-url"></div>
+            <div class="qr-hint">📱 Отсканируйте QR-код для просмотра квитанции</div>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/ваш_id_здесь/exec';
+        const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
+        const RECEIPT_PAGE = 'receipt.html';
+        
+        let playerName = localStorage.getItem('playerName') || '';
+        let currentBalance = 0;
+        let shootingItems = [];
+        let runningItems = [];
+        let qrCodeInstance = null;
+        
+        const balanceSpan = document.getElementById('balanceAmount');
+        const messageBox = document.getElementById('messageBox');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const leadersContainer = document.getElementById('leadersContainer');
+        const qrModal = document.getElementById('qrModal');
+        const qrCodeContainer = document.getElementById('qrcode');
+
+        function showLoading(show) { loadingIndicator.style.display = show ? 'block' : 'none'; }
+        
+        function showMessage(text, isSuccess = true) {
+            messageBox.textContent = text;
+            messageBox.className = 'message ' + (isSuccess ? 'success' : 'error');
+            setTimeout(() => {
+                messageBox.className = 'message';
+                messageBox.style.display = 'none';
+                setTimeout(() => { messageBox.style.display = ''; messageBox.className = 'message'; }, 100);
+            }, 3000);
+        }
+        
+        function updateBalanceDisplay() { 
+            balanceSpan.textContent = currentBalance.toLocaleString('ru-RU') + ' đᵽ'; 
+        }
+        
+        function ensurePlayerName() {
+            if (!playerName) {
+                playerName = prompt('Введите ваше имя (будет в таблице лидеров и в квитанции):', 'Игрок');
+                if (!playerName) playerName = 'Аноним';
+                localStorage.setItem('playerName', playerName);
+            }
+            return playerName;
+        }
+
+        function generateOperationNumber() {
+            const now = new Date();
+            const datePart = now.getFullYear().toString().slice(2) + 
+                           String(now.getMonth() + 1).padStart(2, '0') + 
+                           String(now.getDate()).padStart(2, '0');
+            const randomPart = String(Math.floor(100000 + Math.random() * 900000));
+            return `DP-${datePart}-${randomPart}`;
+        }
+
+        function getReceiptUrl(operationNumber) {
+            return BASE_URL + RECEIPT_PAGE + '?op=' + encodeURIComponent(operationNumber);
+        }
+
+        function showQRModal(receiptData, operationNumber) {
+            const receiptUrl = getReceiptUrl(operationNumber);
+            
+            document.getElementById('receiptName').textContent = receiptData.name;
+            document.getElementById('receiptType').textContent = receiptData.type;
+            document.getElementById('receiptAmount').textContent = receiptData.amount + ' đᵽ';
+            document.getElementById('receiptDate').textContent = receiptData.date;
+            document.getElementById('receiptNumber').textContent = receiptData.operationNumber;
+            document.getElementById('qrUrlDisplay').textContent = '🔗 ' + receiptUrl;
+            
+            qrCodeContainer.innerHTML = '';
+            qrCodeInstance = new QRCode(qrCodeContainer, {
+                text: receiptUrl,
+                width: 200,
+                height: 200,
+                colorDark: '#1a1a1a',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            
+            qrModal.classList.add('open');
+        }
+
+        function closeQRModal() {
+            qrModal.classList.remove('open');
+            if (qrCodeInstance) {
+                qrCodeInstance.clear();
+                qrCodeContainer.innerHTML = '';
+                qrCodeInstance = null;
+            }
+        }
+
+        document.getElementById('qrCloseBtn').addEventListener('click', closeQRModal);
+        qrModal.addEventListener('click', (e) => {
+            if (e.target === qrModal) closeQRModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && qrModal.classList.contains('open')) closeQRModal();
+        });
+
+        async function saveReportToSheet(reportData) {
+            try {
+                await fetch(GOOGLE_SHEETS_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(reportData) 
+                });
+                return true;
+            } catch(e) { return false; }
+        }
+
+        async function loadBalanceFromSheet() {
+            if (!playerName) return;
+            showLoading(true);
+            try {
+                const res = await fetch(`${GOOGLE_SHEETS_URL}?action=getBalance&player=${encodeURIComponent(playerName)}`, { mode: 'cors' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === 'success' && typeof data.balance === 'number') {
+                        currentBalance = data.balance;
+                        updateBalanceDisplay();
+                    }
+                }
+            } catch(e) { console.error(e); }
+            finally { showLoading(false); }
+        }
+
+        async function loadLeaders() {
+            try {
+                const res = await fetch(`${GOOGLE_SHEETS_URL}?action=getLeaders&limit=3`, { mode: 'cors' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === 'success' && Array.isArray(data.leaders)) {
+                        leadersContainer.innerHTML = renderLeadersTable(data.leaders);
+                    }
+                }
+            } catch(e) { leadersContainer.innerHTML = '<div class="empty-list">Ошибка загрузки</div>'; }
+        }
+
+        function renderLeadersTable(leaders) {
+            if (!leaders.length) return '<div class="empty-list">Пока нет участников</div>';
+            let html = `<table class="leaders-table"><thead><tr><th>#</th><th>Игрок</th><th>Баллы</th></tr></thead><tbody>`;
+            leaders.forEach((l, idx) => {
+                const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
+                const isMe = l.name === playerName;
+                html += `<tr class="${isMe ? 'current-user-row' : ''}"><td>${medal}</td><td class="player-name">${escapeHtml(l.name)}${isMe ? ' 👈' : ''}</td><td class="player-balance">${l.balance.toLocaleString()} đᵽ</td></tr>`;
+            });
+            html += `</tbody></table>`;
+            return html;
+        }
+        
+        function escapeHtml(s) { return s?.replace(/[&<>]/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[m])) || ''; }
+
+        // Стрельба
+        function updateShootingUI() {
+            const listDiv = document.getElementById('shootingItemsList');
+            const totalDiv = document.getElementById('shootingTotal');
+            if (!shootingItems.length) { listDiv.innerHTML = '<div class="empty-list">Нет добавленных позиций</div>'; totalDiv.innerHTML = 'Итого: 0 đᵽ'; return; }
+            let total = 0;
+            let html = '';
+            shootingItems.forEach((item, i) => {
+                const itemTotal = item.rewardPerHit * item.hits;
+                total += itemTotal;
+                html += `<div class="item-entry"><div class="item-info">🎯 ${item.name}</div><div class="item-reward">${item.hits}×${item.rewardPerHit} = ${itemTotal} đᵽ</div><button class="remove-item" data-index="${i}">✖</button></div>`;
+            });
+            listDiv.innerHTML = html;
+            totalDiv.innerHTML = `Итого: ${total} đᵽ`;
+            document.querySelectorAll('#shootingItemsList .remove-item').forEach(btn => btn.addEventListener('click', e => { shootingItems.splice(parseInt(btn.dataset.index), 1); updateShootingUI(); }));
+        }
+        
+        function addShootingItem() {
+            const sel = document.getElementById('positionSelect');
+            const val = parseInt(sel.value);
+            if (!val) { showMessage('❌ Выберите позицию', false); return; }
+            let hits = parseInt(document.getElementById('shootingHitsInput').value);
+            if (isNaN(hits) || hits < 1) hits = 1;
+            shootingItems.push({ name: sel.options[sel.selectedIndex].text, rewardPerHit: val, hits });
+            updateShootingUI();
+            sel.value = '';
+            document.getElementById('shootingHitsInput').value = '1';
+        }
+        
+        async function submitShootingReport() {
+            if (!shootingItems.length) { showMessage('❌ Добавьте позиции', false); return; }
+            const player = ensurePlayerName();
+            const earned = shootingItems.reduce((s, i) => s + i.rewardPerHit * i.hits, 0);
+            const newBalance = currentBalance + earned;
+            const details = shootingItems.map(i => `${i.name} (${i.hits}×${i.rewardPerHit})`).join(', ');
+            await saveReportToSheet({ player, type: 'shooting', details, earned, balance: newBalance });
+            currentBalance = newBalance;
+            updateBalanceDisplay();
+            showMessage(`✅ +${earned} đᵽ. Баланс: ${currentBalance} đᵽ`);
+            shootingItems = [];
+            updateShootingUI();
+            loadLeaders();
+        }
+
+        // Бег
+        function calcRunReward(laps) { return 5 * laps * (laps + 1) / 2; }
+        
+        function updateRunningUI() {
+            const listDiv = document.getElementById('runningItemsList');
+            const totalDiv = document.getElementById('runningTotal');
+            if (!runningItems.length) { listDiv.innerHTML = '<div class="empty-list">Нет добавленных серий</div>'; totalDiv.innerHTML = 'Итого: 0 đᵽ'; return; }
+            let total = 0;
+            let html = '';
+            runningItems.forEach((item, i) => {
+                total += item.reward;
+                html += `<div class="item-entry"><div class="item-info">🏃 ${item.laps} круг(ов)</div><div class="item-reward">${item.reward} đᵽ</div><button class="remove-running" data-index="${i}">✖</button></div>`;
+            });
+            listDiv.innerHTML = html;
+            totalDiv.innerHTML = `Итого: ${total} đᵽ`;
+            document.querySelectorAll('#runningItemsList .remove-running').forEach(btn => btn.addEventListener('click', e => { runningItems.splice(parseInt(btn.dataset.index), 1); updateRunningUI(); }));
+        }
+        
+        function addRunningItem() {
+            let laps = parseInt(document.getElementById('runningLapsInput').value);
+            if (isNaN(laps) || laps < 1) { showMessage('❌ Введите количество кругов', false); return; }
+            runningItems.push({ laps, reward: calcRunReward(laps) });
+            updateRunningUI();
+            document.getElementById('runningLapsInput').value = '';
+        }
+        
+        async function submitRunningReport() {
+            if (!runningItems.length) { showMessage('❌ Добавьте серии', false); return; }
+            const player = ensurePlayerName();
+            const earned = runningItems.reduce((s, i) => s + i.reward, 0);
+            const newBalance = currentBalance + earned;
+            const details = runningItems.map(i => `${i.laps}к (${i.reward}б)`).join(' + ');
+            await saveReportToSheet({ player, type: 'running', details, earned, balance: newBalance });
+            currentBalance = newBalance;
+            updateBalanceDisplay();
+            showMessage(`✅ +${earned} đᵽ. Баланс: ${currentBalance} đᵽ`);
+            runningItems = [];
+            updateRunningUI();
+            loadLeaders();
+        }
+
+        // Взносы
+        function updateFeesUI() {
+            const transportChecked = document.getElementById('feeTransport').checked;
+            const stayChecked = document.getElementById('feeStay').checked;
+            const total = (transportChecked ? 5 : 0) + (stayChecked ? 10 : 0);
+            document.getElementById('feesTotal').innerHTML = `Итого к оплате: ${total} đᵽ`;
+            
+            const listDiv = document.getElementById('feesItemsList');
+            if (!transportChecked && !stayChecked) {
+                listDiv.innerHTML = '<div class="empty-list">Нет выбранных взносов</div>';
+                return;
+            }
+            let html = '';
+            if (transportChecked) html += `<div class="item-entry"><div class="item-info">🚌 Транспорт</div><div class="item-reward">5 đᵽ</div></div>`;
+            if (stayChecked) html += `<div class="item-entry"><div class="item-info">🏠 Временное пребывание</div><div class="item-reward">10 đᵽ</div></div>`;
+            listDiv.innerHTML = html;
+        }
+        
+        async function submitFees() {
+            const transportChecked = document.getElementById('feeTransport').checked;
+            const stayChecked = document.getElementById('feeStay').checked;
+            if (!transportChecked && !stayChecked) { showMessage('❌ Выберите хотя бы один взнос', false); return; }
+            
+            const totalFee = (transportChecked ? 5 : 0) + (stayChecked ? 10 : 0);
+            if (currentBalance < totalFee) { 
+                showMessage(`❌ Не хватает баллов! Нужно ${totalFee} đᵽ, есть ${currentBalance} đᵽ`, false); 
+                return; 
+            }
+            
+            const player = ensurePlayerName();
+            const newBalance = currentBalance - totalFee;
+            const operationNumber = generateOperationNumber();
+            const details = [];
+            let stayPaid = false;
+            
+            if (transportChecked) details.push('Транспорт');
+            if (stayChecked) {
+                details.push('Временное пребывание');
+                stayPaid = true;
+            }
+            const detailsStr = details.join(', ');
+            
+            await saveReportToSheet({ 
+                player, 
+                type: 'fee', 
+                details: detailsStr, 
+                earned: -totalFee, 
+                balance: newBalance,
+                operation: operationNumber
+            });
+            
+            currentBalance = newBalance;
+            updateBalanceDisplay();
+            
+            if (stayPaid) {
+                const now = new Date();
+                const receiptData = {
+                    name: player,
+                    type: 'Временное пребывание' + (transportChecked ? ' + Транспорт' : ''),
+                    amount: totalFee,
+                    date: now.toLocaleString('ru-RU', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                    operationNumber: operationNumber
+                };
+                showQRModal(receiptData, operationNumber);
+                showMessage(`💰 Оплачено: ${detailsStr} = -${totalFee} đᵽ. Квитанция сгенерирована!`, true);
+            } else {
+                showMessage(`💰 Оплачено: ${detailsStr} = -${totalFee} đᵽ. Баланс: ${currentBalance} đᵽ`, true);
+            }
+            
+            document.getElementById('feeTransport').checked = false;
+            document.getElementById('feeStay').checked = false;
+            updateFeesUI();
+            loadLeaders();
+        }
+
+        document.getElementById('addShootingBtn').onclick = addShootingItem;
+        document.getElementById('submitShootingBtn').onclick = submitShootingReport;
+        document.getElementById('addRunningBtn').onclick = addRunningItem;
+        document.getElementById('submitRunningBtn').onclick = submitRunningReport;
+        document.getElementById('submitFeesBtn').onclick = submitFees;
+        document.getElementById('feeTransport').onchange = updateFeesUI;
+        document.getElementById('feeStay').onchange = updateFeesUI;
+        document.getElementById('refreshLeadersBtn').onclick = () => loadLeaders();
+
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        tabs.forEach(btn => btn.onclick = () => {
+            const id = btn.dataset.tab;
+            tabs.forEach(b => b.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(id).classList.add('active');
+        });
+
+        if (localStorage.getItem('playerName')) { 
+            playerName = localStorage.getItem('playerName'); 
+            loadBalanceFromSheet(); 
+        }
+        loadLeaders();
+        updateFeesUI();
+    </script>
+</body>
+</html>
