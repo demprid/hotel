@@ -126,6 +126,11 @@
             background-color: #2c7da0;
             color: white;
         }
+        .loading-receipt {
+            padding: 2rem;
+            color: #2c7da0;
+            font-weight: 500;
+        }
         @media print {
             .print-btn, .receipt-back, .qr-scan-info {
                 display: none !important;
@@ -143,7 +148,11 @@
 </head>
 <body>
     <div class="receipt-container" id="receiptContainer">
-        <div id="receiptContent">
+        <div id="loadingState" class="loading-receipt">
+            ⏳ Загрузка квитанции...
+        </div>
+        
+        <div id="receiptContent" style="display:none;">
             <div class="receipt-logo">🏨</div>
             <div class="receipt-title">Отель ДП</div>
             <div class="receipt-subtitle">Введенская слобода</div>
@@ -180,79 +189,76 @@
             <br>
             <a href="index.html" class="receipt-back">← Вернуться на главную</a>
         </div>
+        
         <div id="receiptError" style="display:none;">
             <div class="receipt-error">❌ Квитанция не найдена</div>
             <p style="color: #666; margin-top: 0.5rem;">Проверьте правильность ссылки или обратитесь к администратору.</p>
             <br>
             <a href="index.html" class="receipt-back">← Вернуться на главную</a>
         </div>
+        
         <div class="receipt-footer">Отель ДП | Введенская слобода &bull; Система учёта баллов</div>
     </div>
 
     <script>
-        // Хранилище квитанций (в реальном проекте данные берутся из БД)
-        // Здесь мы сохраняем данные при генерации через localStorage
-        function getReceiptData(operationNumber) {
-            // Ищем в localStorage
-            const stored = localStorage.getItem('receipt_' + operationNumber);
-            if (stored) {
-                try {
-                    return JSON.parse(stored);
-                } catch(e) {
-                    return null;
+        // 🔧 НАСТРОЙКА: укажите ваш URL веб-приложения Google Apps Script
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/ваш_id_здесь/exec';
+
+        async function getReceiptFromSheet(operationNumber) {
+            try {
+                const response = await fetch(
+                    `${GOOGLE_SHEETS_URL}?action=getReceipt&operation=${encodeURIComponent(operationNumber)}`,
+                    { mode: 'cors' }
+                );
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 'success' && data.receipt) {
+                        return data.receipt;
+                    }
                 }
+                return null;
+            } catch (error) {
+                console.error('Ошибка получения квитанции:', error);
+                return null;
             }
-            return null;
         }
 
-        function displayReceipt() {
+        async function displayReceipt() {
             const urlParams = new URLSearchParams(window.location.search);
             const opNumber = urlParams.get('op');
+            
+            const loadingState = document.getElementById('loadingState');
+            const receiptContent = document.getElementById('receiptContent');
+            const receiptError = document.getElementById('receiptError');
             
             if (!opNumber) {
-                document.getElementById('receiptContent').style.display = 'none';
-                document.getElementById('receiptError').style.display = 'block';
+                loadingState.style.display = 'none';
+                receiptError.style.display = 'block';
                 return;
             }
 
-            const data = getReceiptData(opNumber);
-            if (!data) {
-                document.getElementById('receiptContent').style.display = 'none';
-                document.getElementById('receiptError').style.display = 'block';
+            // Пробуем получить данные из Google Sheets
+            const receiptData = await getReceiptFromSheet(opNumber);
+            
+            if (!receiptData) {
+                loadingState.style.display = 'none';
+                receiptError.style.display = 'block';
                 return;
             }
 
-            document.getElementById('opNumber').textContent = data.operationNumber || opNumber;
-            document.getElementById('opName').textContent = data.name || '—';
-            document.getElementById('opType').textContent = data.type || '—';
-            document.getElementById('opAmount').textContent = (data.amount || '0') + ' đᵽ';
-            document.getElementById('opDate').textContent = data.date || '—';
-        }
-
-        // Для демонстрации — если нет данных в localStorage, показываем пример
-        // В реальном проекте данные должны приходить с сервера
-        // Это запасной вариант для тестирования
-        function loadDemoReceipt() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const opNumber = urlParams.get('op');
-            if (!opNumber) return;
+            // Отображаем данные
+            document.getElementById('opNumber').textContent = receiptData.operationNumber || opNumber;
+            document.getElementById('opName').textContent = receiptData.name || '—';
+            document.getElementById('opType').textContent = receiptData.type || '—';
+            document.getElementById('opAmount').textContent = (receiptData.amount || '0') + ' đᵽ';
+            document.getElementById('opDate').textContent = receiptData.date || '—';
             
-            // Проверяем, есть ли данные в localStorage
-            if (localStorage.getItem('receipt_' + opNumber)) return;
-            
-            // Если нет — пробуем получить из sessionStorage (для перехода с главной)
-            const tempData = sessionStorage.getItem('temp_receipt_' + opNumber);
-            if (tempData) {
-                try {
-                    const data = JSON.parse(tempData);
-                    localStorage.setItem('receipt_' + opNumber, JSON.stringify(data));
-                    sessionStorage.removeItem('temp_receipt_' + opNumber);
-                } catch(e) {}
-            }
+            loadingState.style.display = 'none';
+            receiptContent.style.display = 'block';
         }
 
         displayReceipt();
-        loadDemoReceipt();
     </script>
 </body>
 </html>
