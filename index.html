@@ -601,6 +601,9 @@
         function showQRModal(receiptData, operationNumber) {
             const receiptUrl = getReceiptUrl(operationNumber);
             
+            // Сохраняем данные квитанции в Google Sheets
+            saveReceiptToSheet(operationNumber, receiptData);
+            
             document.getElementById('receiptName').textContent = receiptData.name;
             document.getElementById('receiptType').textContent = receiptData.type;
             document.getElementById('receiptAmount').textContent = receiptData.amount + ' đᵽ';
@@ -619,6 +622,29 @@
             });
             
             qrModal.classList.add('open');
+        }
+        
+        // Новая функция для сохранения квитанции в таблицу
+        async function saveReceiptToSheet(operationNumber, receiptData) {
+            try {
+                await fetch(GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'receipt',
+                        operation: operationNumber,
+                        player: receiptData.name,
+                        details: receiptData.type,
+                        earned: -receiptData.amount,
+                        balance: currentBalance,
+                        receiptData: JSON.stringify(receiptData) // сохраняем полные данные
+                    })
+                });
+                console.log('✅ Квитанция сохранена:', operationNumber);
+            } catch(e) {
+                console.error('❌ Ошибка сохранения квитанции:', e);
+            }
         }
 
         function closeQRModal() {
