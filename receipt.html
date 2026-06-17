@@ -202,7 +202,7 @@
 
     <script>
         // 🔧 НАСТРОЙКА: укажите ваш URL веб-приложения Google Apps Script
-        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyxx3q55mD1SNHwSQjsiy762VUIOJKdVCJ3P5jOxF8FFGspZw8kUmS2cWThknpS-eiftA/exec';
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/ваш_id_здесь/exec';
 
         async function getReceiptFromSheet(operationNumber) {
             try {
@@ -238,7 +238,6 @@
                 return;
             }
 
-            // Пробуем получить данные из Google Sheets
             const receiptData = await getReceiptFromSheet(opNumber);
             
             if (!receiptData) {
@@ -247,7 +246,6 @@
                 return;
             }
 
-            // Отображаем данные
             document.getElementById('opNumber').textContent = receiptData.operationNumber || opNumber;
             document.getElementById('opName').textContent = receiptData.name || '—';
             document.getElementById('opType').textContent = receiptData.type || '—';
