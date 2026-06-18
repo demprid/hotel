@@ -7,139 +7,820 @@
     <link rel="icon" type="image/png" href="icon.png">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
-        /* ... (все стили из предыдущей версии) ... */
-        /* ДОБАВЛЯЕМ СТИЛИ ДЛЯ ВХОДА */
-        .auth-container {
-            max-width: 400px;
-            margin: 5rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .auth-container h2 {
-            text-align: center;
-            color: #2c7da0;
-            margin-bottom: 1.5rem;
+        body {
+            background: #f0f4f8;
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #1a1a2e;
         }
-        .auth-container input {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 0.5rem;
-            font-size: 1rem;
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2c3e50 100%);
+            padding: 0.8rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .auth-container button {
-            width: 100%;
-            padding: 0.8rem;
-            background: #2c7da0;
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
-        .auth-container button:hover {
-            background: #1f5e7a;
+        .header-icon-link {
+            display: inline-block;
+            line-height: 0;
         }
-        .auth-container .error {
-            color: #dc3545;
-            text-align: center;
-            margin-bottom: 1rem;
+        .header-icon {
+            display: block;
+            height: 42px;
+            width: auto;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            padding: 2px;
         }
-        .auth-container .register-link {
-            text-align: center;
-            margin-top: 1rem;
+        .header-title {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
-        .auth-container .register-link a {
-            color: #2c7da0;
+        .header-title span {
+            color: #5dade2;
+        }
+        .header-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-left: auto;
+        }
+        .header-nav .anchor-link {
+            color: rgba(255,255,255,0.7);
             text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .header-nav .anchor-link:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
         }
         .user-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.8rem;
+            color: #fff;
+            font-size: 0.9rem;
             margin-left: auto;
         }
-        .user-info span {
-            font-weight: 500;
-            color: #333;
+        .user-info .user-name {
+            font-weight: 600;
+            color: #5dade2;
         }
         .logout-btn {
-            background: #dc3545;
+            background: rgba(220, 53, 69, 0.8);
             color: white;
             border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 0.3rem;
+            padding: 0.3rem 0.9rem;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
         }
         .logout-btn:hover {
-            background: #c82333;
+            background: #dc3545;
+            transform: scale(1.05);
         }
-        .main-content {
-            display: none;
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem 3rem;
         }
-        .main-content.visible {
+        .auth-container {
+            max-width: 420px;
+            margin: 3rem auto;
+            padding: 2.5rem;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        .auth-container:hover {
+            transform: translateY(-2px);
+        }
+        .auth-container h2 {
+            text-align: center;
+            color: #1a1a2e;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        .auth-container .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1.8rem;
+        }
+        .auth-container .error {
+            color: #dc3545;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: #fde8e8;
+            border-radius: 8px;
+        }
+        .auth-container .success {
+            color: #28a745;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: #e8f8ed;
+            border-radius: 8px;
+        }
+        .auth-container label {
             display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 0.3rem;
+        }
+        .auth-container input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.2rem;
+            border: 2px solid #e8ecf1;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+        .auth-container input:focus {
+            outline: none;
+            border-color: #2c7da0;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(44,125,160,0.1);
+        }
+        .auth-container .btn-primary {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #2c7da0, #1a5276);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .auth-container .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(44,125,160,0.3);
         }
         .auth-container .auth-switch {
             text-align: center;
-            margin-top: 1rem;
-            color: #666;
+            margin-top: 1.5rem;
+            color: #888;
+            font-size: 0.9rem;
         }
         .auth-container .auth-switch a {
             color: #2c7da0;
             cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .auth-container .auth-switch a:hover {
             text-decoration: underline;
+        }
+        .leaders-block {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .leaders-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .refresh-leaders {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #2c7da0;
+            transition: transform 0.3s;
+            padding: 0.2rem;
+        }
+        .refresh-leaders:hover {
+            transform: rotate(180deg);
+        }
+        .leaders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .leaders-table th,
+        .leaders-table td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+        }
+        .leaders-table th {
+            background: #f0f4f8;
+            color: #1a1a2e;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .leaders-table th:first-child { border-radius: 12px 0 0 0; }
+        .leaders-table th:last-child { border-radius: 0 12px 0 0; }
+        .leaders-table tr {
+            border-bottom: 1px solid #f0f4f8;
+            transition: background 0.2s;
+        }
+        .leaders-table tr:hover {
+            background: #f8fafc;
+        }
+        .leaders-table tr:last-child {
+            border-bottom: none;
+        }
+        .leaders-table .rank-1 {
+            background: linear-gradient(90deg, rgba(255,215,0,0.15), transparent);
+        }
+        .leaders-table .rank-2 {
+            background: linear-gradient(90deg, rgba(192,192,192,0.15), transparent);
+        }
+        .leaders-table .rank-3 {
+            background: linear-gradient(90deg, rgba(205,127,50,0.15), transparent);
+        }
+        .rank-badge {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .player-name {
+            font-weight: 500;
+        }
+        .player-balance {
+            font-weight: 700;
+            color: #2c7da0;
+            text-align: right;
+        }
+        .current-user-row {
+            background: rgba(44,125,160,0.08) !important;
+            font-weight: 600;
+            border-left: 3px solid #2c7da0;
+        }
+        .balance-block {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #1a5276, #2c7da0);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(44,125,160,0.25);
+        }
+        .balance-title {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .balance-amount {
+            font-size: 3.8rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .balance-amount .currency {
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+        .report-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: #fff;
+            border-radius: 16px;
+            padding: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #999;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .tab-btn:hover {
+            color: #2c7da0;
+            background: #f0f4f8;
+        }
+        .tab-btn.active {
+            color: #fff;
+            background: linear-gradient(135deg, #2c7da0, #1a5276);
+            box-shadow: 0 4px 15px rgba(44,125,160,0.25);
+        }
+        .tab-content {
+            display: none;
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.8rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-content h2 {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #1a1a2e;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+        }
+        .items-list {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin: 1rem 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e8ecf1;
+        }
+        .items-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .items-list::-webkit-scrollbar-track {
+            background: #f0f4f8;
+            border-radius: 10px;
+        }
+        .items-list::-webkit-scrollbar-thumb {
+            background: #2c7da0;
+            border-radius: 10px;
+        }
+        .item-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0.8rem;
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 0.3rem;
+            transition: all 0.2s;
+        }
+        .item-entry:last-child {
+            margin-bottom: 0;
+        }
+        .item-entry:hover {
+            background: #f0f4f8;
+        }
+        .item-info {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        .item-reward {
+            font-weight: 700;
+            color: #2c7da0;
+            margin-right: 1rem;
+            font-size: 0.95rem;
+        }
+        .remove-item {
+            background: #fee;
+            color: #dc3545;
+            border: none;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .remove-item:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+        .empty-list {
+            color: #999;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .add-panel {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .add-panel select,
+        .add-panel input {
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            border: 2px solid #e8ecf1;
+            border-radius: 12px;
+            font-family: inherit;
+            background: #f8fafc;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 100px;
+        }
+        .add-panel select:focus,
+        .add-panel input:focus {
+            outline: none;
+            border-color: #2c7da0;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(44,125,160,0.08);
+        }
+        .add-panel select {
+            flex: 2;
+        }
+        .add-panel .btn-add {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .add-panel .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+        }
+        .total-info {
+            font-weight: 700;
+            margin: 1rem 0;
+            padding: 0.8rem;
+            background: #e8f8ed;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #1a1a2e;
+        }
+        .total-info.fee {
+            background: #fde8e8;
+            color: #721c24;
+        }
+        .total-info .amount {
+            color: #2c7da0;
+        }
+        .total-info.fee .amount {
+            color: #dc3545;
+        }
+        .hint {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 0.5rem;
+            text-align: center;
+            background: #f0f4f8;
+            padding: 0.5rem;
+            border-radius: 10px;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #2c7da0, #1a5276);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 0.8rem;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(44,125,160,0.3);
+        }
+        .submit-btn.fee {
+            background: linear-gradient(135deg, #dc3545, #a71d2a);
+        }
+        .submit-btn.fee:hover {
+            box-shadow: 0 8px 25px rgba(220,53,69,0.3);
+        }
+        .message {
+            margin-top: 1rem;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        .qr-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+        .qr-modal.open {
+            display: flex;
+        }
+        .qr-content {
+            background: #fff;
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 480px;
+            width: 92%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .qr-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #aaa;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+        }
+        .qr-close:hover {
+            color: #333;
+        }
+        .qr-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 0.3rem;
+        }
+        .qr-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .qr-code-container {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        .qr-code-container #qrcode {
+            background: #fff;
+            padding: 0.8rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .receipt-details {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            border-left: 4px solid #2c7da0;
+        }
+        .receipt-details p {
+            padding: 0.4rem 0;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e8ecf1;
+        }
+        .receipt-details p:last-child {
+            border-bottom: none;
+        }
+        .receipt-details .label {
+            color: #888;
+            font-weight: 400;
+        }
+        .receipt-details .value {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .receipt-details .value.amount {
+            color: #dc3545;
+            font-size: 1.1rem;
+        }
+        .qr-url {
+            font-size: 0.7rem;
+            color: #aaa;
+            word-break: break-all;
+            text-align: center;
+            background: #f0f4f8;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        .qr-hint {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.5rem;
+        }
+        .fee-options {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 0.5rem;
+            margin: 1rem 0;
+        }
+        .fee-options label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+        .fee-options label:hover {
+            background: #f0f4f8;
+        }
+        .fee-options label:first-child {
+            border-bottom: 1px solid #e8ecf1;
+        }
+        .fee-options input[type="checkbox"] {
+            width: 1.3rem;
+            height: 1.3rem;
+            cursor: pointer;
+            accent-color: #2c7da0;
+        }
+        .fee-options .fee-label {
+            flex: 1;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .fee-options .fee-price {
+            font-weight: 700;
+            color: #dc3545;
+            font-size: 1.1rem;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #2c7da0;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            header {
+                padding: 0.6rem 1rem;
+                gap: 0.8rem;
+            }
+            .header-title {
+                font-size: 1rem;
+            }
+            .header-nav {
+                margin-left: 0;
+                width: 100%;
+                justify-content: center;
+            }
+            .user-info {
+                margin-left: 0;
+                width: 100%;
+                justify-content: center;
+            }
+            .balance-amount {
+                font-size: 2.8rem;
+            }
+            .auth-container {
+                padding: 1.8rem;
+                margin: 1.5rem auto;
+            }
+            .report-tabs {
+                flex-direction: column;
+                padding: 0.3rem;
+            }
+            .tab-btn {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+            .tab-content {
+                padding: 1.2rem;
+            }
+            .add-panel {
+                flex-direction: column;
+            }
+            .add-panel select,
+            .add-panel input {
+                min-width: unset;
+            }
+            .leaders-table th,
+            .leaders-table td {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.85rem;
+            }
+            .qr-content {
+                padding: 1.5rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .balance-amount {
+                font-size: 2.2rem;
+            }
+            .leaders-title {
+                font-size: 1.1rem;
+            }
+            .qr-content {
+                padding: 1.2rem;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <a href="#" class="header-icon-link">
-            <img src="icon.png" alt="На главную" class="header-icon">
-        </a>
-        <span style="font-weight: 600; color: #2c7da0;">Отель ДП</span>
+        <div class="header-brand">
+            <a href="#" class="header-icon-link">
+                <img src="icon.png" alt="На главную" class="header-icon">
+            </a>
+            <span class="header-title">Отель <span>ДП</span></span>
+        </div>
+        <nav class="header-nav">
+            <a href="#balance-block" class="anchor-link">Баланс</a>
+            <a href="#leaders-block" class="anchor-link">Лидеры</a>
+        </nav>
         <div class="user-info" id="userInfo" style="display:none;">
-            <span id="userName">—</span>
-            <button class="logout-btn" id="logoutBtn">Выйти</button>
+            <span>👤 <span class="user-name" id="userName">—</span></span>
+            <button class="logout-btn" id="logoutBtn">🚪 Выйти</button>
         </div>
     </header>
     <main>
-        <!-- Блок авторизации -->
         <div id="authContainer" class="auth-container">
-            <h2>🔐 Вход в систему</h2>
+            <h2>🔐 Вход</h2>
+            <p class="subtitle">Войдите в систему учёта баллов</p>
             <div id="authError" class="error"></div>
-            <input type="email" id="loginEmail" placeholder="Email" value="admin@mail.ru">
-            <input type="password" id="loginPassword" placeholder="Пароль" value="admin123">
-            <button id="loginBtn">Войти</button>
+            <label>Логин</label>
+            <input type="text" id="loginUsername" placeholder="Введите логин" value="admin">
+            <label>Пароль</label>
+            <input type="password" id="loginPassword" placeholder="Введите пароль" value="admin123">
+            <button class="btn-primary" id="loginBtn">Войти</button>
             <div class="auth-switch">
                 Нет аккаунта? <a id="showRegister">Зарегистрироваться</a>
             </div>
         </div>
 
-        <!-- Регистрация -->
         <div id="registerContainer" class="auth-container" style="display:none;">
             <h2>📝 Регистрация</h2>
+            <p class="subtitle">Создайте новый аккаунт</p>
             <div id="registerError" class="error"></div>
-            <input type="text" id="registerName" placeholder="Ваше имя">
-            <input type="email" id="registerEmail" placeholder="Email">
-            <input type="password" id="registerPassword" placeholder="Пароль">
-            <input type="password" id="registerPasswordConfirm" placeholder="Подтвердите пароль">
-            <button id="registerBtn">Зарегистрироваться</button>
+            <label>Логин (для входа)</label>
+            <input type="text" id="registerUsername" placeholder="Придумайте логин">
+            <label>Ваше имя (будет отображаться)</label>
+            <input type="text" id="registerName" placeholder="Иван Петров">
+            <label>Пароль</label>
+            <input type="password" id="registerPassword" placeholder="Минимум 4 символа">
+            <label>Подтвердите пароль</label>
+            <input type="password" id="registerPasswordConfirm" placeholder="Повторите пароль">
+            <button class="btn-primary" id="registerBtn">Зарегистрироваться</button>
             <div class="auth-switch">
                 Уже есть аккаунт? <a id="showLogin">Войти</a>
             </div>
         </div>
 
-        <!-- Основной контент (показывается после входа) -->
-        <div id="mainContent" class="main-content">
+        <div id="mainContent" class="main-content" style="display:none;">
             <div id="leaders-block" class="leaders-block">
                 <div class="leaders-title">
-                    🏆 Топ-3 лидера 🏆
+                    🏆 Топ-3 лидера
                     <button class="refresh-leaders" id="refreshLeadersBtn" title="Обновить">🔄</button>
                 </div>
                 <div id="leadersContainer">
@@ -148,8 +829,8 @@
             </div>
 
             <div id="balance-block" class="balance-block">
-                <h1 class="balance-title">Мой баланс</h1>
-                <div class="balance-amount" id="balanceAmount">0 đᵽ</div>
+                <div class="balance-title">💰 Мой баланс</div>
+                <div class="balance-amount" id="balanceAmount">0 <span class="currency">đᵽ</span></div>
             </div>
 
             <div class="report-tabs">
@@ -159,7 +840,7 @@
             </div>
 
             <div id="shooting" class="tab-content active">
-                <h2 style="text-align:center; margin-bottom:1rem;">📋 Подать отчёт</h2>
+                <h2>📋 Подать отчёт по стрельбе</h2>
                 <div id="shootingItemsList" class="items-list"><div class="empty-list">Нет добавленных позиций</div></div>
                 <div class="add-panel">
                     <select id="positionSelect">
@@ -174,44 +855,44 @@
                         <option value="7">8В (7 баллов)</option><option value="7">8Н (7 баллов)</option>
                     </select>
                     <input type="number" id="shootingHitsInput" placeholder="Попаданий" min="1" max="99" value="1" step="1">
-                    <button id="addShootingBtn">➕ Добавить</button>
+                    <button class="btn-add" id="addShootingBtn">➕ Добавить</button>
                 </div>
-                <div id="shootingTotal" class="total-info">Итого: 0 đᵽ</div>
+                <div id="shootingTotal" class="total-info">Итого: <span class="amount">0 đᵽ</span></div>
                 <div class="hint">💡 За каждое попадание начисляется указанное количество баллов</div>
                 <button class="submit-btn" id="submitShootingBtn">✅ Отправить отчёт</button>
             </div>
 
             <div id="running" class="tab-content">
-                <h2 style="text-align:center; margin-bottom:1rem;">🏃 Подать отчёт о беге</h2>
+                <h2>🏃 Подать отчёт о беге</h2>
                 <div id="runningItemsList" class="items-list"><div class="empty-list">Нет добавленных серий</div></div>
                 <div class="add-panel">
                     <input type="number" id="runningLapsInput" placeholder="Количество кругов" min="1" max="50" step="1">
-                    <button id="addRunningBtn">➕ Добавить серию</button>
+                    <button class="btn-add" id="addRunningBtn">➕ Добавить серию</button>
                 </div>
-                <div id="runningTotal" class="total-info">Итого: 0 đᵽ</div>
+                <div id="runningTotal" class="total-info">Итого: <span class="amount">0 đᵽ</span></div>
                 <div class="hint">💡 За серию кругов без остановки баллы растут прогрессивно</div>
                 <button class="submit-btn" id="submitRunningBtn">✅ Отправить отчёт</button>
             </div>
 
             <div id="fees" class="tab-content">
-                <h2 style="text-align:center; margin-bottom:1rem;">💰 Оплатить взносы</h2>
-                <div style="background-color: white; border-radius: 0.75rem; padding: 1rem; margin: 1rem 0;">
-                    <label style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; cursor: pointer; border-bottom: 1px solid #eee;">
-                        <input type="checkbox" id="feeTransport" value="5" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
-                        <span style="flex: 1; font-size: 1rem;">🚌 Транспорт</span>
-                        <span style="font-weight: 700; color: #dc3545;">5 đᵽ</span>
+                <h2>💰 Оплатить взносы</h2>
+                <div class="fee-options">
+                    <label>
+                        <input type="checkbox" id="feeTransport" value="5">
+                        <span class="fee-label">🚌 Транспорт</span>
+                        <span class="fee-price">5 đᵽ</span>
                     </label>
-                    <label style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; cursor: pointer;">
-                        <input type="checkbox" id="feeStay" value="10" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
-                        <span style="flex: 1; font-size: 1rem;">🏠 Временное пребывание</span>
-                        <span style="font-weight: 700; color: #dc3545;">10 đᵽ</span>
+                    <label>
+                        <input type="checkbox" id="feeStay" value="10">
+                        <span class="fee-label">🏠 Временное пребывание</span>
+                        <span class="fee-price">10 đᵽ</span>
                     </label>
                 </div>
                 <div id="feesItemsList" class="items-list">
                     <div class="empty-list">Нет выбранных взносов</div>
                 </div>
-                <div id="feesTotal" class="total-info fee">Итого к оплате: 0 đᵽ</div>
-                <div class="hint">💡 Поставьте галочки напротив нужных взносов. Можно выбрать оба.</div>
+                <div id="feesTotal" class="total-info fee">Итого к оплате: <span class="amount">0 đᵽ</span></div>
+                <div class="hint">💡 Можно выбрать оба взноса одновременно</div>
                 <button class="submit-btn fee" id="submitFeesBtn">💸 Оплатить отмеченные взносы</button>
             </div>
 
@@ -220,11 +901,11 @@
         </div>
     </main>
 
-    <!-- Модальное окно с QR-кодом -->
     <div id="qrModal" class="qr-modal">
         <div class="qr-content">
             <button class="qr-close" id="qrCloseBtn">&times;</button>
             <div class="qr-title">🧾 Квитанция об оплате</div>
+            <div class="qr-subtitle">Временное пребывание</div>
             <div class="qr-code-container">
                 <div id="qrcode"></div>
             </div>
@@ -241,7 +922,7 @@
     </div>
 
     <script>
-        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyU22_oES41gAE6gPsGCeatWBuqri3yIcXLFFjOmYVibaNkDINkZhZ5ZQbG1D9jGFelVA/exec';
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/ваш_id_здесь/exec';
         const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
         const RECEIPT_PAGE = 'receipt.html';
         
@@ -259,19 +940,28 @@
         const qrModal = document.getElementById('qrModal');
         const qrCodeContainer = document.getElementById('qrcode');
 
-        // --- АВТОРИЗАЦИЯ ---
         function showAuthError(text) {
-            document.getElementById('authError').textContent = text;
+            const el = document.getElementById('authError');
+            el.textContent = text;
+            el.className = 'error';
         }
         
         function showRegisterError(text) {
-            document.getElementById('registerError').textContent = text;
+            const el = document.getElementById('registerError');
+            el.textContent = text;
+            el.className = 'error';
         }
         
-        async function login(email, password) {
+        function showRegisterSuccess(text) {
+            const el = document.getElementById('registerError');
+            el.textContent = text;
+            el.className = 'success';
+        }
+
+        async function login(username, password) {
             try {
                 const response = await fetch(
-                    `${GOOGLE_SHEETS_URL}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                    `${GOOGLE_SHEETS_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
                     { mode: 'cors' }
                 );
                 const data = await response.json();
@@ -284,7 +974,7 @@
                     document.getElementById('userInfo').style.display = 'flex';
                     document.getElementById('authContainer').style.display = 'none';
                     document.getElementById('registerContainer').style.display = 'none';
-                    document.getElementById('mainContent').classList.add('visible');
+                    document.getElementById('mainContent').style.display = 'block';
                     loadBalanceFromSheet();
                     loadLeaders();
                     showMessage(`👋 Добро пожаловать, ${playerName}!`);
@@ -298,10 +988,8 @@
                 return false;
             }
         }
-        
-        async function register(name, email, password) {
-            // В реальном проекте здесь должен быть запрос на регистрацию
-            // Пока просто добавляем в таблицу через отдельный запрос
+
+        async function register(username, name, password) {
             try {
                 const response = await fetch(GOOGLE_SHEETS_URL, {
                     method: 'POST',
@@ -309,21 +997,23 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         type: 'register',
-                        player: name,
-                        email: email,
+                        username: username,
+                        name: name,
                         password: password
                     })
                 });
-                showRegisterError('✅ Регистрация выполнена! Теперь войдите.');
-                document.getElementById('registerContainer').style.display = 'none';
-                document.getElementById('authContainer').style.display = 'block';
+                showRegisterSuccess('✅ Регистрация выполнена! Теперь войдите.');
+                setTimeout(() => {
+                    document.getElementById('registerContainer').style.display = 'none';
+                    document.getElementById('authContainer').style.display = 'block';
+                }, 1500);
                 return true;
             } catch (error) {
                 showRegisterError('Ошибка регистрации');
                 return false;
             }
         }
-        
+
         async function logout() {
             try {
                 await fetch(
@@ -335,14 +1025,14 @@
             localStorage.removeItem('playerName');
             authToken = '';
             document.getElementById('userInfo').style.display = 'none';
-            document.getElementById('mainContent').classList.remove('visible');
+            document.getElementById('mainContent').style.display = 'none';
             document.getElementById('authContainer').style.display = 'block';
             document.getElementById('registerContainer').style.display = 'none';
             currentBalance = 0;
             updateBalanceDisplay();
             showMessage('Вы вышли из системы');
         }
-        
+
         async function checkAuth() {
             if (!authToken) return false;
             try {
@@ -357,7 +1047,7 @@
                     document.getElementById('userInfo').style.display = 'flex';
                     document.getElementById('authContainer').style.display = 'none';
                     document.getElementById('registerContainer').style.display = 'none';
-                    document.getElementById('mainContent').classList.add('visible');
+                    document.getElementById('mainContent').style.display = 'block';
                     loadBalanceFromSheet();
                     loadLeaders();
                     return true;
@@ -370,25 +1060,28 @@
                 return false;
             }
         }
-        
-        // --- ОСТАЛЬНЫЕ ФУНКЦИИ (из предыдущей версии) ---
-        
-        function showLoading(show) { loadingIndicator.style.display = show ? 'block' : 'none'; }
-        
+
+        function showLoading(show) { 
+            loadingIndicator.style.display = show ? 'block' : 'none'; 
+        }
+
         function showMessage(text, isSuccess = true) {
             messageBox.textContent = text;
             messageBox.className = 'message ' + (isSuccess ? 'success' : 'error');
             setTimeout(() => {
                 messageBox.className = 'message';
                 messageBox.style.display = 'none';
-                setTimeout(() => { messageBox.style.display = ''; messageBox.className = 'message'; }, 100);
+                setTimeout(() => { 
+                    messageBox.style.display = ''; 
+                    messageBox.className = 'message'; 
+                }, 100);
             }, 3000);
         }
-        
+
         function updateBalanceDisplay() { 
-            balanceSpan.textContent = currentBalance.toLocaleString('ru-RU') + ' đᵽ'; 
+            balanceSpan.innerHTML = currentBalance.toLocaleString('ru-RU') + ' <span class="currency">đᵽ</span>'; 
         }
-        
+
         function ensurePlayerName() {
             if (!playerName) {
                 playerName = prompt('Введите ваше имя (будет в таблице лидеров и в квитанции):', 'Игрок');
@@ -449,7 +1142,7 @@
                 text: receiptUrl,
                 width: 200,
                 height: 200,
-                colorDark: '#1a1a1a',
+                colorDark: '#1a1a2e',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.H
             });
@@ -516,35 +1209,52 @@
 
         function renderLeadersTable(leaders) {
             if (!leaders.length) return '<div class="empty-list">Пока нет участников</div>';
-            let html = `<table class="leaders-table"><thead><tr><th>#</th><th>Игрок</th><th>Баллы</th></tr></thead><tbody>`;
+            let html = `<table class="leaders-table"><thead><tr><th>#</th><th>Игрок</th><th style="text-align:right;">Баллы</th></tr></thead><tbody>`;
             leaders.forEach((l, idx) => {
                 const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
                 const isMe = l.name === playerName;
-                html += `<tr class="${isMe ? 'current-user-row' : ''}"><td>${medal}</td><td class="player-name">${escapeHtml(l.name)}${isMe ? ' 👈' : ''}</td><td class="player-balance">${l.balance.toLocaleString()} đᵽ</td></tr>`;
+                html += `<tr class="${isMe ? 'current-user-row' : ''} ${idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : 'rank-3'}">
+                    <td class="rank-badge">${medal}</td>
+                    <td class="player-name">${escapeHtml(l.name)}${isMe ? ' 👈' : ''}</td>
+                    <td class="player-balance">${l.balance.toLocaleString()} đᵽ</td>
+                </tr>`;
             });
             html += `</tbody></table>`;
             return html;
         }
-        
+
         function escapeHtml(s) { return s?.replace(/[&<>]/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[m])) || ''; }
 
         // Стрельба
         function updateShootingUI() {
             const listDiv = document.getElementById('shootingItemsList');
             const totalDiv = document.getElementById('shootingTotal');
-            if (!shootingItems.length) { listDiv.innerHTML = '<div class="empty-list">Нет добавленных позиций</div>'; totalDiv.innerHTML = 'Итого: 0 đᵽ'; return; }
+            if (!shootingItems.length) { 
+                listDiv.innerHTML = '<div class="empty-list">Нет добавленных позиций</div>'; 
+                totalDiv.innerHTML = 'Итого: <span class="amount">0 đᵽ</span>'; 
+                return; 
+            }
             let total = 0;
             let html = '';
             shootingItems.forEach((item, i) => {
                 const itemTotal = item.rewardPerHit * item.hits;
                 total += itemTotal;
-                html += `<div class="item-entry"><div class="item-info">🎯 ${item.name}</div><div class="item-reward">${item.hits}×${item.rewardPerHit} = ${itemTotal} đᵽ</div><button class="remove-item" data-index="${i}">✖</button></div>`;
+                html += `<div class="item-entry">
+                    <div class="item-info">🎯 ${item.name}</div>
+                    <div class="item-reward">${item.hits}×${item.rewardPerHit} = ${itemTotal} đᵽ</div>
+                    <button class="remove-item" data-index="${i}">✖</button>
+                </div>`;
             });
             listDiv.innerHTML = html;
-            totalDiv.innerHTML = `Итого: ${total} đᵽ`;
-            document.querySelectorAll('#shootingItemsList .remove-item').forEach(btn => btn.addEventListener('click', e => { shootingItems.splice(parseInt(btn.dataset.index), 1); updateShootingUI(); }));
+            totalDiv.innerHTML = `Итого: <span class="amount">${total} đᵽ</span>`;
+            document.querySelectorAll('#shootingItemsList .remove-item').forEach(btn => 
+                btn.addEventListener('click', e => { 
+                    shootingItems.splice(parseInt(btn.dataset.index), 1); 
+                    updateShootingUI(); 
+                })
+            );
         }
-        
+
         function addShootingItem() {
             const sel = document.getElementById('positionSelect');
             const val = parseInt(sel.value);
@@ -556,7 +1266,7 @@
             sel.value = '';
             document.getElementById('shootingHitsInput').value = '1';
         }
-        
+
         async function submitShootingReport() {
             if (!shootingItems.length) { showMessage('❌ Добавьте позиции', false); return; }
             const player = ensurePlayerName();
@@ -574,22 +1284,35 @@
 
         // Бег
         function calcRunReward(laps) { return 5 * laps * (laps + 1) / 2; }
-        
+
         function updateRunningUI() {
             const listDiv = document.getElementById('runningItemsList');
             const totalDiv = document.getElementById('runningTotal');
-            if (!runningItems.length) { listDiv.innerHTML = '<div class="empty-list">Нет добавленных серий</div>'; totalDiv.innerHTML = 'Итого: 0 đᵽ'; return; }
+            if (!runningItems.length) { 
+                listDiv.innerHTML = '<div class="empty-list">Нет добавленных серий</div>'; 
+                totalDiv.innerHTML = 'Итого: <span class="amount">0 đᵽ</span>'; 
+                return; 
+            }
             let total = 0;
             let html = '';
             runningItems.forEach((item, i) => {
                 total += item.reward;
-                html += `<div class="item-entry"><div class="item-info">🏃 ${item.laps} круг(ов)</div><div class="item-reward">${item.reward} đᵽ</div><button class="remove-running" data-index="${i}">✖</button></div>`;
+                html += `<div class="item-entry">
+                    <div class="item-info">🏃 ${item.laps} круг(ов) без остановки</div>
+                    <div class="item-reward">${item.reward} đᵽ</div>
+                    <button class="remove-item" data-index="${i}">✖</button>
+                </div>`;
             });
             listDiv.innerHTML = html;
-            totalDiv.innerHTML = `Итого: ${total} đᵽ`;
-            document.querySelectorAll('#runningItemsList .remove-running').forEach(btn => btn.addEventListener('click', e => { runningItems.splice(parseInt(btn.dataset.index), 1); updateRunningUI(); }));
+            totalDiv.innerHTML = `Итого: <span class="amount">${total} đᵽ</span>`;
+            document.querySelectorAll('#runningItemsList .remove-item').forEach(btn => 
+                btn.addEventListener('click', e => { 
+                    runningItems.splice(parseInt(btn.dataset.index), 1); 
+                    updateRunningUI(); 
+                })
+            );
         }
-        
+
         function addRunningItem() {
             let laps = parseInt(document.getElementById('runningLapsInput').value);
             if (isNaN(laps) || laps < 1) { showMessage('❌ Введите количество кругов', false); return; }
@@ -597,7 +1320,7 @@
             updateRunningUI();
             document.getElementById('runningLapsInput').value = '';
         }
-        
+
         async function submitRunningReport() {
             if (!runningItems.length) { showMessage('❌ Добавьте серии', false); return; }
             const player = ensurePlayerName();
@@ -618,7 +1341,7 @@
             const transportChecked = document.getElementById('feeTransport').checked;
             const stayChecked = document.getElementById('feeStay').checked;
             const total = (transportChecked ? 5 : 0) + (stayChecked ? 10 : 0);
-            document.getElementById('feesTotal').innerHTML = `Итого к оплате: ${total} đᵽ`;
+            document.getElementById('feesTotal').innerHTML = `Итого к оплате: <span class="amount">${total} đᵽ</span>`;
             
             const listDiv = document.getElementById('feesItemsList');
             if (!transportChecked && !stayChecked) {
@@ -630,7 +1353,7 @@
             if (stayChecked) html += `<div class="item-entry"><div class="item-info">🏠 Временное пребывание</div><div class="item-reward">10 đᵽ</div></div>`;
             listDiv.innerHTML = html;
         }
-        
+
         async function submitFees() {
             const transportChecked = document.getElementById('feeTransport').checked;
             const stayChecked = document.getElementById('feeStay').checked;
@@ -694,7 +1417,6 @@
             loadLeaders();
         }
 
-        // --- Обработчики событий ---
         document.getElementById('addShootingBtn').onclick = addShootingItem;
         document.getElementById('submitShootingBtn').onclick = submitShootingReport;
         document.getElementById('addRunningBtn').onclick = addRunningItem;
@@ -704,7 +1426,6 @@
         document.getElementById('feeStay').onchange = updateFeesUI;
         document.getElementById('refreshLeadersBtn').onclick = () => loadLeaders();
 
-        // Вкладки
         const tabs = document.querySelectorAll('.tab-btn');
         const contents = document.querySelectorAll('.tab-content');
         tabs.forEach(btn => btn.onclick = () => {
@@ -715,45 +1436,46 @@
             document.getElementById(id).classList.add('active');
         });
 
-        // --- АВТОРИЗАЦИЯ: Обработчики ---
         document.getElementById('loginBtn').onclick = async () => {
-            const email = document.getElementById('loginEmail').value.trim();
+            const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
-            if (!email || !password) {
+            if (!username || !password) {
                 showAuthError('Заполните все поля');
                 return;
             }
-            await login(email, password);
+            await login(username, password);
         };
-        
-        document.getElementById('loginEmail').addEventListener('keypress', (e) => {
+
+        document.getElementById('loginUsername').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') document.getElementById('loginBtn').click();
         });
         document.getElementById('loginPassword').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') document.getElementById('loginBtn').click();
         });
-        
+
         document.getElementById('showRegister').onclick = () => {
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('registerContainer').style.display = 'block';
             document.getElementById('authError').textContent = '';
             document.getElementById('registerError').textContent = '';
+            document.getElementById('registerError').className = 'error';
         };
-        
+
         document.getElementById('showLogin').onclick = () => {
             document.getElementById('registerContainer').style.display = 'none';
             document.getElementById('authContainer').style.display = 'block';
             document.getElementById('authError').textContent = '';
             document.getElementById('registerError').textContent = '';
+            document.getElementById('registerError').className = 'error';
         };
-        
+
         document.getElementById('registerBtn').onclick = async () => {
+            const username = document.getElementById('registerUsername').value.trim();
             const name = document.getElementById('registerName').value.trim();
-            const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value.trim();
             const confirm = document.getElementById('registerPasswordConfirm').value.trim();
             
-            if (!name || !email || !password || !confirm) {
+            if (!username || !name || !password || !confirm) {
                 showRegisterError('Заполните все поля');
                 return;
             }
@@ -765,18 +1487,20 @@
                 showRegisterError('Пароль должен быть не менее 4 символов');
                 return;
             }
-            await register(name, email, password);
+            if (username.length < 3) {
+                showRegisterError('Логин должен быть не менее 3 символов');
+                return;
+            }
+            await register(username, name, password);
         };
-        
+
         document.getElementById('logoutBtn').onclick = logout;
 
-        // --- Инициализация ---
         checkAuth().then(isAuth => {
             if (!isAuth) {
                 document.getElementById('authContainer').style.display = 'block';
             }
         });
-        
         updateFeesUI();
     </script>
 </body>
