@@ -252,8 +252,12 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        .leaders-table th:first-child { border-radius: 12px 0 0 0; }
-        .leaders-table th:last-child { border-radius: 0 12px 0 0; }
+        .leaders-table th:first-child {
+            border-radius: 12px 0 0 0;
+        }
+        .leaders-table th:last-child {
+            border-radius: 0 12px 0 0;
+        }
         .leaders-table tr {
             border-bottom: 1px solid #f0f4f8;
             transition: background 0.2s;
@@ -265,13 +269,13 @@
             border-bottom: none;
         }
         .leaders-table .rank-1 {
-            background: linear-gradient(90deg, rgba(255,215,0,0.15), transparent);
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent);
         }
         .leaders-table .rank-2 {
-            background: linear-gradient(90deg, rgba(192,192,192,0.15), transparent);
+            background: linear-gradient(90deg, rgba(192, 192, 192, 0.15), transparent);
         }
         .leaders-table .rank-3 {
-            background: linear-gradient(90deg, rgba(205,127,50,0.15), transparent);
+            background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent);
         }
         .rank-badge {
             font-weight: 700;
@@ -286,7 +290,7 @@
             text-align: right;
         }
         .current-user-row {
-            background: rgba(44,125,160,0.08) !important;
+            background: rgba(44, 125, 160, 0.08) !important;
             font-weight: 600;
             border-left: 3px solid #2c7da0;
         }
@@ -296,10 +300,10 @@
             background: linear-gradient(135deg, #1a5276, #2c7da0);
             border-radius: 20px;
             margin-bottom: 2rem;
-            box-shadow: 0 8px 30px rgba(44,125,160,0.25);
+            box-shadow: 0 8px 30px rgba(44, 125, 160, 0.25);
         }
         .balance-title {
-            color: rgba(255,255,255,0.8);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 1rem;
             font-weight: 500;
             margin-bottom: 0.5rem;
@@ -310,7 +314,7 @@
             font-size: 3.8rem;
             font-weight: 700;
             color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         .balance-amount .currency {
             font-size: 2rem;
@@ -323,7 +327,7 @@
             background: #fff;
             border-radius: 16px;
             padding: 0.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
         }
         .tab-btn {
             flex: 1;
@@ -344,22 +348,28 @@
         .tab-btn.active {
             color: #fff;
             background: linear-gradient(135deg, #2c7da0, #1a5276);
-            box-shadow: 0 4px 15px rgba(44,125,160,0.25);
+            box-shadow: 0 4px 15px rgba(44, 125, 160, 0.25);
         }
         .tab-content {
             display: none;
             background: #fff;
             border-radius: 20px;
             padding: 1.8rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             animation: fadeIn 0.3s ease;
         }
         .tab-content.active {
             display: block;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .tab-content h2 {
             text-align: center;
@@ -457,7 +467,7 @@
             outline: none;
             border-color: #2c7da0;
             background: #fff;
-            box-shadow: 0 0 0 4px rgba(44,125,160,0.08);
+            box-shadow: 0 0 0 4px rgba(44, 125, 160, 0.08);
         }
         .add-panel select {
             flex: 2;
@@ -475,7 +485,7 @@
         }
         .add-panel .btn-add:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
         }
         .total-info {
             font-weight: 700;
@@ -521,13 +531,13 @@
         }
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(44,125,160,0.3);
+            box-shadow: 0 8px 25px rgba(44, 125, 160, 0.3);
         }
         .submit-btn.fee {
             background: linear-gradient(135deg, #dc3545, #a71d2a);
         }
         .submit-btn.fee:hover {
-            box-shadow: 0 8px 25px rgba(220,53,69,0.3);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
         }
         .message {
             margin-top: 1rem;
@@ -555,7 +565,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
@@ -573,7 +583,7 @@
             width: 92%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             position: relative;
         }
         .qr-close {
@@ -612,7 +622,7 @@
             background: #fff;
             padding: 0.8rem;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
         .receipt-details {
             background: #f8fafc;
@@ -702,6 +712,12 @@
             color: #2c7da0;
             font-weight: 500;
         }
+        .main-content {
+            display: none;
+        }
+        .main-content.visible {
+            display: block;
+        }
         @media (max-width: 768px) {
             header {
                 padding: 0.6rem 1rem;
@@ -785,28 +801,30 @@
         </div>
     </header>
     <main>
+        <!-- АВТОРИЗАЦИЯ -->
         <div id="authContainer" class="auth-container">
             <h2>🔐 Вход</h2>
             <p class="subtitle">Войдите в систему учёта баллов</p>
             <div id="authError" class="error"></div>
             <label>Логин</label>
-            <input type="text" id="loginUsername" placeholder="Введите логин" value="admin">
+            <input type="text" id="loginUsername" placeholder="Введите логин">
             <label>Пароль</label>
-            <input type="password" id="loginPassword" placeholder="Введите пароль" value="admin123">
+            <input type="password" id="loginPassword" placeholder="Введите пароль">
             <button class="btn-primary" id="loginBtn">Войти</button>
             <div class="auth-switch">
                 Нет аккаунта? <a id="showRegister">Зарегистрироваться</a>
             </div>
         </div>
 
+        <!-- РЕГИСТРАЦИЯ -->
         <div id="registerContainer" class="auth-container" style="display:none;">
             <h2>📝 Регистрация</h2>
             <p class="subtitle">Создайте новый аккаунт</p>
             <div id="registerError" class="error"></div>
-            <label>Логин (для входа)</label>
-            <input type="text" id="registerUsername" placeholder="Придумайте логин">
             <label>Ваше имя (будет отображаться)</label>
             <input type="text" id="registerName" placeholder="Иван Петров">
+            <label>Логин (для входа)</label>
+            <input type="text" id="registerUsername" placeholder="Придумайте логин">
             <label>Пароль</label>
             <input type="password" id="registerPassword" placeholder="Минимум 4 символа">
             <label>Подтвердите пароль</label>
@@ -817,7 +835,9 @@
             </div>
         </div>
 
-        <div id="mainContent" class="main-content" style="display:none;">
+        <!-- ОСНОВНОЙ КОНТЕНТ -->
+        <div id="mainContent" class="main-content">
+            <!-- Лидеры (видны всем, даже без входа) -->
             <div id="leaders-block" class="leaders-block">
                 <div class="leaders-title">
                     🏆 Топ-3 лидера
@@ -828,18 +848,20 @@
                 </div>
             </div>
 
-            <div id="balance-block" class="balance-block">
+            <!-- Баланс (виден только после входа) -->
+            <div id="balance-block" class="balance-block" style="display:none;">
                 <div class="balance-title">💰 Мой баланс</div>
                 <div class="balance-amount" id="balanceAmount">0 <span class="currency">đᵽ</span></div>
             </div>
 
-            <div class="report-tabs">
+            <!-- Вкладки (видны только после входа) -->
+            <div class="report-tabs" id="reportTabs" style="display:none;">
                 <button class="tab-btn active" data-tab="shooting">🎯 Стрельба</button>
                 <button class="tab-btn" data-tab="running">🏃 Бег</button>
                 <button class="tab-btn" data-tab="fees">💰 Взносы</button>
             </div>
 
-            <div id="shooting" class="tab-content active">
+            <div id="shooting" class="tab-content" style="display:none;">
                 <h2>📋 Подать отчёт по стрельбе</h2>
                 <div id="shootingItemsList" class="items-list"><div class="empty-list">Нет добавленных позиций</div></div>
                 <div class="add-panel">
@@ -862,7 +884,7 @@
                 <button class="submit-btn" id="submitShootingBtn">✅ Отправить отчёт</button>
             </div>
 
-            <div id="running" class="tab-content">
+            <div id="running" class="tab-content" style="display:none;">
                 <h2>🏃 Подать отчёт о беге</h2>
                 <div id="runningItemsList" class="items-list"><div class="empty-list">Нет добавленных серий</div></div>
                 <div class="add-panel">
@@ -874,7 +896,7 @@
                 <button class="submit-btn" id="submitRunningBtn">✅ Отправить отчёт</button>
             </div>
 
-            <div id="fees" class="tab-content">
+            <div id="fees" class="tab-content" style="display:none;">
                 <h2>💰 Оплатить взносы</h2>
                 <div class="fee-options">
                     <label>
@@ -901,6 +923,7 @@
         </div>
     </main>
 
+    <!-- QR-модал -->
     <div id="qrModal" class="qr-modal">
         <div class="qr-content">
             <button class="qr-close" id="qrCloseBtn">&times;</button>
@@ -922,17 +945,18 @@
     </div>
 
     <script>
-        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyU22_oES41gAE6gPsGCeatWBuqri3yIcXLFFjOmYVibaNkDINkZhZ5ZQbG1D9jGFelVA/exec';
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw4AdP553FKksA8gcsM0c7LIHg4aK9R_4dM3Twwvn7gtrIqhSRbTOErnqete2XjyNRMWg/exec';
         const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
         const RECEIPT_PAGE = 'receipt.html';
-        
+
         let playerName = localStorage.getItem('playerName') || '';
         let currentBalance = 0;
         let shootingItems = [];
         let runningItems = [];
         let qrCodeInstance = null;
         let authToken = localStorage.getItem('authToken') || '';
-        
+        let isLoggedIn = false;
+
         const balanceSpan = document.getElementById('balanceAmount');
         const messageBox = document.getElementById('messageBox');
         const loadingIndicator = document.getElementById('loadingIndicator');
@@ -940,29 +964,75 @@
         const qrModal = document.getElementById('qrModal');
         const qrCodeContainer = document.getElementById('qrcode');
 
+        // --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
         function showAuthError(text) {
             const el = document.getElementById('authError');
             el.textContent = text;
             el.className = 'error';
         }
-        
+
         function showRegisterError(text) {
             const el = document.getElementById('registerError');
             el.textContent = text;
             el.className = 'error';
         }
-        
+
         function showRegisterSuccess(text) {
             const el = document.getElementById('registerError');
             el.textContent = text;
             el.className = 'success';
         }
 
+        function showLoading(show) {
+            loadingIndicator.style.display = show ? 'block' : 'none';
+        }
+
+        function showMessage(text, isSuccess = true) {
+            messageBox.textContent = text;
+            messageBox.className = 'message ' + (isSuccess ? 'success' : 'error');
+            setTimeout(() => {
+                messageBox.className = 'message';
+                messageBox.style.display = 'none';
+                setTimeout(() => {
+                    messageBox.style.display = '';
+                    messageBox.className = 'message';
+                }, 100);
+            }, 3000);
+        }
+
+        function updateBalanceDisplay() {
+            balanceSpan.innerHTML = currentBalance.toLocaleString('ru-RU') + ' <span class="currency">đᵽ</span>';
+        }
+
+        function ensurePlayerName() {
+            if (!playerName) {
+                playerName = prompt('Введите ваше имя (будет в таблице лидеров и в квитанции):', 'Игрок');
+                if (!playerName) playerName = 'Аноним';
+                localStorage.setItem('playerName', playerName);
+            }
+            return playerName;
+        }
+
+        function generateOperationNumber() {
+            const now = new Date();
+            const datePart = now.getFullYear().toString().slice(2) +
+                String(now.getMonth() + 1).padStart(2, '0') +
+                String(now.getDate()).padStart(2, '0');
+            const randomPart = String(Math.floor(100000 + Math.random() * 900000));
+            return `DP-${datePart}-${randomPart}`;
+        }
+
+        function getReceiptUrl(operationNumber) {
+            return BASE_URL + RECEIPT_PAGE + '?op=' + encodeURIComponent(operationNumber);
+        }
+
+        function escapeHtml(s) { return s?.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' } [m])) || ''; }
+
+        // --- АВТОРИЗАЦИЯ ---
         async function login(username, password) {
             try {
                 const response = await fetch(
-                    `${GOOGLE_SHEETS_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
-                    { mode: 'cors' }
+                    `${GOOGLE_SHEETS_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, { mode: 'cors' }
                 );
                 const data = await response.json();
                 if (data.status === 'success') {
@@ -970,13 +1040,17 @@
                     localStorage.setItem('authToken', authToken);
                     localStorage.setItem('playerName', data.name);
                     playerName = data.name;
+                    isLoggedIn = true;
                     document.getElementById('userName').textContent = playerName;
                     document.getElementById('userInfo').style.display = 'flex';
                     document.getElementById('authContainer').style.display = 'none';
                     document.getElementById('registerContainer').style.display = 'none';
-                    document.getElementById('mainContent').style.display = 'block';
+                    document.getElementById('mainContent').classList.add('visible');
+                    document.getElementById('balance-block').style.display = 'block';
+                    document.getElementById('reportTabs').style.display = 'flex';
+                    document.querySelectorAll('.tab-content').forEach(el => el.style.display = '');
+                    document.querySelector('.tab-content.active').style.display = 'block';
                     loadBalanceFromSheet();
-                    loadLeaders();
                     showMessage(`👋 Добро пожаловать, ${playerName}!`);
                     return true;
                 } else {
@@ -1017,93 +1091,121 @@
         async function logout() {
             try {
                 await fetch(
-                    `${GOOGLE_SHEETS_URL}?action=logout&token=${encodeURIComponent(authToken)}`,
-                    { mode: 'cors' }
+                    `${GOOGLE_SHEETS_URL}?action=logout&token=${encodeURIComponent(authToken)}`, { mode: 'cors' }
                 );
-            } catch(e) {}
+            } catch (e) {}
             localStorage.removeItem('authToken');
             localStorage.removeItem('playerName');
             authToken = '';
+            isLoggedIn = false;
             document.getElementById('userInfo').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('mainContent').classList.remove('visible');
+            document.getElementById('balance-block').style.display = 'none';
+            document.getElementById('reportTabs').style.display = 'none';
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.getElementById('authContainer').style.display = 'block';
             document.getElementById('registerContainer').style.display = 'none';
             currentBalance = 0;
             updateBalanceDisplay();
             showMessage('Вы вышли из системы');
+            // Лидеры всё ещё видны
+            loadLeaders();
         }
 
         async function checkAuth() {
             if (!authToken) return false;
             try {
                 const response = await fetch(
-                    `${GOOGLE_SHEETS_URL}?action=checkAuth&token=${encodeURIComponent(authToken)}`,
-                    { mode: 'cors' }
+                    `${GOOGLE_SHEETS_URL}?action=checkAuth&token=${encodeURIComponent(authToken)}`, { mode: 'cors' }
                 );
                 const data = await response.json();
                 if (data.status === 'success') {
                     playerName = localStorage.getItem('playerName') || 'Пользователь';
+                    isLoggedIn = true;
                     document.getElementById('userName').textContent = playerName;
                     document.getElementById('userInfo').style.display = 'flex';
                     document.getElementById('authContainer').style.display = 'none';
                     document.getElementById('registerContainer').style.display = 'none';
-                    document.getElementById('mainContent').style.display = 'block';
+                    document.getElementById('mainContent').classList.add('visible');
+                    document.getElementById('balance-block').style.display = 'block';
+                    document.getElementById('reportTabs').style.display = 'flex';
+                    document.querySelectorAll('.tab-content').forEach(el => el.style.display = '');
+                    document.querySelector('.tab-content.active').style.display = 'block';
                     loadBalanceFromSheet();
-                    loadLeaders();
                     return true;
                 } else {
                     localStorage.removeItem('authToken');
                     authToken = '';
+                    isLoggedIn = false;
                     return false;
                 }
-            } catch(e) {
+            } catch (e) {
                 return false;
             }
         }
 
-        function showLoading(show) { 
-            loadingIndicator.style.display = show ? 'block' : 'none'; 
-        }
-
-        function showMessage(text, isSuccess = true) {
-            messageBox.textContent = text;
-            messageBox.className = 'message ' + (isSuccess ? 'success' : 'error');
-            setTimeout(() => {
-                messageBox.className = 'message';
-                messageBox.style.display = 'none';
-                setTimeout(() => { 
-                    messageBox.style.display = ''; 
-                    messageBox.className = 'message'; 
-                }, 100);
-            }, 3000);
-        }
-
-        function updateBalanceDisplay() { 
-            balanceSpan.innerHTML = currentBalance.toLocaleString('ru-RU') + ' <span class="currency">đᵽ</span>'; 
-        }
-
-        function ensurePlayerName() {
-            if (!playerName) {
-                playerName = prompt('Введите ваше имя (будет в таблице лидеров и в квитанции):', 'Игрок');
-                if (!playerName) playerName = 'Аноним';
-                localStorage.setItem('playerName', playerName);
+        // --- ЗАГРУЗКА ЛИДЕРОВ (доступна без входа) ---
+        async function loadLeaders() {
+            try {
+                const res = await fetch(`${GOOGLE_SHEETS_URL}?action=getLeaders&limit=3`, { mode: 'cors' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === 'success' && Array.isArray(data.leaders)) {
+                        leadersContainer.innerHTML = renderLeadersTable(data.leaders);
+                    }
+                }
+            } catch (e) {
+                leadersContainer.innerHTML = '<div class="empty-list">Ошибка загрузки</div>';
             }
-            return playerName;
         }
 
-        function generateOperationNumber() {
-            const now = new Date();
-            const datePart = now.getFullYear().toString().slice(2) + 
-                           String(now.getMonth() + 1).padStart(2, '0') + 
-                           String(now.getDate()).padStart(2, '0');
-            const randomPart = String(Math.floor(100000 + Math.random() * 900000));
-            return `DP-${datePart}-${randomPart}`;
+        function renderLeadersTable(leaders) {
+            if (!leaders.length) return '<div class="empty-list">Пока нет участников</div>';
+            let html =
+                `<table class="leaders-table"><thead><tr><th>#</th><th>Игрок</th><th style="text-align:right;">Баллы</th></tr></thead><tbody>`;
+            leaders.forEach((l, idx) => {
+                const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
+                const isMe = l.name === playerName && isLoggedIn;
+                html += `<tr class="${isMe ? 'current-user-row' : ''} ${idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : 'rank-3'}">
+                    <td class="rank-badge">${medal}</td>
+                    <td class="player-name">${escapeHtml(l.name)}${isMe ? ' 👈' : ''}</td>
+                    <td class="player-balance">${l.balance.toLocaleString()} đᵽ</td>
+                </tr>`;
+            });
+            html += `</tbody></table>`;
+            return html;
         }
 
-        function getReceiptUrl(operationNumber) {
-            return BASE_URL + RECEIPT_PAGE + '?op=' + encodeURIComponent(operationNumber);
+        // --- ЗАГРУЗКА БАЛАНСА ---
+        async function loadBalanceFromSheet() {
+            if (!playerName) return;
+            showLoading(true);
+            try {
+                const res = await fetch(`${GOOGLE_SHEETS_URL}?action=getBalance&player=${encodeURIComponent(playerName)}`, { mode: 'cors' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === 'success' && typeof data.balance === 'number') {
+                        currentBalance = data.balance;
+                        updateBalanceDisplay();
+                    }
+                }
+            } catch (e) { console.error(e); } finally { showLoading(false); }
         }
 
+        // --- СОХРАНЕНИЕ ОТЧЁТА ---
+        async function saveReportToSheet(reportData) {
+            try {
+                await fetch(GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reportData)
+                });
+                return true;
+            } catch (e) { return false; }
+        }
+
+        // --- СОХРАНЕНИЕ КВИТАНЦИИ ---
         async function saveReceiptToSheet(operationNumber, receiptData) {
             try {
                 await fetch(GOOGLE_SHEETS_URL, {
@@ -1121,22 +1223,23 @@
                     })
                 });
                 console.log('✅ Квитанция сохранена:', operationNumber);
-            } catch(e) {
+            } catch (e) {
                 console.error('❌ Ошибка сохранения квитанции:', e);
             }
         }
 
+        // --- QR-КОД ---
         function showQRModal(receiptData, operationNumber) {
             const receiptUrl = getReceiptUrl(operationNumber);
             saveReceiptToSheet(operationNumber, receiptData);
-            
+
             document.getElementById('receiptName').textContent = receiptData.name;
             document.getElementById('receiptType').textContent = receiptData.type;
             document.getElementById('receiptAmount').textContent = receiptData.amount + ' đᵽ';
             document.getElementById('receiptDate').textContent = receiptData.date;
             document.getElementById('receiptNumber').textContent = receiptData.operationNumber;
             document.getElementById('qrUrlDisplay').textContent = '🔗 ' + receiptUrl;
-            
+
             qrCodeContainer.innerHTML = '';
             qrCodeInstance = new QRCode(qrCodeContainer, {
                 text: receiptUrl,
@@ -1146,7 +1249,7 @@
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.H
             });
-            
+
             qrModal.classList.add('open');
         }
 
@@ -1167,72 +1270,14 @@
             if (e.key === 'Escape' && qrModal.classList.contains('open')) closeQRModal();
         });
 
-        async function saveReportToSheet(reportData) {
-            try {
-                await fetch(GOOGLE_SHEETS_URL, { 
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify(reportData) 
-                });
-                return true;
-            } catch(e) { return false; }
-        }
-
-        async function loadBalanceFromSheet() {
-            if (!playerName) return;
-            showLoading(true);
-            try {
-                const res = await fetch(`${GOOGLE_SHEETS_URL}?action=getBalance&player=${encodeURIComponent(playerName)}`, { mode: 'cors' });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.status === 'success' && typeof data.balance === 'number') {
-                        currentBalance = data.balance;
-                        updateBalanceDisplay();
-                    }
-                }
-            } catch(e) { console.error(e); }
-            finally { showLoading(false); }
-        }
-
-        async function loadLeaders() {
-            try {
-                const res = await fetch(`${GOOGLE_SHEETS_URL}?action=getLeaders&limit=3`, { mode: 'cors' });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.status === 'success' && Array.isArray(data.leaders)) {
-                        leadersContainer.innerHTML = renderLeadersTable(data.leaders);
-                    }
-                }
-            } catch(e) { leadersContainer.innerHTML = '<div class="empty-list">Ошибка загрузки</div>'; }
-        }
-
-        function renderLeadersTable(leaders) {
-            if (!leaders.length) return '<div class="empty-list">Пока нет участников</div>';
-            let html = `<table class="leaders-table"><thead><tr><th>#</th><th>Игрок</th><th style="text-align:right;">Баллы</th></tr></thead><tbody>`;
-            leaders.forEach((l, idx) => {
-                const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
-                const isMe = l.name === playerName;
-                html += `<tr class="${isMe ? 'current-user-row' : ''} ${idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : 'rank-3'}">
-                    <td class="rank-badge">${medal}</td>
-                    <td class="player-name">${escapeHtml(l.name)}${isMe ? ' 👈' : ''}</td>
-                    <td class="player-balance">${l.balance.toLocaleString()} đᵽ</td>
-                </tr>`;
-            });
-            html += `</tbody></table>`;
-            return html;
-        }
-
-        function escapeHtml(s) { return s?.replace(/[&<>]/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[m])) || ''; }
-
-        // Стрельба
+        // --- СТРЕЛЬБА ---
         function updateShootingUI() {
             const listDiv = document.getElementById('shootingItemsList');
             const totalDiv = document.getElementById('shootingTotal');
-            if (!shootingItems.length) { 
-                listDiv.innerHTML = '<div class="empty-list">Нет добавленных позиций</div>'; 
-                totalDiv.innerHTML = 'Итого: <span class="amount">0 đᵽ</span>'; 
-                return; 
+            if (!shootingItems.length) {
+                listDiv.innerHTML = '<div class="empty-list">Нет добавленных позиций</div>';
+                totalDiv.innerHTML = 'Итого: <span class="amount">0 đᵽ</span>';
+                return;
             }
             let total = 0;
             let html = '';
@@ -1247,10 +1292,10 @@
             });
             listDiv.innerHTML = html;
             totalDiv.innerHTML = `Итого: <span class="amount">${total} đᵽ</span>`;
-            document.querySelectorAll('#shootingItemsList .remove-item').forEach(btn => 
-                btn.addEventListener('click', e => { 
-                    shootingItems.splice(parseInt(btn.dataset.index), 1); 
-                    updateShootingUI(); 
+            document.querySelectorAll('#shootingItemsList .remove-item').forEach(btn =>
+                btn.addEventListener('click', e => {
+                    shootingItems.splice(parseInt(btn.dataset.index), 1);
+                    updateShootingUI();
                 })
             );
         }
@@ -1282,16 +1327,16 @@
             loadLeaders();
         }
 
-        // Бег
+        // --- БЕГ ---
         function calcRunReward(laps) { return 5 * laps * (laps + 1) / 2; }
 
         function updateRunningUI() {
             const listDiv = document.getElementById('runningItemsList');
             const totalDiv = document.getElementById('runningTotal');
-            if (!runningItems.length) { 
-                listDiv.innerHTML = '<div class="empty-list">Нет добавленных серий</div>'; 
-                totalDiv.innerHTML = 'Итого: <span class="amount">0 đᵽ</span>'; 
-                return; 
+            if (!runningItems.length) {
+                listDiv.innerHTML = '<div class="empty-list">Нет добавленных серий</div>';
+                totalDiv.innerHTML = 'Итого: <span class="amount">0 đᵽ</span>';
+                return;
             }
             let total = 0;
             let html = '';
@@ -1305,10 +1350,10 @@
             });
             listDiv.innerHTML = html;
             totalDiv.innerHTML = `Итого: <span class="amount">${total} đᵽ</span>`;
-            document.querySelectorAll('#runningItemsList .remove-item').forEach(btn => 
-                btn.addEventListener('click', e => { 
-                    runningItems.splice(parseInt(btn.dataset.index), 1); 
-                    updateRunningUI(); 
+            document.querySelectorAll('#runningItemsList .remove-item').forEach(btn =>
+                btn.addEventListener('click', e => {
+                    runningItems.splice(parseInt(btn.dataset.index), 1);
+                    updateRunningUI();
                 })
             );
         }
@@ -1336,21 +1381,23 @@
             loadLeaders();
         }
 
-        // Взносы
+        // --- ВЗНОСЫ ---
         function updateFeesUI() {
             const transportChecked = document.getElementById('feeTransport').checked;
             const stayChecked = document.getElementById('feeStay').checked;
             const total = (transportChecked ? 5 : 0) + (stayChecked ? 10 : 0);
             document.getElementById('feesTotal').innerHTML = `Итого к оплате: <span class="amount">${total} đᵽ</span>`;
-            
+
             const listDiv = document.getElementById('feesItemsList');
             if (!transportChecked && !stayChecked) {
                 listDiv.innerHTML = '<div class="empty-list">Нет выбранных взносов</div>';
                 return;
             }
             let html = '';
-            if (transportChecked) html += `<div class="item-entry"><div class="item-info">🚌 Транспорт</div><div class="item-reward">5 đᵽ</div></div>`;
-            if (stayChecked) html += `<div class="item-entry"><div class="item-info">🏠 Временное пребывание</div><div class="item-reward">10 đᵽ</div></div>`;
+            if (transportChecked) html +=
+                `<div class="item-entry"><div class="item-info">🚌 Транспорт</div><div class="item-reward">5 đᵽ</div></div>`;
+            if (stayChecked) html +=
+                `<div class="item-entry"><div class="item-info">🏠 Временное пребывание</div><div class="item-reward">10 đᵽ</div></div>`;
             listDiv.innerHTML = html;
         }
 
@@ -1358,38 +1405,38 @@
             const transportChecked = document.getElementById('feeTransport').checked;
             const stayChecked = document.getElementById('feeStay').checked;
             if (!transportChecked && !stayChecked) { showMessage('❌ Выберите хотя бы один взнос', false); return; }
-            
+
             const totalFee = (transportChecked ? 5 : 0) + (stayChecked ? 10 : 0);
-            if (currentBalance < totalFee) { 
-                showMessage(`❌ Не хватает баллов! Нужно ${totalFee} đᵽ, есть ${currentBalance} đᵽ`, false); 
-                return; 
+            if (currentBalance < totalFee) {
+                showMessage(`❌ Не хватает баллов! Нужно ${totalFee} đᵽ, есть ${currentBalance} đᵽ`, false);
+                return;
             }
-            
+
             const player = ensurePlayerName();
             const newBalance = currentBalance - totalFee;
             const operationNumber = generateOperationNumber();
             const details = [];
             let stayPaid = false;
-            
+
             if (transportChecked) details.push('Транспорт');
             if (stayChecked) {
                 details.push('Временное пребывание');
                 stayPaid = true;
             }
             const detailsStr = details.join(', ');
-            
-            await saveReportToSheet({ 
-                player, 
-                type: 'fee', 
-                details: detailsStr, 
-                earned: -totalFee, 
+
+            await saveReportToSheet({
+                player,
+                type: 'fee',
+                details: detailsStr,
+                earned: -totalFee,
                 balance: newBalance,
                 operation: operationNumber
             });
-            
+
             currentBalance = newBalance;
             updateBalanceDisplay();
-            
+
             if (stayPaid) {
                 const now = new Date();
                 const receiptData = {
@@ -1410,13 +1457,14 @@
             } else {
                 showMessage(`💰 Оплачено: ${detailsStr} = -${totalFee} đᵽ. Баланс: ${currentBalance} đᵽ`, true);
             }
-            
+
             document.getElementById('feeTransport').checked = false;
             document.getElementById('feeStay').checked = false;
             updateFeesUI();
             loadLeaders();
         }
 
+        // --- ОБРАБОТЧИКИ ---
         document.getElementById('addShootingBtn').onclick = addShootingItem;
         document.getElementById('submitShootingBtn').onclick = submitShootingReport;
         document.getElementById('addRunningBtn').onclick = addRunningItem;
@@ -1436,6 +1484,7 @@
             document.getElementById(id).classList.add('active');
         });
 
+        // --- АВТОРИЗАЦИЯ: Обработчики ---
         document.getElementById('loginBtn').onclick = async () => {
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
@@ -1474,7 +1523,7 @@
             const name = document.getElementById('registerName').value.trim();
             const password = document.getElementById('registerPassword').value.trim();
             const confirm = document.getElementById('registerPasswordConfirm').value.trim();
-            
+
             if (!username || !name || !password || !confirm) {
                 showRegisterError('Заполните все поля');
                 return;
@@ -1496,11 +1545,17 @@
 
         document.getElementById('logoutBtn').onclick = logout;
 
+        // --- ИНИЦИАЛИЗАЦИЯ ---
+        // Сначала загружаем лидеров (доступно всем)
+        loadLeaders();
+
+        // Проверяем авторизацию
         checkAuth().then(isAuth => {
             if (!isAuth) {
                 document.getElementById('authContainer').style.display = 'block';
             }
         });
+
         updateFeesUI();
     </script>
 </body>
