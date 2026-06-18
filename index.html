@@ -945,7 +945,7 @@
     </div>
 
     <script>
-        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxlR0wG0R04FjEaRPniNxHFtZZvLr6icValXwhKqUI4yErZ_pRGYVwwDXxXSbUQTlN6Yw/exec';
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyrNpCEQ_Vis7KWQ9lG7ECz9tzcuTh7ZNVnn24R5hbfYs3X9Rd4bVaCx9D09yROssRvBA/exec';
         const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
         const RECEIPT_PAGE = 'receipt.html';
 
@@ -1065,10 +1065,14 @@
 
         async function register(username, name, password) {
             try {
+                // Используем режим 'cors' вместо 'no-cors'
                 const response = await fetch(GOOGLE_SHEETS_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors',  // <-- ИСПРАВЛЕНО
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify({
                         type: 'register',
                         username: username,
@@ -1076,14 +1080,22 @@
                         password: password
                     })
                 });
-                showRegisterSuccess('✅ Регистрация выполнена! Теперь войдите.');
-                setTimeout(() => {
-                    document.getElementById('registerContainer').style.display = 'none';
-                    document.getElementById('authContainer').style.display = 'block';
-                }, 1500);
-                return true;
+        
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showRegisterSuccess('✅ Регистрация выполнена! Теперь войдите.');
+                    setTimeout(() => {
+                        document.getElementById('registerContainer').style.display = 'none';
+                        document.getElementById('authContainer').style.display = 'block';
+                    }, 1500);
+                    return true;
+                } else {
+                    showRegisterError(data.message || 'Ошибка регистрации');
+                    return false;
+                }
             } catch (error) {
-                showRegisterError('Ошибка регистрации');
+                showRegisterError('Ошибка подключения к серверу');
                 return false;
             }
         }
@@ -1195,14 +1207,20 @@
         // --- СОХРАНЕНИЕ ОТЧЁТА ---
         async function saveReportToSheet(reportData) {
             try {
-                await fetch(GOOGLE_SHEETS_URL, {
+                const response = await fetch(GOOGLE_SHEETS_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors',  // <-- ИСПРАВЛЕНО
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(reportData)
                 });
-                return true;
-            } catch (e) { return false; }
+                const data = await response.json();
+                return data.status === 'success';
+            } catch (e) { 
+                return false; 
+            }
         }
 
         // --- СОХРАНЕНИЕ КВИТАНЦИИ ---
