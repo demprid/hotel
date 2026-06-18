@@ -142,7 +142,9 @@
             font-weight: 500;
         }
         @media print {
-            .print-btn, .receipt-back, .qr-scan-info {
+            .print-btn,
+            .receipt-back,
+            .qr-scan-info {
                 display: none !important;
             }
             .receipt-container {
@@ -213,13 +215,12 @@
     </div>
 
     <script>
-        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyU22_oES41gAE6gPsGCeatWBuqri3yIcXLFFjOmYVibaNkDINkZhZ5ZQbG1D9jGFelVA/exec';
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw4AdP553FKksA8gcsM0c7LIHg4aK9R_4dM3Twwvn7gtrIqhSRbTOErnqete2XjyNRMWg/exec';
 
         async function getReceiptFromSheet(operationNumber) {
             try {
                 const response = await fetch(
-                    `${GOOGLE_SHEETS_URL}?action=getReceipt&operation=${encodeURIComponent(operationNumber)}`,
-                    { mode: 'cors' }
+                    `${GOOGLE_SHEETS_URL}?action=getReceipt&operation=${encodeURIComponent(operationNumber)}`, { mode: 'cors' }
                 );
                 if (response.ok) {
                     const data = await response.json();
@@ -237,11 +238,11 @@
         async function displayReceipt() {
             const urlParams = new URLSearchParams(window.location.search);
             const opNumber = urlParams.get('op');
-            
+
             const loadingState = document.getElementById('loadingState');
             const receiptContent = document.getElementById('receiptContent');
             const receiptError = document.getElementById('receiptError');
-            
+
             if (!opNumber) {
                 loadingState.style.display = 'none';
                 receiptError.style.display = 'block';
@@ -249,7 +250,7 @@
             }
 
             const receiptData = await getReceiptFromSheet(opNumber);
-            
+
             if (!receiptData) {
                 loadingState.style.display = 'none';
                 receiptError.style.display = 'block';
@@ -261,7 +262,7 @@
             document.getElementById('opType').textContent = receiptData.type || '—';
             document.getElementById('opAmount').textContent = (receiptData.amount || '0') + ' đᵽ';
             document.getElementById('opDate').textContent = receiptData.date || '—';
-            
+
             loadingState.style.display = 'none';
             receiptContent.style.display = 'block';
         }
