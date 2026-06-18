@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Квитанция об оплате | Отель ДП</title>
     <link rel="icon" type="image/png" href="icon.png">
+    <script src="config.js"></script>
     <style>
         * {
             margin: 0;
@@ -215,7 +216,10 @@
     </div>
 
     <script>
-        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyrNpCEQ_Vis7KWQ9lG7ECz9tzcuTh7ZNVnn24R5hbfYs3X9Rd4bVaCx9D09yROssRvBA/exec';
+        // ============================================================
+        // ИСПОЛЬЗУЕМ НАСТРОЙКИ ИЗ config.js
+        // ============================================================
+        // GOOGLE_SHEETS_URL - уже доступен из config.js
 
         async function getReceiptFromSheet(operationNumber) {
             try {
