@@ -12,91 +12,100 @@
             box-sizing: border-box;
         }
         body {
-            background-color: #f0f4f8;
+            background: #f0f4f8;
             min-height: 100vh;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 2rem 1rem;
         }
         .receipt-container {
-            background-color: white;
-            border-radius: 1.5rem;
+            background: #fff;
+            border-radius: 24px;
             padding: 2.5rem;
-            max-width: 500px;
+            max-width: 480px;
             width: 100%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
             text-align: center;
+            transition: transform 0.3s;
+        }
+        .receipt-container:hover {
+            transform: translateY(-4px);
         }
         .receipt-logo {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 3rem;
+            margin-bottom: 0.3rem;
         }
         .receipt-title {
             font-size: 1.8rem;
             font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 0.2rem;
+        }
+        .receipt-title span {
             color: #2c7da0;
-            margin-bottom: 0.3rem;
         }
         .receipt-subtitle {
-            color: #666;
+            color: #888;
             font-size: 0.9rem;
             margin-bottom: 1.5rem;
         }
         .receipt-divider {
             border: none;
             height: 2px;
-            background: linear-gradient(to right, #2c7da0, #e0e0e0, #2c7da0);
-            margin: 1rem 0;
+            background: linear-gradient(to right, transparent, #2c7da0, transparent);
+            margin: 1.2rem 0;
         }
         .receipt-detail {
             display: flex;
             justify-content: space-between;
             padding: 0.7rem 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f0f4f8;
         }
         .receipt-detail:last-child {
             border-bottom: none;
         }
         .receipt-detail .label {
-            color: #666;
+            color: #888;
             font-weight: 400;
         }
         .receipt-detail .value {
             font-weight: 600;
-            color: #1a1a1a;
+            color: #1a1a2e;
         }
         .receipt-detail .value.amount {
             color: #dc3545;
             font-size: 1.2rem;
         }
         .receipt-status {
-            background-color: #d4edda;
+            background: #d4edda;
             color: #155724;
-            padding: 0.7rem;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 12px;
+            margin-top: 1.2rem;
             font-weight: 600;
-        }
-        .receipt-status.paid {
-            background-color: #d4edda;
-            color: #155724;
+            font-size: 1rem;
         }
         .receipt-footer {
             margin-top: 1.5rem;
-            font-size: 0.8rem;
-            color: #999;
+            font-size: 0.75rem;
+            color: #aaa;
         }
         .receipt-back {
             display: inline-block;
-            margin-top: 1rem;
+            margin-top: 1.2rem;
             color: #2c7da0;
             text-decoration: none;
             font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            border: 2px solid #2c7da0;
+            transition: all 0.2s;
         }
         .receipt-back:hover {
-            text-decoration: underline;
+            background: #2c7da0;
+            color: #fff;
         }
         .receipt-error {
             color: #dc3545;
@@ -104,27 +113,28 @@
             font-size: 1.1rem;
         }
         .qr-scan-info {
-            background-color: #f5f7fa;
-            border-radius: 0.75rem;
+            background: #f8fafc;
+            border-radius: 12px;
             padding: 0.7rem;
-            margin-top: 0.5rem;
+            margin-top: 0.8rem;
             font-size: 0.85rem;
             color: #666;
         }
         .print-btn {
             background: none;
-            border: 1px solid #2c7da0;
+            border: 2px solid #2c7da0;
             color: #2c7da0;
-            padding: 0.5rem 1.5rem;
-            border-radius: 2rem;
+            padding: 0.5rem 1.8rem;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 0.9rem;
+            font-weight: 500;
             margin-top: 1rem;
             transition: all 0.2s;
         }
         .print-btn:hover {
-            background-color: #2c7da0;
-            color: white;
+            background: #2c7da0;
+            color: #fff;
         }
         .loading-receipt {
             padding: 2rem;
@@ -140,8 +150,16 @@
                 padding: 1rem !important;
             }
             body {
-                background-color: white !important;
+                background: #fff !important;
                 padding: 0 !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .receipt-container {
+                padding: 1.5rem;
+            }
+            .receipt-title {
+                font-size: 1.4rem;
             }
         }
     </style>
@@ -151,13 +169,11 @@
         <div id="loadingState" class="loading-receipt">
             ⏳ Загрузка квитанции...
         </div>
-        
         <div id="receiptContent" style="display:none;">
             <div class="receipt-logo">🏨</div>
-            <div class="receipt-title">Отель ДП</div>
+            <div class="receipt-title">Отель <span>ДП</span></div>
             <div class="receipt-subtitle">Введенская слобода</div>
             <hr class="receipt-divider">
-            
             <div id="receiptData">
                 <div class="receipt-detail">
                     <span class="label">📄 Номер операции</span>
@@ -180,29 +196,24 @@
                     <span class="value" id="opDate">—</span>
                 </div>
             </div>
-            
             <hr class="receipt-divider">
-            <div class="receipt-status paid">✅ Оплата подтверждена</div>
+            <div class="receipt-status">✅ Оплата подтверждена</div>
             <div class="qr-scan-info">📱 Квитанция получена при сканировании QR-кода</div>
-            
             <button class="print-btn" onclick="window.print()">🖨️ Распечатать</button>
             <br>
             <a href="index.html" class="receipt-back">← Вернуться на главную</a>
         </div>
-        
         <div id="receiptError" style="display:none;">
             <div class="receipt-error">❌ Квитанция не найдена</div>
-            <p style="color: #666; margin-top: 0.5rem;">Проверьте правильность ссылки или обратитесь к администратору.</p>
+            <p style="color: #888; margin-top: 0.5rem; font-size: 0.9rem;">Проверьте правильность ссылки или обратитесь к администратору.</p>
             <br>
             <a href="index.html" class="receipt-back">← Вернуться на главную</a>
         </div>
-        
         <div class="receipt-footer">Отель ДП | Введенская слобода &bull; Система учёта баллов</div>
     </div>
 
     <script>
-        // 🔧 НАСТРОЙКА: укажите ваш URL веб-приложения Google Apps Script
-        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyU22_oES41gAE6gPsGCeatWBuqri3yIcXLFFjOmYVibaNkDINkZhZ5ZQbG1D9jGFelVA/exec';
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/ваш_id_здесь/exec';
 
         async function getReceiptFromSheet(operationNumber) {
             try {
@@ -210,7 +221,6 @@
                     `${GOOGLE_SHEETS_URL}?action=getReceipt&operation=${encodeURIComponent(operationNumber)}`,
                     { mode: 'cors' }
                 );
-                
                 if (response.ok) {
                     const data = await response.json();
                     if (data.status === 'success' && data.receipt) {
