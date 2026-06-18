@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отель ДП | Введенская слобода</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="config.js"></script>
+    <style>
+        /* Все стили остаются без изменений */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: #f0f4f8;
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #1a1a2e;
+        }
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2c3e50 100%);
+            padding: 0.8rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .header-icon-link {
+            display: inline-block;
+            line-height: 0;
+        }
+        .header-icon {
+            display: block;
+            height: 42px;
+            width: auto;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            padding: 2px;
+            transition: transform 0.3s ease;
+        }
+        .header-icon:hover { transform: scale(1.05) rotate(-5deg); }
+        .header-title {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .header-title span { color: #5dade2; }
+        .header-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-left: auto;
+        }
+        .header-nav .anchor-link {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .header-nav .anchor-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #5dade2;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .header-nav .anchor-link:hover::after { width: 70%; }
+        .header-nav .anchor-link:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #fff;
+            font-size: 0.9rem;
+            margin-left: auto;
+        }
+        .user-info .user-name {
+            font-weight: 600;
+            color: #5dade2;
+        }
+        .logout-btn {
+            background: rgba(220,53,69,0.8);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.9rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .logout-btn:hover {
+            background: #dc3545;
+            transform: scale(1.05);
+        }
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem 3rem;
+        }
+        .auth-container {
+            max-width: 420px;
+            margin: 3rem auto;
+            padding: 2.5rem;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: fadeSlideUp 0.6s ease;
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .auth-container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+        }
+        .auth-container h2 {
+            text-align: center;
+            color: #1a1a2e;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        .auth-container .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1.8rem;
+        }
+        .auth-container .error {
+            color: #dc3545;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: #fde8e8;
+            border-radius: 8px;
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .auth-container .success {
+            color: #28a745;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: #e8f8ed;
+            border-radius: 8px;
+        }
+        .auth-container label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 0.3rem;
+        }
+        .auth-container input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.2rem;
+            border: 2px solid #e8ecf1;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        .auth-container input:focus {
+            outline: none;
+            border-color: #2c7da0;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(44,125,160,0.1);
+            transform: scale(1.01);
+        }
+        .auth-container .btn-primary {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #2c7da0, #1a5276);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .auth-container .btn-primary:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 25px rgba(44,125,160,0.3);
+        }
+        .auth-container .btn-primary:active { transform: scale(0.98); }
+        .auth-container .auth-switch {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .auth-container .auth-switch a {
+            color: #2c7da0;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .auth-container .auth-switch a:hover {
+            color: #1a5276;
+            text-decoration: underline;
+        }
+        .leaders-block {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: all 0.4s ease;
+            animation: fadeSlideUp 0.6s ease 0.1s backwards;
+        }
+        .leaders-block:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        .leaders-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .refresh-leaders {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #2c7da0;
+            transition: all 0.6s ease;
+            padding: 0.2rem;
+        }
+        .refresh-leaders:hover { transform: rotate(180deg) scale(1.1); }
+        .leaders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .leaders-table th, .leaders-table td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+        }
+        .leaders-table th {
+            background: #f0f4f8;
+            color: #1a1a2e;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .leaders-table th:first-child { border-radius: 12px 0 0 0; }
+        .leaders-table th:last-child { border-radius: 0 12px 0 0; }
+        .leaders-table tr {
+            border-bottom: 1px solid #f0f4f8;
+            transition: all 0.3s ease;
+        }
+        .leaders-table tr:hover {
+            background: #f8fafc;
+            transform: scale(1.002);
+        }
+        .leaders-table tr:last-child { border-bottom: none; }
+        .leaders-table .rank-1 {
+            background: linear-gradient(90deg, rgba(255,215,0,0.15), transparent);
+        }
+        .leaders-table .rank-2 {
+            background: linear-gradient(90deg, rgba(192,192,192,0.15), transparent);
+        }
+        .leaders-table .rank-3 {
+            background: linear-gradient(90deg, rgba(205,127,50,0.15), transparent);
+        }
+        .rank-badge { font-weight: 700; font-size: 1.1rem; }
+        .player-name { font-weight: 500; }
+        .player-balance {
+            font-weight: 700;
+            color: #2c7da0;
+            text-align: right;
+        }
+        .current-user-row {
+            background: rgba(44,125,160,0.08) !important;
+            font-weight: 600;
+            border-left: 3px solid #2c7da0;
+            transition: all 0.3s ease;
+        }
+        .balance-block {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #1a5276, #2c7da0);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(44,125,160,0.25);
+            transition: all 0.4s ease;
+            animation: fadeSlideUp 0.6s ease 0.2s backwards;
+        }
+        .balance-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(44,125,160,0.35);
+        }
+        .balance-title {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .balance-amount {
+            font-size: 3.8rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+        }
+        .balance-amount:hover { transform: scale(1.02); }
+        .balance-amount .currency {
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+        .report-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: #fff;
+            border-radius: 16px;
+            padding: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            animation: fadeSlideUp 0.6s ease 0.3s backwards;
+        }
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #999;
+            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #2c7da0, #1a5276);
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            transform: scale(0.9);
+        }
+        .tab-btn:hover::before { opacity: 0.05; }
+        .tab-btn:hover {
+            color: #2c7da0;
+            transform: translateY(-1px);
+        }
+        .tab-btn.active {
+            color: #fff;
+            background: linear-gradient(135deg, #2c7da0, #1a5276);
+            box-shadow: 0 4px 15px rgba(44,125,160,0.25);
+            transform: scale(1.02);
+        }
+        .tab-btn.active::before { opacity: 0; }
+        .tab-content {
+            display: none;
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.8rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            animation: fadeSlideUp 0.5s ease;
+        }
+        .tab-content.active { display: block; }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-content h2 {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #1a1a2e;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+        }
+        .items-list {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin: 1rem 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e8ecf1;
+            transition: all 0.3s ease;
+        }
+        .items-list:hover { border-color: #2c7da0; }
+        .items-list::-webkit-scrollbar { width: 6px; }
+        .items-list::-webkit-scrollbar-track { background: #f0f4f8; border-radius: 10px; }
+        .items-list::-webkit-scrollbar-thumb {
+            background: #2c7da0;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+        .items-list::-webkit-scrollbar-thumb:hover { background: #1a5276; }
+        .item-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0.8rem;
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 0.3rem;
+            transition: all 0.3s ease;
+        }
+        .item-entry:last-child { margin-bottom: 0; }
+        .item-entry:hover {
+            background: #f0f4f8;
+            transform: translateX(4px);
+        }
+        .item-info { flex: 1; font-size: 0.9rem; }
+        .item-reward {
+            font-weight: 700;
+            color: #2c7da0;
+            margin-right: 1rem;
+            font-size: 0.95rem;
+        }
+        .remove-item {
+            background: #fee;
+            color: #dc3545;
+            border: none;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        .remove-item:hover {
+            background: #dc3545;
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .empty-list {
+            color: #999;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .add-panel {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .add-panel select, .add-panel input {
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            border: 2px solid #e8ecf1;
+            border-radius: 12px;
+            font-family: inherit;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 100px;
+        }
+        .add-panel select:focus, .add-panel input:focus {
+            outline: none;
+            border-color: #2c7da0;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(44,125,160,0.08);
+            transform: scale(1.01);
+        }
+        .add-panel select { flex: 2; }
+        .add-panel .btn-add {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .add-panel .btn-add:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+        }
+        .add-panel .btn-add:active { transform: scale(0.97); }
+        .total-info {
+            font-weight: 700;
+            margin: 1rem 0;
+            padding: 0.8rem;
+            background: #e8f8ed;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #1a1a2e;
+            transition: all 0.3s ease;
+        }
+        .total-info.fee {
+            background: #fde8e8;
+            color: #721c24;
+        }
+        .total-info .amount { color: #2c7da0; }
+        .total-info.fee .amount { color: #dc3545; }
+        .hint {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 0.5rem;
+            text-align: center;
+            background: #f0f4f8;
+            padding: 0.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .hint:hover { background: #e8ecf1; }
+        .submit-btn {
+            background: linear-gradient(135deg, #2c7da0, #1a5276);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 0.8rem;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 25px rgba(44,125,160,0.3);
+        }
+        .submit-btn:active { transform: scale(0.98); }
+        .submit-btn.fee {
+            background: linear-gradient(135deg, #dc3545, #a71d2a);
+        }
+        .submit-btn.fee:hover {
+            box-shadow: 0 8px 25px rgba(220,53,69,0.3);
+        }
+        .message {
+            margin-top: 1rem;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+            animation: fadeSlideUp 0.4s ease;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        .qr-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+        .qr-modal.open { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(8px); }
+        }
+        .qr-content {
+            background: #fff;
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 480px;
+            width: 92%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            position: relative;
+            animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .qr-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #aaa;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+        }
+        .qr-close:hover {
+            color: #333;
+            transform: rotate(90deg) scale(1.1);
+        }
+        .qr-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 0.3rem;
+        }
+        .qr-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .qr-code-container {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        .qr-code-container #qrcode {
+            background: #fff;
+            padding: 0.8rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        .qr-code-container #qrcode:hover { transform: scale(1.02); }
+        .receipt-details {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            border-left: 4px solid #2c7da0;
+            transition: all 0.3s ease;
+        }
+        .receipt-details:hover { background: #f0f4f8; }
+        .receipt-details p {
+            padding: 0.4rem 0;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e8ecf1;
+        }
+        .receipt-details p:last-child { border-bottom: none; }
+        .receipt-details .label {
+            color: #888;
+            font-weight: 400;
+        }
+        .receipt-details .value {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .receipt-details .value.amount {
+            color: #dc3545;
+            font-size: 1.1rem;
+        }
+        .qr-url {
+            font-size: 0.7rem;
+            color: #aaa;
+            word-break: break-all;
+            text-align: center;
+            background: #f0f4f8;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        .qr-hint {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.5rem;
+        }
+        .fee-options {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 0.5rem;
+            margin: 1rem 0;
+        }
+        .fee-options label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .fee-options label:hover {
+            background: #f0f4f8;
+            transform: translateX(4px);
+        }
+        .fee-options label:first-child {
+            border-bottom: 1px solid #e8ecf1;
+        }
+        .fee-options input[type="checkbox"] {
+            width: 1.3rem;
+            height: 1.3rem;
+            cursor: pointer;
+            accent-color: #2c7da0;
+            transition: all 0.2s ease;
+        }
+        .fee-options input[type="checkbox"]:hover { transform: scale(1.1); }
+        .fee-options .fee-label {
+            flex: 1;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .fee-options .fee-price {
+            font-weight: 700;
+            color: #dc3545;
+            font-size: 1.1rem;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #2c7da0;
+            font-weight: 500;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .main-content { display: none; }
+        .main-content.visible { display: block; }
+        @media (max-width: 768px) {
+            header { padding: 0.6rem 1rem; gap: 0.8rem; }
+            .header-title { font-size: 1rem; }
+            .header-nav { margin-left: 0; width: 100%; justify-content: center; }
+            .user-info { margin-left: 0; width: 100%; justify-content: center; }
+            .balance-amount { font-size: 2.8rem; }
+            .auth-container { padding: 1.8rem; margin: 1.5rem auto; }
+            .report-tabs { flex-direction: column; padding: 0.3rem; }
+            .tab-btn { padding: 0.6rem; font-size: 0.9rem; }
+            .tab-content { padding: 1.2rem; }
+            .add-panel { flex-direction: column; }
+            .add-panel select, .add-panel input { min-width: unset; }
+            .leaders-table th, .leaders-table td { padding: 0.5rem 0.6rem; font-size: 0.85rem; }
+            .qr-content { padding: 1.5rem; }
+        }
+        @media (max-width: 480px) {
+            .balance-amount { font-size: 2.2rem; }
+            .leaders-title { font-size: 1.1rem; }
+            .qr-content { padding: 1.2rem; }
+            .auth-container { padding: 1.2rem; }
+            .auth-container h2 { font-size: 1.3rem; }
+            .tab-content h2 { font-size: 1.1rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            html { scroll-behavior: auto !important; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-brand">
+            <a href="#" class="header-icon-link">
+                <img src="icon.png" alt="На главную" class="header-icon">
+            </a>
+            <span class="header-title">Отель <span>ДП</span></span>
+        </div>
+        <nav class="header-nav">
+            <a href="#balance-block" class="anchor-link">Баланс</a>
+            <a href="#leaders-block" class="anchor-link">Лидеры</a>
+        </nav>
+        <div class="user-info" id="userInfo" style="display:none;">
+            <span>👤 <span class="user-name" id="userName">—</span></span>
+            <button class="logout-btn" id="logoutBtn">Выйти</button>
+        </div>
+    </header>
+    <main>
+        <div id="authContainer" class="auth-container">
+            <h2>🔐 Вход</h2>
+            <p class="subtitle">Войдите в систему учёта баллов</p>
+            <div id="authError" class="error"></div>
+            <label>Логин</label>
+            <input type="text" id="loginUsername" placeholder="Введите логин">
+            <label>Пароль</label>
+            <input type="password" id="loginPassword" placeholder="Введите пароль">
+            <button class="btn-primary" id="loginBtn">Войти</button>
+            <div class="auth-switch">
+                Нет аккаунта? <a id="showRegister">Зарегистрироваться</a>
+            </div>
+        </div>
+
+        <div id="registerContainer" class="auth-container" style="display:none;">
+            <h2>📝 Регистрация</h2>
+            <p class="subtitle">Создайте новый аккаунт</p>
+            <div id="registerError" class="error"></div>
+            <label>Ваше имя (будет отображаться)</label>
+            <input type="text" id="registerName" placeholder="Иван Петров">
+            <label>Логин (для входа)</label>
+            <input type="text" id="registerUsername" placeholder="Придумайте логин">
+            <label>Пароль</label>
+            <input type="password" id="registerPassword" placeholder="Минимум 4 символа">
+            <label>Подтвердите пароль</label>
+            <input type="password" id="registerPasswordConfirm" placeholder="Повторите пароль">
+            <button class="btn-primary" id="registerBtn">Зарегистрироваться</button>
+            <div class="auth-switch">
+                Уже есть аккаунт? <a id="showLogin">Войти</a>
+            </div>
+        </div>
+
+        <div id="mainContent" class="main-content">
+            <div id="leaders-block" class="leaders-block">
+                <div class="leaders-title">
+                    🏆 Лидеры
+                    <button class="refresh-leaders" id="refreshLeadersBtn" title="Обновить">🔄</button>
+                </div>
+                <div id="leadersContainer">
+                    <div class="loading">Загрузка таблицы лидеров...</div>
+                </div>
+            </div>
+
+            <div id="balance-block" class="balance-block" style="display:none;">
+                <div class="balance-title">💰 Баланс</div>
+                <div class="balance-amount" id="balanceAmount">0 <span class="currency">đᵽ</span></div>
+            </div>
+
+            <div class="report-tabs" id="reportTabs" style="display:none;">
+                <button class="tab-btn active" data-tab="shooting">🎯 Стрельба</button>
+                <button class="tab-btn" data-tab="running">🏃 Бег</button>
+                <button class="tab-btn" data-tab="fees">💰 Взносы</button>
+            </div>
+
+            <div id="shooting" class="tab-content" style="display:none;">
+                <h2>📋 Подать отчёт по стрельбе</h2>
+                <div id="shootingItemsList" class="items-list"><div class="empty-list">Нет добавленных позиций</div></div>
+                <div class="add-panel">
+                    <select id="positionSelect">
+                        <option value="">-- выберите позицию --</option>
+                        <option value="1">1В (1 балл)</option><option value="1">7Н (1 балл)</option>
+                        <option value="1">1Н (1 балл)</option><option value="1">7В (1 балл)</option>
+                        <option value="2">2Н (2 балла)</option><option value="2">6В (2 балла)</option>
+                        <option value="3">6Н (3 балла)</option><option value="3">2В (3 балла)</option>
+                        <option value="4">5В (4 балла)</option><option value="4">3Н (4 балла)</option>
+                        <option value="5">3В (5 баллов)</option><option value="5">5Н (5 баллов)</option>
+                        <option value="6">4В (6 баллов)</option><option value="6">4Н (6 баллов)</option>
+                        <option value="7">8В (7 баллов)</option><option value="7">8Н (7 баллов)</option>
+                    </select>
+                    <input type="number" id="shootingHitsInput" placeholder="Попаданий" min="1" max="99" value="1" step="1">
+                    <button class="btn-add" id="addShootingBtn">Добавить</button>
+                </div>
+                <div id="shootingTotal" class="total-info">Итого: <span class="amount">0 đᵽ</span></div>
+                <div class="hint">За каждое попадание начисляется указанное количество баллов</div>
+                <button class="submit-btn" id="submitShootingBtn">Отправить отчёт</button>
+            </div>
+
+            <div id="running" class="tab-content" style="display:none;">
+                <h2>📋 Подать отчёт о беге</h2>
+                <div id="runningItemsList" class="items-list"><div class="empty-list">Нет добавленных серий</div></div>
+                <div class="add-panel">
+                    <input type="number" id="runningLapsInput" placeholder="Количество кругов" min="1" max="50" step="1">
+                    <button class="btn-add" id="addRunningBtn">Добавить серию</button>
+                </div>
+                <div id="runningTotal" class="total-info">Итого: <span class="amount">0 đᵽ</span></div>
+                <div class="hint">За серию кругов без остановки баллы растут прогрессивно</div>
+                <button class="submit-btn" id="submitRunningBtn">Отправить отчёт</button>
+            </div>
+
+            <div id="fees" class="tab-content" style="display:none;">
+                <h2>💰 Оплатить взносы</h2>
+                <div class="fee-options">
+                    <label>
+                        <input type="checkbox" id="feeTransport" value="5">
+                        <span class="fee-label">Транспорт</span>
+                        <span class="fee-price">5 đᵽ</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" id="feeStay" value="10">
+                        <span class="fee-label">Временное пребывание</span>
+                        <span class="fee-price">10 đᵽ</span>
+                    </label>
+                </div>
+                <div id="feesItemsList" class="items-list">
+                    <div class="empty-list">Нет выбранных взносов</div>
+                </div>
+                <div id="feesTotal" class="total-info fee">Итого к оплате: <span class="amount">0 đᵽ</span></div>
+                <div class="hint">Можно выбрать оба взноса одновременно</div>
+                <button class="submit-btn fee" id="submitFeesBtn">Оплатить отмеченные взносы</button>
+            </div>
+
+            <div id="messageBox" class="message"></div>
+            <div id="loadingIndicator" class="loading" style="display: none;">Загрузка...</div>
+        </div>
+    </main>
+
+    <div id="qrModal" class="qr-modal">
+        <div class="qr-content">
+            <button class="qr-close" id="qrCloseBtn">&times;</button>
+            <div class="qr-title">Квитанция об оплате</div>
+            <div class="qr-subtitle">Временное пребывание</div>
+            <div class="qr-code-container">
+                <div id="qrcode"></div>
+            </div>
+            <div id="receiptDetails" class="receipt-details">
+                <p><span class="label">ФИО:</span> <span class="value" id="receiptName">—</span></p>
+                <p><span class="label">Тип взноса:</span> <span class="value" id="receiptType">—</span></p>
+                <p><span class="label">Сумма:</span> <span class="value amount" id="receiptAmount">—</span></p>
+                <p><span class="label">Дата оплаты:</span> <span class="value" id="receiptDate">—</span></p>
+                <p><span class="label">Номер операции:</span> <span class="value" id="receiptNumber">—</span></p>
+            </div>
+            <div id="qrUrlDisplay" class="qr-url"></div>
+            <div class="qr-hint">📱 Отсканируйте QR-код для просмотра квитанции</div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // НАСТРОЙКИ
+        // ============================================================
+        // GOOGLE_SHEETS_URL и RECEIPT_PAGE из config.js
+
+        const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
+
+        let playerName = localStorage.getItem('playerName') || '';
+        let playerLogin = localStorage.getItem('playerLogin') || '';
+        let currentBalance = 0;
+        let shootingItems = [];
+        let runningItems = [];
+        let qrCodeInstance = null;
+        let authToken = localStorage.getItem('authToken') || '';
+        let isLoggedIn = false;
+
+        // Получаем все элементы с проверкой на существование
+        const balanceSpan = document.getElementById('balanceAmount');
+        const messageBox = document.getElementById('messageBox');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const leadersContainer = document.getElementById('leadersContainer');
+        const qrModal = document.getElementById('qrModal');
+        const qrCodeContainer = document.getElementById('qrcode');
+
+        // --- JSONP ЗАПРОСЫ ---
+        function jsonpRequest(params, callback) {
+            const script = document.createElement('script');
+            const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            
+            window[callbackName] = function(data) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                callback(data);
+            };
+            
+            const url = new URL(GOOGLE_SHEETS_URL);
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+            url.searchParams.append('callback', callbackName);
+            
+            script.src = url.toString();
+            script.onerror = function() {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                callback({ status: 'error', message: 'Ошибка подключения к серверу' });
+            };
+            
+            document.body.appendChild(script);
+        }
+
+        // --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
+        function showAuthError(text) {
+            const el = document.getElementById('authError');
+            if (el) {
+                el.textContent = text;
+                el.className = 'error';
+            }
+        }
+
+        function showRegisterError(text) {
+            const el = document.getElementById('registerError');
+            if (el) {
+                el.textContent = text;
+                el.className = 'error';
+            }
+        }
+
+        function showRegisterSuccess(text) {
+            const el = document.getElementById('registerError');
+            if (el) {
+                el.textContent = text;
+                el.className = 'success';
+            }
+        }
+
+        function showLoading(show) {
+            if (loadingIndicator) {
+                loadingIndicator.style.display = show ? 'block' : 'none';
+            }
+        }
+
+        function showMessage(text, isSuccess = true) {
+            if (!messageBox) return;
+            messageBox.textContent = text;
+            messageBox.className = 'message ' + (isSuccess ? 'success' : 'error');
+            setTimeout(() => {
+                messageBox.className = 'message';
+                messageBox.style.display = 'none';
+                setTimeout(() => {
+                    messageBox.style.display = '';
+                    messageBox.className = 'message';
+                }, 100);
+            }, 3000);
+        }
+
+        function updateBalanceDisplay() {
+            if (balanceSpan) {
+                balanceSpan.innerHTML = currentBalance.toLocaleString('ru-RU') + ' <span class="currency">đᵽ</span>';
+            }
+        }
+
+        function ensurePlayerName() {
+            if (!playerName) {
+                playerName = prompt('Введите ваше имя (будет в таблице лидеров и в квитанции):', 'Игрок');
+                if (!playerName) playerName = 'Аноним';
+                localStorage.setItem('playerName', playerName);
+            }
+            return playerName;
+        }
+
+        function generateOperationNumber() {
+            const now = new Date();
+            const datePart = now.getFullYear().toString().slice(2) +
+                String(now.getMonth() + 1).padStart(2, '0') +
+                String(now.getDate()).padStart(2, '0');
+            const randomPart = String(Math.floor(100000 + Math.random() * 900000));
+            return `DP-${datePart}-${randomPart}`;
+        }
+
+        function getReceiptUrl(operationNumber) {
+            return BASE_URL + RECEIPT_PAGE + '?op=' + encodeURIComponent(operationNumber);
+        }
+
+        function escapeHtml(s) { return s?.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])) || ''; }
+
+        // --- ОТПРАВКА ДАННЫХ (POST через fetch) ---
+        async function sendToSheet(data) {
+            try {
+                await fetch(GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                return true;
+            } catch (e) {
+                console.error('Ошибка отправки:', e);
+                return false;
+            }
+        }
+
+        // --- РЕГИСТРАЦИЯ ---
+        async function register(username, name, password) {
+            try {
+                await sendToSheet({
+                    type: 'register',
+                    username: username,
+                    name: name,
+                    password: password
+                });
+                showRegisterSuccess('Регистрация выполнена! Теперь войдите.');
+                setTimeout(() => {
+                    const registerContainer = document.getElementById('registerContainer');
+                    const authContainer = document.getElementById('authContainer');
+                    if (registerContainer) registerContainer.style.display = 'none';
+                    if (authContainer) authContainer.style.display = 'block';
+                }, 1500);
+                return true;
+            } catch (error) {
+                showRegisterError('Ошибка регистрации');
+                return false;
+            }
+        }
+
+        // --- ВХОД ---
+        function login(username, password) {
+            return new Promise((resolve) => {
+                showLoading(true);
+                jsonpRequest({
+                    action: 'login',
+                    username: username,
+                    password: password
+                }, function(data) {
+                    showLoading(false);
+                    if (data.status === 'success') {
+                        authToken = data.token;
+                        localStorage.setItem('authToken', authToken);
+                        localStorage.setItem('playerName', data.name);
+                        localStorage.setItem('playerLogin', data.username);
+                        playerName = data.name;
+                        playerLogin = data.username;
+                        isLoggedIn = true;
+
+                        const userNameEl = document.getElementById('userName');
+                        const userInfoEl = document.getElementById('userInfo');
+                        const authContainer = document.getElementById('authContainer');
+                        const registerContainer = document.getElementById('registerContainer');
+                        const mainContent = document.getElementById('mainContent');
+                        const balanceBlock = document.getElementById('balance-block');
+                        const reportTabs = document.getElementById('reportTabs');
+
+                        if (userNameEl) userNameEl.textContent = playerName;
+                        if (userInfoEl) userInfoEl.style.display = 'flex';
+                        if (authContainer) authContainer.style.display = 'none';
+                        if (registerContainer) registerContainer.style.display = 'none';
+                        if (mainContent) mainContent.classList.add('visible');
+                        if (balanceBlock) balanceBlock.style.display = 'block';
+                        if (reportTabs) reportTabs.style.display = 'flex';
+                        
+                        document.querySelectorAll('.tab-content').forEach(el => el.style.display = '');
+                        const activeTab = document.querySelector('.tab-content.active');
+                        if (activeTab) activeTab.style.display = 'block';
+
+                        loadBalanceFromSheet(playerName);
+                        showMessage('👋 Добро пожаловать, ' + playerName + '!');
+                        resolve(true);
+                    } else {
+                        showAuthError(data.message || 'Ошибка входа');
+                        resolve(false);
+                    }
+                });
+            });
+        }
+
+        // --- ВЫХОД ---
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('playerName');
+            localStorage.removeItem('playerLogin');
+            authToken = '';
+            playerName = '';
+            playerLogin = '';
+            isLoggedIn = false;
+
+            const userInfoEl = document.getElementById('userInfo');
+            const mainContent = document.getElementById('mainContent');
+            const balanceBlock = document.getElementById('balance-block');
+            const reportTabs = document.getElementById('reportTabs');
+            const authContainer = document.getElementById('authContainer');
+            const registerContainer = document.getElementById('registerContainer');
+
+            if (userInfoEl) userInfoEl.style.display = 'none';
+            if (mainContent) mainContent.classList.remove('visible');
+            if (balanceBlock) balanceBlock.style.display = 'none';
+            if (reportTabs) reportTabs.style.display = 'none';
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            if (authContainer) authContainer.style.display = 'block';
+            if (registerContainer) registerContainer.style.display = 'none';
+
+            currentBalance = 0;
+            updateBalanceDisplay();
+            showMessage('Вы вышли из системы');
+            loadLeaders();
+        }
+
+        // --- ПРОВЕРКА АВТОРИЗАЦИИ ---
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                const name = localStorage.getItem('playerName') || 'Пользователь';
+                const login = localStorage.getItem('playerLogin') || '';
+                playerName = name;
+                playerLogin = login;
+                isLoggedIn = true;
+
+                const userNameEl = document.getElementById('userName');
+                const userInfoEl = document.getElementById('userInfo');
+                const authContainer = document.getElementById('authContainer');
+                const registerContainer = document.getElementById('registerContainer');
+                const mainContent = document.getElementById('mainContent');
+                const balanceBlock = document.getElementById('balance-block');
+                const reportTabs = document.getElementById('reportTabs');
+
+                if (userNameEl) userNameEl.textContent = playerName;
+                if (userInfoEl) userInfoEl.style.display = 'flex';
+                if (authContainer) authContainer.style.display = 'none';
+                if (registerContainer) registerContainer.style.display = 'none';
+                if (mainContent) mainContent.classList.add('visible');
+                if (balanceBlock) balanceBlock.style.display = 'block';
+                if (reportTabs) reportTabs.style.display = 'flex';
+                
+                document.querySelectorAll('.tab-content').forEach(el => el.style.display = '');
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab) activeTab.style.display = 'block';
+
+                loadBalanceFromSheet(playerName);
+                loadLeaders();
+                return true;
+            }
+            return false;
+        }
+
+        // --- ЗАГРУЗКА ЛИДЕРОВ ---
+        function loadLeaders() {
+            showLoading(true);
+            jsonpRequest({
+                action: 'getLeaders',
+                limit: 3
+            }, function(data) {
+                showLoading(false);
+                if (leadersContainer) {
+                    if (data.status === 'success' && Array.isArray(data.leaders)) {
+                        leadersContainer.innerHTML = renderLeadersTable(data.leaders);
+                    } else {
+                        leadersContainer.innerHTML = '<div class="empty-list">Пока нет участников</div>';
+                    }
+                }
+            });
+        }
+
+        function renderLeadersTable(leaders) {
+            if (!leaders.length) return '<div class="empty-list">Пока нет участников</div>';
+            let html = `<table class="leaders-table"><thead><tr><th>#</th><th>Игрок</th><th style="text-align:right;">Баллы</th></tr></thead><tbody>`;
+            leaders.forEach((l, idx) => {
+                const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
+                const isMe = l.name === playerName && isLoggedIn;
+                html += `<tr class="${isMe ? 'current-user-row' : ''} ${idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : 'rank-3'}">
+                    <td class="rank-badge">${medal}</td>
+                    <td class="player-name">${escapeHtml(l.name)}${isMe ? ' 👈' : ''}</td>
+                    <td class="player-balance">${l.balance.toLocaleString()} đᵽ</td>
+                </tr>`;
+            });
+            html += `</tbody></table>`;
+            return html;
+        }
+
+        // --- ЗАГРУЗКА БАЛАНСА ---
+        function loadBalanceFromSheet(player) {
+            if (!player) {
+                console.warn('Игрок не указан для загрузки баланса');
+                return;
+            }
+            showLoading(true);
+            jsonpRequest({
+                action: 'getBalance',
+                player: player
+            }, function(data) {
+                showLoading(false);
+                if (data.status === 'success' && typeof data.balance === 'number') {
+                    currentBalance = data.balance;
+                    updateBalanceDisplay();
+                    console.log('✅ Баланс загружен:', currentBalance);
+                } else {
+                    console.warn('⚠️ Баланс не загружен:', data.message || 'Неизвестная ошибка');
+                }
+            });
+        }
+
+        // --- СОХРАНЕНИЕ ОТЧЁТА ---
+        async function saveReportToSheet(reportData) {
+            try {
+                await sendToSheet(reportData);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // --- СОХРАНЕНИЕ КВИТАНЦИИ ---
+        async function saveReceiptToSheet(operationNumber, receiptData) {
+            try {
+                await sendToSheet({
+                    type: 'receipt',
+                    operation: operationNumber,
+                    player: receiptData.name,
+                    details: receiptData.type,
+                    earned: -receiptData.amount,
+                    balance: currentBalance,
+                    receiptData: JSON.stringify(receiptData)
+                });
+                localStorage.setItem('receipt_' + operationNumber, JSON.stringify(receiptData));
+                console.log('Квитанция сохранена:', operationNumber);
+            } catch (e) {
+                console.error('Ошибка сохранения квитанции:', e);
+            }
+        }
+
+        // --- QR-КОД ---
+        function showQRModal(receiptData, operationNumber) {
+            const receiptUrl = getReceiptUrl(operationNumber);
+            saveReceiptToSheet(operationNumber, receiptData);
+
+            const nameEl = document.getElementById('receiptName');
+            const typeEl = document.getElementById('receiptType');
+            const amountEl = document.getElementById('receiptAmount');
+            const dateEl = document.getElementById('receiptDate');
+            const numberEl = document.getElementById('receiptNumber');
+            const urlEl = document.getElementById('qrUrlDisplay');
+
+            if (nameEl) nameEl.textContent = receiptData.name;
+            if (typeEl) typeEl.textContent = receiptData.type;
+            if (amountEl) amountEl.textContent = receiptData.amount + ' đᵽ';
+            if (dateEl) dateEl.textContent = receiptData.date;
+            if (numberEl) numberEl.textContent = receiptData.operationNumber;
+            if (urlEl) urlEl.textContent = '🔗 ' + receiptUrl;
+
+            if (qrCodeContainer) {
+                qrCodeContainer.innerHTML = '';
+                qrCodeInstance = new QRCode(qrCodeContainer, {
+                    text: receiptUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#1a1a2e',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+
+            if (qrModal) qrModal.classList.add('open');
+        }
+
+        function closeQRModal() {
+            if (qrModal) qrModal.classList.remove('open');
+            if (qrCodeInstance) {
+                qrCodeInstance.clear();
+                if (qrCodeContainer) qrCodeContainer.innerHTML = '';
+                qrCodeInstance = null;
+            }
+        }
+
+        const closeBtn = document.getElementById('qrCloseBtn');
+        if (closeBtn) closeBtn.addEventListener('click', closeQRModal);
+        if (qrModal) {
+            qrModal.addEventListener('click', (e) => {
+                if (e.target === qrModal) closeQRModal();
+            });
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && qrModal && qrModal.classList.contains('open')) closeQRModal();
+        });
+
+        // --- СТРЕЛЬБА ---
+        function updateShootingUI() {
+            const listDiv = document.getElementById('shootingItemsList');
+            const totalDiv = document.getElementById('shootingTotal');
+            if (!shootingItems.length) {
+                if (listDiv) listDiv.innerHTML = '<div class="empty-list">Нет добавленных позиций</div>';
+                if (totalDiv) totalDiv.innerHTML = 'Итого: <span class="amount">0 đᵽ</span>';
+                return;
+            }
+            let total = 0;
+            let html = '';
+            shootingItems.forEach((item, i) => {
+                const itemTotal = item.rewardPerHit * item.hits;
+                total += itemTotal;
+                html += `<div class="item-entry">
+                    <div class="item-info">🎯 ${item.name}</div>
+                    <div class="item-reward">${item.hits}×${item.rewardPerHit} = ${itemTotal} đᵽ</div>
+                    <button class="remove-item" data-index="${i}">✖</button>
+                </div>`;
+            });
+            if (listDiv) listDiv.innerHTML = html;
+            if (totalDiv) totalDiv.innerHTML = `Итого: <span class="amount">${total} đᵽ</span>`;
+            document.querySelectorAll('#shootingItemsList .remove-item').forEach(btn =>
+                btn.addEventListener('click', e => {
+                    shootingItems.splice(parseInt(btn.dataset.index), 1);
+                    updateShootingUI();
+                })
+            );
+        }
+
+        function addShootingItem() {
+            const sel = document.getElementById('positionSelect');
+            const val = parseInt(sel?.value);
+            if (!val) { showMessage('Выберите позицию', false); return; }
+            let hits = parseInt(document.getElementById('shootingHitsInput')?.value);
+            if (isNaN(hits) || hits < 1) hits = 1;
+            shootingItems.push({ name: sel.options[sel.selectedIndex].text, rewardPerHit: val, hits });
+            updateShootingUI();
+            if (sel) sel.value = '';
+            const input = document.getElementById('shootingHitsInput');
+            if (input) input.value = '1';
+        }
+
+        async function submitShootingReport() {
+            if (!shootingItems.length) { showMessage('Добавьте позиции', false); return; }
+            const player = ensurePlayerName();
+            const earned = shootingItems.reduce((s, i) => s + i.rewardPerHit * i.hits, 0);
+            const newBalance = currentBalance + earned;
+            const details = shootingItems.map(i => `${i.name} (${i.hits}×${i.rewardPerHit})`).join(', ');
+
+            await saveReportToSheet({ player, type: 'shooting', details, earned, balance: newBalance });
+
+            currentBalance = newBalance;
+            updateBalanceDisplay();
+            showMessage('+' + earned + ' đᵽ. Баланс: ' + currentBalance + ' đᵽ');
+            shootingItems = [];
+            updateShootingUI();
+            loadLeaders();
+        }
+
+        // --- БЕГ ---
+        function calcRunReward(laps) { return 5 * laps * (laps + 1) / 2; }
+
+        function updateRunningUI() {
+            const listDiv = document.getElementById('runningItemsList');
+            const totalDiv = document.getElementById('runningTotal');
+            if (!runningItems.length) {
+                if (listDiv) listDiv.innerHTML = '<div class="empty-list">Нет добавленных серий</div>';
+                if (totalDiv) totalDiv.innerHTML = 'Итого: <span class="amount">0 đᵽ</span>';
+                return;
+            }
+            let total = 0;
+            let html = '';
+            runningItems.forEach((item, i) => {
+                total += item.reward;
+                html += `<div class="item-entry">
+                    <div class="item-info">🏃 ${item.laps} круг(ов) без остановки</div>
+                    <div class="item-reward">${item.reward} đᵽ</div>
+                    <button class="remove-item" data-index="${i}">✖</button>
+                </div>`;
+            });
+            if (listDiv) listDiv.innerHTML = html;
+            if (totalDiv) totalDiv.innerHTML = `Итого: <span class="amount">${total} đᵽ</span>`;
+            document.querySelectorAll('#runningItemsList .remove-item').forEach(btn =>
+                btn.addEventListener('click', e => {
+                    runningItems.splice(parseInt(btn.dataset.index), 1);
+                    updateRunningUI();
+                })
+            );
+        }
+
+        function addRunningItem() {
+            let laps = parseInt(document.getElementById('runningLapsInput')?.value);
+            if (isNaN(laps) || laps < 1) { showMessage('Введите количество кругов', false); return; }
+            runningItems.push({ laps, reward: calcRunReward(laps) });
+            updateRunningUI();
+            const input = document.getElementById('runningLapsInput');
+            if (input) input.value = '';
+        }
+
+        async function submitRunningReport() {
+            if (!runningItems.length) { showMessage('Добавьте серии', false); return; }
+            const player = ensurePlayerName();
+            const earned = runningItems.reduce((s, i) => s + i.reward, 0);
+            const newBalance = currentBalance + earned;
+            const details = runningItems.map(i => `${i.laps}к (${i.reward}б)`).join(' + ');
+
+            await saveReportToSheet({ player, type: 'running', details, earned, balance: newBalance });
+
+            currentBalance = newBalance;
+            updateBalanceDisplay();
+            showMessage('+' + earned + ' đᵽ. Баланс: ' + currentBalance + ' đᵽ');
+            runningItems = [];
+            updateRunningUI();
+            loadLeaders();
+        }
+
+        // --- ВЗНОСЫ ---
+        function updateFeesUI() {
+            const transportChecked = document.getElementById('feeTransport')?.checked || false;
+            const stayChecked = document.getElementById('feeStay')?.checked || false;
+            const total = (transportChecked ? 5 : 0) + (stayChecked ? 10 : 0);
+            const feesTotal = document.getElementById('feesTotal');
+            if (feesTotal) feesTotal.innerHTML = `Итого к оплате: <span class="amount">${total} đᵽ</span>`;
+
+            const listDiv = document.getElementById('feesItemsList');
+            if (!transportChecked && !stayChecked) {
+                if (listDiv) listDiv.innerHTML = '<div class="empty-list">Нет выбранных взносов</div>';
+                return;
+            }
+            let html = '';
+            if (transportChecked) html +=
+                `<div class="item-entry"><div class="item-info">Транспорт</div><div class="item-reward">5 đᵽ</div></div>`;
+            if (stayChecked) html +=
+                `<div class="item-entry"><div class="item-info">Временное пребывание</div><div class="item-reward">10 đᵽ</div></div>`;
+            if (listDiv) listDiv.innerHTML = html;
+        }
+
+        async function submitFees() {
+            const transportChecked = document.getElementById('feeTransport')?.checked || false;
+            const stayChecked = document.getElementById('feeStay')?.checked || false;
+            if (!transportChecked && !stayChecked) { showMessage('Выберите хотя бы один взнос', false); return; }
+
+            const totalFee = (transportChecked ? 5 : 0) + (stayChecked ? 10 : 0);
+            if (currentBalance < totalFee) {
+                showMessage('Не хватает баллов! Нужно ' + totalFee + ' đᵽ, есть ' + currentBalance + ' đᵽ', false);
+                return;
+            }
+
+            const player = ensurePlayerName();
+            const newBalance = currentBalance - totalFee;
+            const operationNumber = generateOperationNumber();
+            const details = [];
+            let stayPaid = false;
+
+            if (transportChecked) details.push('Транспорт');
+            if (stayChecked) {
+                details.push('Временное пребывание');
+                stayPaid = true;
+            }
+            const detailsStr = details.join(', ');
+
+            await saveReportToSheet({
+                player,
+                type: 'fee',
+                details: detailsStr,
+                earned: -totalFee,
+                balance: newBalance,
+                operation: operationNumber
+            });
+
+            currentBalance = newBalance;
+            updateBalanceDisplay();
+
+            if (stayPaid) {
+                const now = new Date();
+                const receiptData = {
+                    name: player,
+                    type: 'Временное пребывание' + (transportChecked ? ' + Транспорт' : ''),
+                    amount: totalFee,
+                    date: now.toLocaleString('ru-RU', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                    operationNumber: operationNumber
+                };
+                showQRModal(receiptData, operationNumber);
+                showMessage('Оплачено: ' + detailsStr + ' = -' + totalFee + ' đᵽ. Квитанция сгенерирована!');
+            } else {
+                showMessage('Оплачено: ' + detailsStr + ' = -' + totalFee + ' đᵽ. Баланс: ' + currentBalance + ' đᵽ');
+            }
+
+            const transportCheck = document.getElementById('feeTransport');
+            const stayCheck = document.getElementById('feeStay');
+            if (transportCheck) transportCheck.checked = false;
+            if (stayCheck) stayCheck.checked = false;
+            updateFeesUI();
+            loadLeaders();
+        }
+
+        // --- ОБРАБОТЧИКИ ---
+        const addShootingBtn = document.getElementById('addShootingBtn');
+        if (addShootingBtn) addShootingBtn.onclick = addShootingItem;
+        
+        const submitShootingBtn = document.getElementById('submitShootingBtn');
+        if (submitShootingBtn) submitShootingBtn.onclick = submitShootingReport;
+        
+        const addRunningBtn = document.getElementById('addRunningBtn');
+        if (addRunningBtn) addRunningBtn.onclick = addRunningItem;
+        
+        const submitRunningBtn = document.getElementById('submitRunningBtn');
+        if (submitRunningBtn) submitRunningBtn.onclick = submitRunningReport;
+        
+        const submitFeesBtn = document.getElementById('submitFeesBtn');
+        if (submitFeesBtn) submitFeesBtn.onclick = submitFees;
+        
+        const feeTransport = document.getElementById('feeTransport');
+        if (feeTransport) feeTransport.onchange = updateFeesUI;
+        
+        const feeStay = document.getElementById('feeStay');
+        if (feeStay) feeStay.onchange = updateFeesUI;
+        
+        const refreshBtn = document.getElementById('refreshLeadersBtn');
+        if (refreshBtn) refreshBtn.onclick = () => loadLeaders();
+
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        tabs.forEach(btn => btn.onclick = () => {
+            const id = btn.dataset.tab;
+            tabs.forEach(b => b.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            const content = document.getElementById(id);
+            if (content) content.classList.add('active');
+        });
+
+        // --- АВТОРИЗАЦИЯ: Обработчики ---
+        const loginBtn = document.getElementById('loginBtn');
+        if (loginBtn) {
+            loginBtn.onclick = async () => {
+                const username = document.getElementById('loginUsername')?.value.trim() || '';
+                const password = document.getElementById('loginPassword')?.value.trim() || '';
+                if (!username || !password) {
+                    showAuthError('Заполните все поля');
+                    return;
+                }
+                await login(username, password);
+            };
+        }
+
+        const loginUsername = document.getElementById('loginUsername');
+        if (loginUsername) {
+            loginUsername.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const btn = document.getElementById('loginBtn');
+                    if (btn) btn.click();
+                }
+            });
+        }
+
+        const loginPassword = document.getElementById('loginPassword');
+        if (loginPassword) {
+            loginPassword.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const btn = document.getElementById('loginBtn');
+                    if (btn) btn.click();
+                }
+            });
+        }
+
+        const showRegisterLink = document.getElementById('showRegister');
+        if (showRegisterLink) {
+            showRegisterLink.onclick = () => {
+                const authContainer = document.getElementById('authContainer');
+                const registerContainer = document.getElementById('registerContainer');
+                const authError = document.getElementById('authError');
+                const registerError = document.getElementById('registerError');
+                if (authContainer) authContainer.style.display = 'none';
+                if (registerContainer) registerContainer.style.display = 'block';
+                if (authError) authError.textContent = '';
+                if (registerError) {
+                    registerError.textContent = '';
+                    registerError.className = 'error';
+                }
+            };
+        }
+
+        const showLoginLink = document.getElementById('showLogin');
+        if (showLoginLink) {
+            showLoginLink.onclick = () => {
+                const authContainer = document.getElementById('authContainer');
+                const registerContainer = document.getElementById('registerContainer');
+                const authError = document.getElementById('authError');
+                const registerError = document.getElementById('registerError');
+                if (registerContainer) registerContainer.style.display = 'none';
+                if (authContainer) authContainer.style.display = 'block';
+                if (authError) authError.textContent = '';
+                if (registerError) {
+                    registerError.textContent = '';
+                    registerError.className = 'error';
+                }
+            };
+        }
+
+        const registerBtn = document.getElementById('registerBtn');
+        if (registerBtn) {
+            registerBtn.onclick = async () => {
+                const username = document.getElementById('registerUsername')?.value.trim() || '';
+                const name = document.getElementById('registerName')?.value.trim() || '';
+                const password = document.getElementById('registerPassword')?.value.trim() || '';
+                const confirm = document.getElementById('registerPasswordConfirm')?.value.trim() || '';
+
+                if (!username || !name || !password || !confirm) {
+                    showRegisterError('Заполните все поля');
+                    return;
+                }
+                if (password !== confirm) {
+                    showRegisterError('Пароли не совпадают');
+                    return;
+                }
+                if (password.length < 4) {
+                    showRegisterError('Пароль должен быть не менее 4 символов');
+                    return;
+                }
+                if (username.length < 3) {
+                    showRegisterError('Логин должен быть не менее 3 символов');
+                    return;
+                }
+                await register(username, name, password);
+            };
+        }
+
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) logoutBtn.onclick = logout;
+
+        // --- ИНИЦИАЛИЗАЦИЯ ---
+        loadLeaders();
+        if (!checkAuth()) {
+            const authContainer = document.getElementById('authContainer');
+            if (authContainer) authContainer.style.display = 'block';
+        }
+        updateFeesUI();
+    </script>
+</body>
+</html>
