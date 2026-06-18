@@ -158,7 +158,79 @@
         #balance-block,
         #leaders-block {
             scroll-margin-top: 80px;
-            /* Высота шапки + отступ */
+        }
+
+        /* ===== СКЕЛЕТОН ДЛЯ БАЛАНСА ===== */
+        .balance-block.loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-block.loading .balance-title,
+        .balance-block.loading .balance-amount {
+            opacity: 0.5;
+        }
+
+        .balance-block.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 300%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.15) 25%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0.15) 75%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmer 1.8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-30%);
+            }
+            100% {
+                transform: translateX(30%);
+            }
+        }
+
+        /* Альтернативный пульсирующий градиент */
+        .balance-block.pulse-loading {
+            background: linear-gradient(135deg, #1a5276, #2c7da0, #1a5276);
+            background-size: 200% 200%;
+            animation: pulseGradient 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .balance-block.pulse-loading .balance-title,
+        .balance-block.pulse-loading .balance-amount {
+            animation: textPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes textPulse {
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
         }
 
         /* ===== АВТОРИЗАЦИЯ ===== */
@@ -1098,7 +1170,6 @@
             #balance-block,
             #leaders-block {
                 scroll-margin-top: 120px;
-                /* Больше отступ на мобильных */
             }
         }
 
@@ -1127,7 +1198,6 @@
             }
         }
 
-        /* ===== УЧЁТ ПРЕДПОЧТЕНИЙ ДВИЖЕНИЯ ===== */
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
@@ -1160,7 +1230,9 @@
             <button class="logout-btn" id="logoutBtn">Выйти</button>
         </div>
     </header>
+
     <main>
+        <!-- АВТОРИЗАЦИЯ -->
         <div id="authContainer" class="auth-container">
             <h2>🔐 Вход</h2>
             <p class="subtitle">Войдите в систему учёта баллов</p>
@@ -1175,6 +1247,7 @@
             </div>
         </div>
 
+        <!-- РЕГИСТРАЦИЯ -->
         <div id="registerContainer" class="auth-container" style="display:none;">
             <h2>📝 Регистрация</h2>
             <p class="subtitle">Создайте новый аккаунт</p>
@@ -1193,7 +1266,9 @@
             </div>
         </div>
 
+        <!-- ОСНОВНОЙ КОНТЕНТ -->
         <div id="mainContent" class="main-content">
+            <!-- ЛИДЕРЫ -->
             <div id="leaders-block" class="leaders-block">
                 <div class="leaders-title">
                     🏆 Лидеры
@@ -1204,18 +1279,24 @@
                 </div>
             </div>
 
+            <!-- БАЛАНС -->
             <div id="balance-block" class="balance-block" style="display:none;">
                 <div class="balance-title">💰 Баланс</div>
-                <div class="balance-amount" id="balanceAmount">0 <span class="currency">đᵽ</span></div>
+                <div class="balance-amount" id="balanceAmount">
+                    <span id="balanceValue">0</span>
+                    <span class="currency">đᵽ</span>
+                </div>
             </div>
 
+            <!-- ВКЛАДКИ -->
             <div class="report-tabs" id="reportTabs" style="display:none;">
                 <button class="tab-btn active" data-tab="shooting">🎯 Стрельба</button>
                 <button class="tab-btn" data-tab="running">🏃 Бег</button>
                 <button class="tab-btn" data-tab="fees">💰 Взносы</button>
             </div>
 
-            <div id="shooting" class="tab-content active" style="display:block;">
+            <!-- СТРЕЛЬБА -->
+            <div id="shooting" class="tab-content active">
                 <h2>📋 Подать отчёт по стрельбе</h2>
                 <div id="shootingItemsList" class="items-list"><div class="empty-list">Нет добавленных позиций</div></div>
                 <div class="add-panel">
@@ -1238,7 +1319,8 @@
                 <button class="submit-btn" id="submitShootingBtn">Отправить отчёт</button>
             </div>
 
-            <div id="running" class="tab-content" style="display:none;">
+            <!-- БЕГ -->
+            <div id="running" class="tab-content">
                 <h2>📋 Подать отчёт о беге</h2>
                 <div id="runningItemsList" class="items-list"><div class="empty-list">Нет добавленных серий</div></div>
                 <div class="add-panel">
@@ -1250,7 +1332,8 @@
                 <button class="submit-btn" id="submitRunningBtn">Отправить отчёт</button>
             </div>
 
-            <div id="fees" class="tab-content" style="display:none;">
+            <!-- ВЗНОСЫ -->
+            <div id="fees" class="tab-content">
                 <h2>💰 Оплатить взносы</h2>
                 <div class="fee-options">
                     <label>
@@ -1277,6 +1360,7 @@
         </div>
     </main>
 
+    <!-- QR-МОДАЛ -->
     <div id="qrModal" class="qr-modal">
         <div class="qr-content">
             <button class="qr-close" id="qrCloseBtn">&times;</button>
@@ -1316,6 +1400,7 @@
 
         // Получаем все элементы с проверкой на существование
         const balanceSpan = document.getElementById('balanceAmount');
+        const balanceValue = document.getElementById('balanceValue');
         const messageBox = document.getElementById('messageBox');
         const loadingIndicator = document.getElementById('loadingIndicator');
         const leadersContainer = document.getElementById('leadersContainer');
@@ -1393,8 +1478,8 @@
         }
 
         function updateBalanceDisplay() {
-            if (balanceSpan) {
-                balanceSpan.innerHTML = currentBalance.toLocaleString('ru-RU') + ' <span class="currency">đᵽ</span>';
+            if (balanceValue) {
+                balanceValue.textContent = currentBalance.toLocaleString('ru-RU');
             }
         }
 
@@ -1496,7 +1581,7 @@
                         if (balanceBlock) balanceBlock.style.display = 'block';
                         if (reportTabs) reportTabs.style.display = 'flex';
 
-                        document.querySelectorAll('.tab-content').forEach(el => el.style.display = '');
+                        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
                         const activeTab = document.querySelector('.tab-content.active');
                         if (activeTab) activeTab.style.display = 'block';
 
@@ -1568,7 +1653,7 @@
                 if (balanceBlock) balanceBlock.style.display = 'block';
                 if (reportTabs) reportTabs.style.display = 'flex';
 
-                document.querySelectorAll('.tab-content').forEach(el => el.style.display = '');
+                document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
                 const activeTab = document.querySelector('.tab-content.active');
                 if (activeTab) activeTab.style.display = 'block';
 
@@ -1613,18 +1698,30 @@
             return html;
         }
 
-        // --- ЗАГРУЗКА БАЛАНСА ---
+        // --- ЗАГРУЗКА БАЛАНСА (С СКЕЛЕТОНОМ) ---
         function loadBalanceFromSheet(player) {
             if (!player) {
                 console.warn('Игрок не указан для загрузки баланса');
                 return;
             }
+
+            const balanceBlock = document.getElementById('balance-block');
+            // Показываем скелетон
+            if (balanceBlock) {
+                balanceBlock.classList.add('loading');
+            }
+
             showLoading(true);
             jsonpRequest({
                 action: 'getBalance',
                 player: player
             }, function(data) {
                 showLoading(false);
+                // Убираем скелетон
+                if (balanceBlock) {
+                    balanceBlock.classList.remove('loading', 'pulse-loading');
+                }
+
                 if (data.status === 'success' && typeof data.balance === 'number') {
                     currentBalance = data.balance;
                     updateBalanceDisplay();
@@ -1946,15 +2043,32 @@
         const refreshBtn = document.getElementById('refreshLeadersBtn');
         if (refreshBtn) refreshBtn.onclick = () => loadLeaders();
 
+        // Переключение вкладок
         const tabs = document.querySelectorAll('.tab-btn');
         const contents = document.querySelectorAll('.tab-content');
-        tabs.forEach(btn => btn.onclick = () => {
-            const id = btn.dataset.tab;
-            tabs.forEach(b => b.classList.remove('active'));
-            contents.forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            const content = document.getElementById(id);
-            if (content) content.classList.add('active');
+        tabs.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+
+                // Убираем активный класс у всех вкладок
+                tabs.forEach(b => b.classList.remove('active'));
+
+                // Добавляем активный класс текущей вкладке
+                this.classList.add('active');
+
+                // Скрываем все контенты
+                contents.forEach(c => {
+                    c.classList.remove('active');
+                    c.style.display = 'none';
+                });
+
+                // Показываем нужный контент
+                const targetContent = document.getElementById(tabId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                    targetContent.style.display = 'block';
+                }
+            });
         });
 
         // --- АВТОРИЗАЦИЯ: Обработчики ---
