@@ -1547,6 +1547,7 @@
         }
 
         // --- ВХОД ---
+        // --- ВХОД ---
         function login(username, password) {
             return new Promise((resolve) => {
                 showLoading(true);
@@ -1564,7 +1565,11 @@
                         playerName = data.name;
                         playerLogin = data.username;
                         isLoggedIn = true;
-
+        
+                        // Устанавливаем баланс из ответа
+                        currentBalance = data.balance || 0;
+                        updateBalanceDisplay();
+        
                         const userNameEl = document.getElementById('userName');
                         const userInfoEl = document.getElementById('userInfo');
                         const authContainer = document.getElementById('authContainer');
@@ -1572,7 +1577,7 @@
                         const mainContent = document.getElementById('mainContent');
                         const balanceBlock = document.getElementById('balance-block');
                         const reportTabs = document.getElementById('reportTabs');
-
+        
                         if (userNameEl) userNameEl.textContent = playerName;
                         if (userInfoEl) userInfoEl.style.display = 'flex';
                         if (authContainer) authContainer.style.display = 'none';
@@ -1580,12 +1585,16 @@
                         if (mainContent) mainContent.classList.add('visible');
                         if (balanceBlock) balanceBlock.style.display = 'block';
                         if (reportTabs) reportTabs.style.display = 'flex';
-
+        
                         document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
                         const activeTab = document.querySelector('.tab-content.active');
                         if (activeTab) activeTab.style.display = 'block';
-
-                        loadBalanceFromSheet(playerName);
+        
+                        // Убираем скелетон, если был
+                        if (balanceBlock) {
+                            balanceBlock.classList.remove('loading', 'pulse-loading');
+                        }
+        
                         showMessage('👋 Добро пожаловать, ' + playerName + '!');
                         resolve(true);
                     } else {
@@ -1699,29 +1708,28 @@
         }
 
         // --- ЗАГРУЗКА БАЛАНСА (С СКЕЛЕТОНОМ) ---
+        // --- ЗАГРУЗКА БАЛАНСА (из листа "Пользователи") ---
         function loadBalanceFromSheet(player) {
             if (!player) {
                 console.warn('Игрок не указан для загрузки баланса');
                 return;
             }
-
+        
             const balanceBlock = document.getElementById('balance-block');
-            // Показываем скелетон
             if (balanceBlock) {
                 balanceBlock.classList.add('loading');
             }
-
+        
             showLoading(true);
             jsonpRequest({
                 action: 'getBalance',
                 player: player
             }, function(data) {
                 showLoading(false);
-                // Убираем скелетон
                 if (balanceBlock) {
                     balanceBlock.classList.remove('loading', 'pulse-loading');
                 }
-
+        
                 if (data.status === 'success' && typeof data.balance === 'number') {
                     currentBalance = data.balance;
                     updateBalanceDisplay();
