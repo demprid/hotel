@@ -1742,17 +1742,16 @@
             }
         }
 
-        // --- СОХРАНЕНИЕ КВИТАНЦИИ ---
+        // --- СОХРАНЕНИЕ КВИТАНЦИИ (тип "Ч") ---
         async function saveReceiptToSheet(operationNumber, receiptData) {
             try {
                 await sendToSheet({
-                    type: 'receipt',
+                    type: 'Ч',  // ← тип "Ч" (Чек)
                     operation: operationNumber,
                     player: receiptData.name,
                     details: receiptData.type,
                     earned: -receiptData.amount,
-                    balance: currentBalance,
-                    receiptData: JSON.stringify(receiptData)
+                    balance: currentBalance
                 });
                 localStorage.setItem('receipt_' + operationNumber, JSON.stringify(receiptData));
                 console.log('Квитанция сохранена:', operationNumber);
