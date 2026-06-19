@@ -3,7 +3,7 @@
 // ============================================================
 
 // URL вашего веб-приложения Google Apps Script
-const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyBkeJ26f08evVgHNirgLBplrR39-1tOahieVQwgsAsuQglE8d5MAUwiw4pC2DNJumRiA/exec';
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzAyfDWBIZJTjtbh84aF9b2GlqI6jMCMObHymkSf2nwlEmznT-IIqpur9EXMlGiEuesEg/exec';
 
 // Название страницы квитанции (не меняйте, если не переименовывали файл)
 const RECEIPT_PAGE = 'receipt.html';
