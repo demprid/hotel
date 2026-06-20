@@ -1842,6 +1842,7 @@
         }
 
         // --- ПРОВЕРКА АВТОРИЗАЦИИ ---
+        // --- ПРОВЕРКА АВТОРИЗАЦИИ ---
         function checkAuth() {
             const token = localStorage.getItem('authToken');
             if (token) {
@@ -1871,7 +1872,8 @@
                 const activeTab = document.querySelector('.tab-content.active');
                 if (activeTab) activeTab.style.display = 'block';
 
-                loadBalanceFromSheet(playerName);
+                // ✅ ПЕРЕДАЁМ ТОКЕН В loadBalanceFromSheet
+                loadBalanceFromSheet(playerName, token);
                 loadLeaders();
                 return true;
             }
@@ -1912,10 +1914,17 @@
             return html;
         }
 
-        // --- ЗАГРУЗКА БАЛАНСА (С СКЕЛЕТОНОМ) ---
-        function loadBalanceFromSheet(player) {
+        // --- ЗАГРУЗКА БАЛАНСА (С СКЕЛЕТОНОМ И ТОКЕНОМ) ---
+        function loadBalanceFromSheet(player, token) {
             if (!player) {
                 console.warn('Игрок не указан для загрузки баланса');
+                return;
+            }
+
+            // Если токен не передан, берём из localStorage
+            const authToken = token || localStorage.getItem('authToken');
+            if (!authToken) {
+                console.warn('Токен не найден, баланс не загружен');
                 return;
             }
 
@@ -1928,7 +1937,7 @@
             jsonpRequest({
                 action: 'getBalance',
                 player: player,
-                token: authToken
+                token: authToken  // ← обязательно передаём токен
             }, function(data) {
                 showLoading(false);
                 if (balanceBlock) {
@@ -1941,6 +1950,9 @@
                     console.log('✅ Баланс загружен:', currentBalance);
                 } else {
                     console.warn('⚠️ Баланс не загружен:', data.message || 'Неизвестная ошибка');
+                    // Показываем 0, если баланс не загружен
+                    currentBalance = 0;
+                    updateBalanceDisplay();
                 }
             });
         }
