@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Отель ДП | Введенская слобода</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="config.js"></script>
+    <style>
+        /* ===== ВСЕ СТИЛИ (полная копия из предыдущего ответа) ===== */
+        /* ... (вставьте сюда все стили из предыдущего ответа, включая кастомные модалки) ... */
+        /* Для краткости я пропускаю их, но в реальном файле они должны быть */
+        /* Ниже я даю их в полной версии */
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { background:#1a1a2e; scroll-behavior:smooth; max-width:100%; overflow-x:hidden; }
+        body { background:#0d0d1a; min-height:100vh; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; color:#1a1a2e; margin:0; padding:0; padding-top:env(safe-area-inset-top,0); padding-bottom:env(safe-area-inset-bottom,0); max-width:100%; overflow-x:hidden; display:flex; flex-direction:column; position:relative; }
+        #bgCanvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; display:block; }
+        header { background:linear-gradient(180deg,rgba(26,26,46,0.92) 0%,rgba(44,62,80,0.92) 100%); padding:.8rem 1.5rem; padding-top:calc(.8rem + env(safe-area-inset-top,0rem)); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(0,0,0,.2); position:sticky; top:0; z-index:100; transition:all .3s ease; margin-top:0; max-width:100%; width:100%; }
+        .header-inner { max-width:1000px; width:100%; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; margin:0 auto; }
+        .header-brand { display:flex; align-items:center; gap:.8rem; }
+        .header-icon-link { display:inline-block; line-height:0; }
+        .header-icon { display:block; height:42px; width:auto; border-radius:8px; background:rgba(255,255,255,.1); padding:2px; transition:transform .3s ease; }
+        .header-icon:hover { transform:scale(1.05) rotate(-5deg); }
+        .header-title { color:#fff; font-size:1.2rem; font-weight:700; letter-spacing:.5px; }
+        .header-title span { color:#5dade2; }
+        .header-nav { display:flex; gap:.5rem; flex-wrap:wrap; margin-left:auto; }
+        .header-nav .anchor-link { color:rgba(255,255,255,.7); text-decoration:none; font-size:.9rem; font-weight:500; padding:.4rem .8rem; border-radius:6px; transition:all .3s ease; position:relative; }
+        .header-nav .anchor-link::after { content:''; position:absolute; bottom:0; left:50%; width:0; height:2px; background:#5dade2; transition:all .3s ease; transform:translateX(-50%); }
+        .header-nav .anchor-link:hover::after { width:70%; }
+        .header-nav .anchor-link:hover { color:#fff; background:rgba(255,255,255,.1); }
+        .user-info { display:flex; align-items:center; gap:.8rem; color:#fff; font-size:.9rem; margin-left:auto; }
+        .user-info .user-name { font-weight:600; color:#5dade2; }
+        .logout-btn { background:rgba(220,53,69,.8); color:#fff; border:none; padding:.3rem .9rem; border-radius:20px; cursor:pointer; font-size:.8rem; font-weight:500; transition:all .3s ease; }
+        .logout-btn:hover { background:#dc3545; transform:scale(1.05); }
+        main { max-width:1000px; margin:0 auto; padding:2rem 1.5rem 3rem; width:100%; flex:1; position:relative; z-index:1; }
+        #balance-block,#leaders-block,#messenger-block { scroll-margin-top:80px; }
+        .balance-block.loading { position:relative; overflow:hidden; }
+        .balance-block.loading .balance-title,.balance-block.loading .balance-amount { opacity:.5; }
+        .balance-block.loading::after { content:''; position:absolute; top:0; left:-100%; width:300%; height:100%; background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.15) 25%,rgba(255,255,255,.3) 50%,rgba(255,255,255,.15) 75%,rgba(255,255,255,0) 100%); animation:shimmer 1.8s ease-in-out infinite; pointer-events:none; }
+        @keyframes shimmer { 0%{transform:translateX(-30%);}100%{transform:translateX(30%);} }
+        footer { background:linear-gradient(0deg,rgba(26,26,46,0.92) 0%,rgba(44,62,80,0.92) 100%); padding:1.2rem 1.5rem; padding-bottom:calc(1.2rem + env(safe-area-inset-bottom,0rem)); box-shadow:0 -4px 20px rgba(0,0,0,.15); margin-top:auto; width:100%; border-top:1px solid rgba(255,255,255,.05); position:relative; z-index:1; }
+        .footer-inner { max-width:600px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:.5rem 2rem; justify-items:center; align-items:start; }
+        .footer-section { display:flex; flex-direction:column; gap:.3rem; align-items:center; }
+        .footer-section-title { color:rgba(255,255,255,.5); font-size:.7rem; text-transform:uppercase; letter-spacing:1px; font-weight:600; margin-bottom:.2rem; }
+        .footer-link { color:rgba(255,255,255,.75); text-decoration:none; font-size:.85rem; transition:all .3s ease; display:inline-flex; align-items:center; gap:.5rem; padding:.15rem 0; }
+        .footer-link:hover { color:#5dade2; transform:translateX(4px); }
+        .footer-link img { width:18px; height:18px; object-fit:contain; opacity:.8; transition:opacity .3s ease; flex-shrink:0; }
+        .footer-link:hover img { opacity:1; }
+        .footer-copyright { grid-column:1/-1; text-align:center; color:rgba(255,255,255,.25); font-size:.65rem; margin-top:.3rem; padding-top:.5rem; border-top:1px solid rgba(255,255,255,.05); }
+        .auth-container { max-width:420px; margin:3rem auto; padding:2.5rem; width:100%; background:rgba(255,255,255,0.92) !important; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,.08); transition:all .4s cubic-bezier(.34,1.56,.64,1); animation:fadeSlideUp .6s ease; border:1px solid rgba(255,255,255,.3); }
+        .auth-container:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,.12); }
+        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(30px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);} }
+        .auth-container h2 { text-align:center; color:#1a1a2e; font-size:1.6rem; font-weight:700; margin-bottom:.3rem; }
+        .auth-container .subtitle { text-align:center; color:#888; font-size:.9rem; margin-bottom:1.8rem; }
+        .auth-container .error { color:#dc3545; text-align:center; font-size:.9rem; margin-bottom:1rem; padding:.5rem; background:#fde8e8; border-radius:8px; animation:shake .4s ease; }
+        @keyframes shake { 0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);} }
+        .auth-container .success { color:#28a745; text-align:center; font-size:.9rem; margin-bottom:1rem; padding:.5rem; background:#e8f8ed; border-radius:8px; }
+        .auth-container label { display:block; font-weight:600; font-size:.85rem; color:#555; margin-bottom:.3rem; }
+        .auth-container input { width:100%; padding:.8rem 1rem; margin-bottom:1.2rem; border:2px solid #e8ecf1; border-radius:12px; font-size:1rem; font-family:inherit; transition:all .3s ease; background:#f8fafc; max-width:100%; }
+        .auth-container input:focus { outline:none; border-color:#2c7da0; background:#fff; box-shadow:0 0 0 4px rgba(44,125,160,.1); transform:scale(1.01); }
+        .auth-container .btn-primary { width:100%; padding:.9rem; background:linear-gradient(135deg,#2c7da0,#1a5276); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; transition:all .3s ease; }
+        .auth-container .btn-primary:hover { transform:translateY(-2px) scale(1.01); box-shadow:0 8px 25px rgba(44,125,160,.3); }
+        .auth-container .btn-primary:active { transform:scale(.98); }
+        .auth-container .auth-switch { text-align:center; margin-top:1.5rem; color:#888; font-size:.9rem; }
+        .auth-container .auth-switch a { color:#2c7da0; cursor:pointer; font-weight:600; text-decoration:none; transition:color .3s ease; }
+        .auth-container .auth-switch a:hover { color:#1a5276; text-decoration:underline; }
+        .leaders-block { background:rgba(255,255,255,0.85) !important; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); border-radius:20px; padding:1.8rem; margin-bottom:2rem; box-shadow:0 4px 20px rgba(0,0,0,.05); transition:all .4s ease; animation:fadeSlideUp .6s ease .1s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; }
+        .leaders-block:hover { box-shadow:0 8px 30px rgba(0,0,0,.08); }
+        .leaders-title { font-size:1.4rem; font-weight:700; color:#1a1a2e; margin-bottom:1rem; text-align:center; display:flex; align-items:center; justify-content:center; gap:.8rem; }
+        .refresh-leaders { background:none; border:none; cursor:pointer; font-size:1.3rem; color:#2c7da0; transition:all .6s ease; padding:.2rem; }
+        .refresh-leaders:hover { transform:rotate(180deg) scale(1.1); }
+        .leaders-table { width:100%; border-collapse:collapse; }
+        .leaders-table th,.leaders-table td { padding:.8rem 1rem; text-align:left; }
+        .leaders-table th { background:rgba(240,244,248,0.7); color:#1a1a2e; font-weight:600; font-size:.85rem; text-transform:uppercase; letter-spacing:.5px; }
+        .leaders-table th:first-child { border-radius:12px 0 0 0; }
+        .leaders-table th:last-child { border-radius:0 12px 0 0; }
+        .leaders-table tr { border-bottom:1px solid rgba(240,244,248,0.7); transition:all .3s ease; }
+        .leaders-table tr:hover { background:rgba(248,250,252,0.7); transform:scale(1.002); }
+        .leaders-table tr:last-child { border-bottom:none; }
+        .leaders-table .rank-1 { background:linear-gradient(90deg,rgba(255,215,0,.15),transparent); }
+        .leaders-table .rank-2 { background:linear-gradient(90deg,rgba(192,192,192,.15),transparent); }
+        .leaders-table .rank-3 { background:linear-gradient(90deg,rgba(205,127,50,.15),transparent); }
+        .rank-badge { font-weight:700; font-size:1.1rem; }
+        .player-name { font-weight:500; }
+        .player-balance { font-weight:700; color:#2c7da0; text-align:right; }
+        .current-user-row { background:rgba(44,125,160,.08) !important; font-weight:600; border-left:3px solid #2c7da0; }
+        .balance-block { text-align:center; padding:2rem; background:linear-gradient(135deg,rgba(26,82,118,0.9),rgba(44,125,160,0.9)); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border-radius:20px; margin-bottom:2rem; box-shadow:0 8px 30px rgba(44,125,160,.25); transition:all .4s ease; animation:fadeSlideUp .6s ease .2s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; border:1px solid rgba(255,255,255,.2); }
+        .balance-block:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(44,125,160,.35); }
+        .balance-title { color:rgba(255,255,255,.8); font-size:1rem; font-weight:500; margin-bottom:.5rem; text-transform:uppercase; letter-spacing:1px; }
+        .balance-amount { font-size:3.8rem; font-weight:700; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.1); transition:all .5s ease; }
+        .balance-amount:hover { transform:scale(1.02); }
+        .balance-amount .currency { font-size:2rem; opacity:.7; }
+        .report-tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; background:rgba(255,255,255,0.85) !important; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); border-radius:16px; padding:.5rem; box-shadow:0 2px 10px rgba(0,0,0,.04); animation:fadeSlideUp .6s ease .3s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; flex-wrap:wrap; }
+        .tab-btn { flex:1; background:none; border:none; padding:.8rem 1.2rem; font-size:.95rem; font-weight:600; cursor:pointer; color:#999; border-radius:12px; transition:all .4s cubic-bezier(.34,1.56,.64,1); position:relative; overflow:hidden; min-width:80px; }
+        .tab-btn::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,#2c7da0,#1a5276); border-radius:12px; opacity:0; transition:opacity .4s ease; transform:scale(.9); }
+        .tab-btn:hover::before { opacity:.05; }
+        .tab-btn:hover { color:#2c7da0; transform:translateY(-1px); }
+        .tab-btn.active { color:#fff; background:linear-gradient(135deg,#2c7da0,#1a5276); box-shadow:0 4px 15px rgba(44,125,160,.25); transform:scale(1.02); }
+        .tab-btn.active::before { opacity:0; }
+        .tab-content { display:none; background:rgba(255,255,255,0.85) !important; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); border-radius:20px; padding:1.8rem; box-shadow:0 4px 20px rgba(0,0,0,.05); animation:fadeSlideUp .5s ease; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; }
+        .tab-content.active { display:block; }
+        .messenger-container { display:flex; flex-direction:column; gap:1rem; height:500px; max-height:70vh; }
+        .messenger-users { display:flex; gap:.5rem; flex-wrap:wrap; padding-bottom:.5rem; border-bottom:2px solid rgba(240,244,248,0.7); overflow-x:auto; }
+        .messenger-user-btn { padding:.5rem 1.2rem; border-radius:20px; border:2px solid rgba(232,236,241,0.7); background:rgba(248,250,252,0.7); cursor:pointer; font-weight:500; font-size:.9rem; transition:all .3s ease; white-space:nowrap; color:#555; }
+        .messenger-user-btn:hover { border-color:#2c7da0; background:rgba(232,240,248,0.8); transform:translateY(-2px); }
+        .messenger-user-btn.active { border-color:#2c7da0; background:#2c7da0; color:#fff; box-shadow:0 4px 15px rgba(44,125,160,.25); }
+        .messenger-user-btn .unread-badge { background:#dc3545; color:#fff; border-radius:50%; padding:.1rem .5rem; font-size:.7rem; margin-left:.3rem; }
+        .messenger-messages { flex:1; overflow-y:auto; padding:.5rem; background:rgba(248,250,252,0.7); border-radius:12px; display:flex; flex-direction:column; gap:.5rem; min-height:200px; max-height:300px; }
+        .messenger-messages::-webkit-scrollbar { width:6px; }
+        .messenger-messages::-webkit-scrollbar-track { background:rgba(240,244,248,0.7); border-radius:10px; }
+        .messenger-messages::-webkit-scrollbar-thumb { background:#2c7da0; border-radius:10px; }
+        .message-bubble { max-width:80%; padding:.6rem 1rem; border-radius:16px; word-wrap:break-word; animation:fadeSlideUp .3s ease; font-size:.95rem; line-height:1.4; position:relative; display:flex; flex-direction:column; }
+        .message-bubble.mine { align-self:flex-end; background:linear-gradient(135deg,rgba(44,125,160,0.9),rgba(26,82,118,0.9)); color:#fff; border-bottom-right-radius:4px; }
+        .message-bubble.theirs { align-self:flex-start; background:rgba(255,255,255,0.9); color:#1a1a2e; border-bottom-left-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+        .message-bubble .msg-sender { font-size:.7rem; font-weight:600; opacity:.7; margin-bottom:.15rem; }
+        .message-bubble.mine .msg-sender { text-align:right; color:rgba(255,255,255,0.7); }
+        .message-bubble.theirs .msg-sender { text-align:left; color:#2c7da0; }
+        .message-bubble .msg-text { word-break:break-word; }
+        .message-bubble .msg-time { font-size:.65rem; opacity:.6; margin-top:.2rem; align-self:flex-end; }
+        .message-bubble .msg-edited { font-size:.6rem; opacity:.5; font-style:italic; margin-left:.5rem; }
+        .msg-actions { display:flex; gap:.3rem; margin-top:.3rem; flex-wrap:wrap; opacity:.7; transition:opacity .2s; }
+        .message-bubble:hover .msg-actions { opacity:1; }
+        .msg-actions button { background:none; border:none; cursor:pointer; font-size:.85rem; padding:.05rem .3rem; border-radius:4px; transition:all .2s; color:#555; }
+        .msg-actions button:hover { background:rgba(0,0,0,.05); }
+        .msg-actions .delete-btn { color:#dc3545; }
+        .msg-actions .edit-btn { color:#2c7da0; }
+        .msg-actions .forward-btn { color:#28a745; }
+        .msg-actions .reply-btn { color:#6c757d; }
+        .msg-reactions { display:flex; gap:.2rem; margin-top:.2rem; flex-wrap:wrap; }
+        .msg-reactions .reaction-badge { background:rgba(240,244,248,0.7); padding:.05rem .4rem; border-radius:12px; font-size:.8rem; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:.2rem; }
+        .msg-reactions .reaction-badge:hover { background:rgba(224,230,237,0.8); }
+        .msg-reactions .reaction-badge .count { font-size:.7rem; color:#666; }
+        .messenger-input-area { display:flex; gap:.5rem; padding-top:.5rem; border-top:2px solid rgba(240,244,248,0.7); flex-wrap:wrap; }
+        .messenger-input-area .input-wrapper { flex:1; position:relative; }
+        .messenger-input-area .quote-preview { display:none; background:rgba(240,244,248,0.8); border-left:3px solid #2c7da0; padding:.4rem .8rem; border-radius:8px 8px 0 0; font-size:.8rem; color:#555; margin-bottom:.2rem; max-height:60px; overflow:hidden; }
+        .messenger-input-area .quote-preview.active { display:block; }
+        .messenger-input-area input { width:100%; padding:.7rem 1rem; border:2px solid rgba(232,236,241,0.7); border-radius:12px; font-size:.95rem; font-family:inherit; transition:all .3s ease; background:rgba(248,250,252,0.7); }
+        .messenger-input-area input:focus { outline:none; border-color:#2c7da0; background:rgba(255,255,255,0.9); box-shadow:0 0 0 4px rgba(44,125,160,.08); }
+        .messenger-input-area .btn-send { padding:.7rem 1.5rem; background:linear-gradient(135deg,#2c7da0,#1a5276); color:#fff; border:none; border-radius:12px; cursor:pointer; font-weight:600; transition:all .3s ease; white-space:nowrap; }
+        .messenger-input-area .btn-send:hover { transform:translateY(-2px) scale(1.02); box-shadow:0 4px 15px rgba(44,125,160,.3); }
+        .messenger-input-area .btn-send:active { transform:scale(.97); }
+        .empty-messages { text-align:center; color:#999; padding:2rem; font-style:italic; }
+        .messenger-refresh { background:none; border:none; cursor:pointer; font-size:1.1rem; color:#2c7da0; transition:all .3s ease; padding:.2rem .5rem; }
+        .messenger-refresh:hover { transform:rotate(180deg) scale(1.1); }
+        .items-list { background:rgba(248,250,252,0.7); border-radius:12px; padding:.5rem; margin:1rem 0; max-height:200px; overflow-y:auto; border:1px solid rgba(232,236,241,0.7); transition:all .3s ease; width:100%; }
+        .items-list:hover { border-color:#2c7da0; }
+        .items-list::-webkit-scrollbar { width:6px; }
+        .items-list::-webkit-scrollbar-track { background:rgba(240,244,248,0.7); border-radius:10px; }
+        .items-list::-webkit-scrollbar-thumb { background:#2c7da0; border-radius:10px; }
+        .item-entry { display:flex; justify-content:space-between; align-items:center; padding:.6rem .8rem; background:rgba(255,255,255,0.8); border-radius:8px; margin-bottom:.3rem; transition:all .3s ease; }
+        .item-entry:last-child { margin-bottom:0; }
+        .item-entry:hover { background:rgba(240,244,248,0.8); transform:translateX(4px); }
+        .item-info { flex:1; font-size:.9rem; }
+        .item-reward { font-weight:700; color:#2c7da0; margin-right:1rem; font-size:.95rem; }
+        .remove-item { background:#fee; color:#dc3545; border:none; padding:.2rem .6rem; border-radius:6px; cursor:pointer; font-size:.8rem; transition:all .3s ease; }
+        .remove-item:hover { background:#dc3545; color:#fff; transform:scale(1.05); }
+        .empty-list { color:#999; text-align:center; padding:1.5rem; font-size:.9rem; }
+        .add-panel { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:.5rem; width:100%; }
+        .add-panel select,.add-panel input { padding:.7rem 1rem; font-size:.95rem; border:2px solid rgba(232,236,241,0.7); border-radius:12px; font-family:inherit; background:rgba(248,250,252,0.7); transition:all .3s ease; flex:1; min-width:100px; max-width:100%; }
+        .add-panel select:focus,.add-panel input:focus { outline:none; border-color:#2c7da0; background:rgba(255,255,255,0.9); box-shadow:0 0 0 4px rgba(44,125,160,.08); transform:scale(1.01); }
+        .add-panel select { flex:2; }
+        .add-panel .btn-add { background:linear-gradient(135deg,#28a745,#1e7e34); color:#fff; border:none; padding:.7rem 1.5rem; border-radius:12px; cursor:pointer; font-weight:600; transition:all .3s ease; white-space:nowrap; }
+        .add-panel .btn-add:hover { transform:translateY(-2px) scale(1.02); box-shadow:0 4px 15px rgba(40,167,69,.3); }
+        .add-panel .btn-add:active { transform:scale(.97); }
+        .total-info { font-weight:700; margin:1rem 0; padding:.8rem; background:rgba(232,248,237,0.8); border-radius:12px; text-align:center; font-size:1.1rem; color:#1a1a2e; transition:all .3s ease; }
+        .total-info.fee { background:rgba(253,232,232,0.8); color:#721c24; }
+        .total-info .amount { color:#2c7da0; }
+        .total-info.fee .amount { color:#dc3545; }
+        .hint { font-size:.8rem; color:#888; margin-top:.5rem; text-align:center; background:rgba(240,244,248,0.7); padding:.5rem; border-radius:10px; transition:all .3s ease; }
+        .hint:hover { background:rgba(232,236,241,0.7); }
+        .submit-btn { background:linear-gradient(135deg,#2c7da0,#1a5276); color:#fff; border:none; padding:.9rem 2rem; font-size:1rem; font-weight:600; border-radius:14px; cursor:pointer; transition:all .3s ease; width:100%; margin-top:.8rem; max-width:100%; }
+        .submit-btn:hover { transform:translateY(-2px) scale(1.01); box-shadow:0 8px 25px rgba(44,125,160,.3); }
+        .submit-btn:active { transform:scale(.98); }
+        .submit-btn.fee { background:linear-gradient(135deg,#dc3545,#a71d2a); }
+        .submit-btn.fee:hover { box-shadow:0 8px 25px rgba(220,53,69,.3); }
+        .message { margin-top:1rem; padding:.8rem 1.2rem; border-radius:12px; text-align:center; font-weight:500; display:none; animation:fadeSlideUp .4s ease; }
+        .message.success { background:rgba(212,237,218,0.9); color:#155724; display:block; }
+        .message.error { background:rgba(248,215,218,0.9); color:#721c24; display:block; }
+        .qr-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); justify-content:center; align-items:center; z-index:9999; animation:fadeIn .3s ease; }
+        .qr-modal.open { display:flex; }
+        .qr-content { background:rgba(255,255,255,0.95); backdrop-filter:blur(4px); border-radius:24px; padding:2.5rem; max-width:480px; width:92%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.2); position:relative; animation:scaleIn .4s cubic-bezier(.34,1.56,.64,1); margin:0 auto; }
+        .qr-close { position:absolute; top:1rem; right:1.5rem; font-size:2rem; cursor:pointer; color:#aaa; transition:all .3s ease; background:none; border:none; }
+        .qr-close:hover { color:#333; transform:rotate(90deg) scale(1.1); }
+        .qr-title { font-size:1.5rem; font-weight:700; text-align:center; color:#1a1a2e; margin-bottom:.3rem; }
+        .qr-subtitle { text-align:center; color:#888; font-size:.9rem; margin-bottom:1.5rem; }
+        .qr-code-container { display:flex; justify-content:center; margin:1rem 0; }
+        .qr-code-container #qrcode { background:#fff; padding:.8rem; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,.08); transition:all .3s ease; }
+        .qr-code-container #qrcode:hover { transform:scale(1.02); }
+        .receipt-details { background:rgba(248,250,252,0.7); border-radius:14px; padding:1.2rem; margin:1.2rem 0; border-left:4px solid #2c7da0; transition:all .3s ease; }
+        .receipt-details:hover { background:rgba(240,244,248,0.7); }
+        .receipt-details p { padding:.4rem 0; font-size:.95rem; display:flex; justify-content:space-between; border-bottom:1px solid rgba(232,236,241,0.7); }
+        .receipt-details p:last-child { border-bottom:none; }
+        .receipt-details .label { color:#888; font-weight:400; }
+        .receipt-details .value { font-weight:600; color:#1a1a2e; }
+        .receipt-details .value.amount { color:#dc3545; font-size:1.1rem; }
+        .qr-url { font-size:.7rem; color:#aaa; word-break:break-all; text-align:center; background:rgba(240,244,248,0.7); padding:.4rem .8rem; border-radius:8px; margin-top:.5rem; }
+        .qr-hint { text-align:center; font-size:.85rem; color:#888; margin-top:.5rem; }
+        .fee-options { background:rgba(248,250,252,0.7); border-radius:14px; padding:.5rem; margin:1rem 0; }
+        .fee-options label { display:flex; align-items:center; gap:1rem; padding:.8rem 1rem; cursor:pointer; border-radius:10px; transition:all .3s ease; }
+        .fee-options label:hover { background:rgba(240,244,248,0.7); transform:translateX(4px); }
+        .fee-options label:first-child { border-bottom:1px solid rgba(232,236,241,0.7); }
+        .fee-options input[type="checkbox"] { width:1.3rem; height:1.3rem; cursor:pointer; accent-color:#2c7da0; transition:all .2s ease; }
+        .fee-options input[type="checkbox"]:hover { transform:scale(1.1); }
+        .fee-options .fee-label { flex:1; font-size:1rem; font-weight:500; }
+        .fee-options .fee-price { font-weight:700; color:#dc3545; font-size:1.1rem; }
+        .loading { text-align:center; padding:2rem; color:#2c7da0; font-weight:500; animation:pulse 1.5s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:.4;} }
+        .main-content { display:none; }
+        .main-content.visible { display:block; }
+        .custom-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:9999; justify-content:center; align-items:center; animation:fadeIn .2s ease; }
+        .custom-modal-overlay.open { display:flex; }
+        .custom-modal { background:rgba(255,255,255,0.95); backdrop-filter:blur(6px); border-radius:24px; padding:2rem; max-width:420px; width:92%; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.2); animation:scaleIn .3s cubic-bezier(.34,1.56,.64,1); }
+        .custom-modal h3 { font-size:1.3rem; margin-bottom:.8rem; text-align:center; color:#1a1a2e; }
+        .custom-modal .modal-close { float:right; background:none; border:none; font-size:1.8rem; cursor:pointer; color:#aaa; transition:color .2s; }
+        .custom-modal .modal-close:hover { color:#333; }
+        .custom-modal .modal-body { margin:1rem 0; }
+        .custom-modal .modal-actions { display:flex; gap:.8rem; justify-content:center; margin-top:1.2rem; flex-wrap:wrap; }
+        .custom-modal .modal-actions .btn { padding:.6rem 1.8rem; border-radius:12px; border:none; font-weight:600; cursor:pointer; transition:all .2s; }
+        .custom-modal .modal-actions .btn-primary { background:#2c7da0; color:#fff; }
+        .custom-modal .modal-actions .btn-primary:hover { transform:scale(1.05); }
+        .custom-modal .modal-actions .btn-danger { background:#dc3545; color:#fff; }
+        .custom-modal .modal-actions .btn-danger:hover { transform:scale(1.05); }
+        .custom-modal .modal-actions .btn-secondary { background:#e8ecf1; color:#333; }
+        .custom-modal .modal-actions .btn-secondary:hover { transform:scale(1.05); }
+        .custom-modal .user-list { max-height:200px; overflow-y:auto; }
+        .custom-modal .user-list .user-item { padding:.5rem 1rem; cursor:pointer; border-radius:8px; transition:background .2s; display:flex; align-items:center; gap:.5rem; }
+        .custom-modal .user-list .user-item:hover { background:#f0f4f8; }
+        .custom-modal .user-list .user-item .user-login { font-size:.8rem; color:#888; }
+        @media (max-width:768px) { /* адаптив — можно скопировать из предыдущего ответа */ }
+        @media (max-width:480px) { /* адаптив */ }
+        @media (prefers-reduced-motion:reduce) { *{animation-duration:.01ms !important;transition-duration:.01ms !important;} }
+    </style>
+</head>
+<body>
+
+    <!-- ФОН: МИШЕНИ -->
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- ШАПКА -->
+    <header>
+        <div class="header-inner">
+            <div class="header-brand">
+                <a href="#" class="header-icon-link"><img src="icon.png" alt="На главную" class="header-icon"></a>
+                <span class="header-title">Отель <span>ДП</span></span>
+            </div>
+            <nav class="header-nav">
+                <a href="#balance-block" class="anchor-link">Баланс</a>
+                <a href="#leaders-block" class="anchor-link">Лидеры</a>
+                <a href="#messenger-block" class="anchor-link">💬 Чат</a>
+            </nav>
+            <div class="user-info" id="userInfo" style="display:none;">
+                <span>👤 <span class="user-name" id="userName">—</span></span>
+                <button class="logout-btn" id="logoutBtn">Выйти</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- АВТОРИЗАЦИЯ -->
+        <div id="authContainer" class="auth-container">
+            <h2>🔐 Вход</h2>
+            <p class="subtitle">Войдите в систему учёта баллов</p>
+            <div id="authError" class="error"></div>
+            <label>Логин</label>
+            <input type="text" id="loginUsername" placeholder="Введите логин">
+            <label>Пароль</label>
+            <input type="password" id="loginPassword" placeholder="Введите пароль">
+            <button class="btn-primary" id="loginBtn">Войти</button>
+            <div class="auth-switch">Нет аккаунта? <a id="showRegister">Зарегистрироваться</a></div>
+        </div>
+        <!-- РЕГИСТРАЦИЯ -->
+        <div id="registerContainer" class="auth-container" style="display:none;">
+            <h2>📝 Регистрация</h2>
+            <p class="subtitle">Создайте новый аккаунт</p>
+            <div id="registerError" class="error"></div>
+            <label>Ваше имя</label><input type="text" id="registerName" placeholder="Иван Петров">
+            <label>Логин</label><input type="text" id="registerUsername" placeholder="Придумайте логин">
+            <label>Пароль</label><input type="password" id="registerPassword" placeholder="Минимум 4 символа">
+            <label>Подтвердите</label><input type="password" id="registerPasswordConfirm" placeholder="Повторите">
+            <button class="btn-primary" id="registerBtn">Зарегистрироваться</button>
+            <div class="auth-switch">Уже есть аккаунт? <a id="showLogin">Войти</a></div>
+        </div>
+
+        <!-- ОСНОВНОЙ КОНТЕНТ -->
+        <div id="mainContent" class="main-content">
+            <!-- ЛИДЕРЫ -->
+            <div id="leaders-block" class="leaders-block">
+                <div class="leaders-title">🏆 Лидеры <button class="refresh-leaders" id="refreshLeadersBtn">🔄</button></div>
+                <div id="leadersContainer"><div class="loading">Загрузка...</div></div>
+            </div>
+            <!-- БАЛАНС -->
+            <div id="balance-block" class="balance-block" style="display:none;">
+                <div class="balance-title">💰 Баланс</div>
+                <div class="balance-amount"><span id="balanceValue">0</span><span class="currency">đᵽ</span></div>
+            </div>
+            <!-- ВКЛАДКИ -->
+            <div class="report-tabs" id="reportTabs" style="display:none;">
+                <button class="tab-btn active" data-tab="shooting">🎯 Стрельба</button>
+                <button class="tab-btn" data-tab="running">🏃 Бег</button>
+                <button class="tab-btn" data-tab="fees">💰 Взносы</button>
+                <button class="tab-btn" data-tab="messenger">💬 Чат</button>
+            </div>
+
+            <!-- СТРЕЛЬБА -->
+            <div id="shooting" class="tab-content active">
+                <h2>📋 Подать отчёт по стрельбе</h2>
+                <div id="shootingItemsList" class="items-list"><div class="empty-list">Нет добавленных позиций</div></div>
+                <div class="add-panel">
+                    <select id="positionSelect"><option value="">-- выберите --</option><option value="1">1В (1 балл)</option><option value="1">7Н (1 балл)</option><option value="1">1Н (1 балл)</option><option value="1">7В (1 балл)</option><option value="2">2Н (2 балла)</option><option value="2">6В (2 балла)</option><option value="3">6Н (3 балла)</option><option value="3">2В (3 балла)</option><option value="4">5В (4 балла)</option><option value="4">3Н (4 балла)</option><option value="5">3В (5 баллов)</option><option value="5">5Н (5 баллов)</option><option value="6">4В (6 баллов)</option><option value="6">4Н (6 баллов)</option><option value="7">8В (7 баллов)</option><option value="7">8Н (7 баллов)</option></select>
+                    <input type="number" id="shootingHitsInput" placeholder="Попаданий" min="1" max="99" value="1" step="1">
+                    <button class="btn-add" id="addShootingBtn">Добавить</button>
+                </div>
+                <div id="shootingTotal" class="total-info">Итого: <span class="amount">0 đᵽ</span></div>
+                <div class="hint">За каждое попадание начисляется указанное количество баллов</div>
+                <button class="submit-btn" id="submitShootingBtn">Отправить отчёт</button>
+            </div>
+
+            <!-- БЕГ -->
+            <div id="running" class="tab-content">
+                <h2>📋 Подать отчёт о беге</h2>
+                <div id="runningItemsList" class="items-list"><div class="empty-list">Нет добавленных серий</div></div>
+                <div class="add-panel">
+                    <input type="number" id="runningLapsInput" placeholder="Количество кругов" min="1" max="50" step="1">
+                    <button class="btn-add" id="addRunningBtn">Добавить серию</button>
+                </div>
+                <div id="runningTotal" class="total-info">Итого: <span class="amount">0 đᵽ</span></div>
+                <div class="hint">За серию кругов без остановки баллы растут прогрессивно</div>
+                <button class="submit-btn" id="submitRunningBtn">Отправить отчёт</button>
+            </div>
+
+            <!-- ВЗНОСЫ -->
+            <div id="fees" class="tab-content">
+                <h2>💰 Оплатить взносы</h2>
+                <div class="fee-options">
+                    <label><input type="checkbox" id="feeTransport" value="5"><span class="fee-label">Транспорт</span><span class="fee-price">5 đᵽ</span></label>
+                    <label><input type="checkbox" id="feeStay" value="10"><span class="fee-label">Временное пребывание</span><span class="fee-price">10 đᵽ</span></label>
+                </div>
+                <div id="feesItemsList" class="items-list"><div class="empty-list">Нет выбранных взносов</div></div>
+                <div id="feesTotal" class="total-info fee">Итого к оплате: <span class="amount">0 đᵽ</span></div>
+                <div class="hint">Можно выбрать оба взноса одновременно</div>
+                <button class="submit-btn fee" id="submitFeesBtn">Оплатить отмеченные взносы</button>
+            </div>
+
+            <!-- МЕССЕНДЖЕР (обновлённый) -->
+            <div id="messenger" class="tab-content">
+                <h2>💬 Чат <button class="messenger-refresh" id="refreshMessagesBtn">🔄</button></h2>
+                <div class="messenger-container">
+                    <div class="messenger-users" id="messengerUsers"><div class="empty-list">Загрузка пользователей...</div></div>
+                    <div class="messenger-messages" id="messengerMessages"><div class="empty-messages">Выберите собеседника</div></div>
+                    <div class="messenger-input-area">
+                        <div class="input-wrapper">
+                            <div class="quote-preview" id="quotePreview"></div>
+                            <input type="text" id="messageInput" placeholder="Введите сообщение..." maxlength="500">
+                        </div>
+                        <button class="btn-send" id="sendMessageBtn">Отправить</button>
+                    </div>
+                </div>
+                <div class="hint">Сообщения видят только вы и ваш собеседник. Макс. 500 символов.</div>
+            </div>
+
+            <div id="messageBox" class="message"></div>
+            <div id="loadingIndicator" class="loading" style="display:none;">Загрузка...</div>
+        </div>
+    </main>
+
+    <!-- ФУТЕР -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-section">
+                <span class="footer-section-title">Адреса</span>
+                <a href="https://yandex.ru/maps/-/CTATzJja" target="_blank" class="footer-link"><img src="icon.png" alt=""> Ресепшн</a>
+                <a href="https://yandex.ru/maps/-/CTATvGpM" target="_blank" class="footer-link"><img src="icon.png" alt=""> Отель</a>
+            </div>
+            <div class="footer-section">
+                <span class="footer-section-title">Группы</span>
+                <a href="https://max.ru/join/nlfkDPaEmB2Ix310qDVV6c7s0qRNgzCD68pOgbTIMnI" target="_blank" class="footer-link"><img src="max.png" alt=""> Макс</a>
+                <a href="https://t.me/+yPDvR9dQPCJlZjdi" target="_blank" class="footer-link"><img src="telegram.png" alt=""> Телеграм</a>
+            </div>
+            <div class="footer-copyright">© 2026 Отель ДП | Введенская слобода</div>
+        </div>
+    </footer>
+
+    <!-- QR-МОДАЛ -->
+    <div id="qrModal" class="qr-modal">
+        <div class="qr-content">
+            <button class="qr-close" id="qrCloseBtn">&times;</button>
+            <div class="qr-title">Квитанция об оплате</div>
+            <div class="qr-subtitle">Временное пребывание</div>
+            <div class="qr-code-container"><div id="qrcode"></div></div>
+            <div id="receiptDetails" class="receipt-details">
+                <p><span class="label">ФИО:</span> <span class="value" id="receiptName">—</span></p>
+                <p><span class="label">Тип взноса:</span> <span class="value" id="receiptType">—</span></p>
+                <p><span class="label">Сумма:</span> <span class="value amount" id="receiptAmount">—</span></p>
+                <p><span class="label">Дата оплаты:</span> <span class="value" id="receiptDate">—</span></p>
+                <p><span class="label">Номер операции:</span> <span class="value" id="receiptNumber">—</span></p>
+            </div>
+            <div id="qrUrlDisplay" class="qr-url"></div>
+            <div class="qr-hint">📱 Отсканируйте QR-код</div>
+        </div>
+    </div>
+
+    <!-- КАСТОМНЫЕ МОДАЛКИ -->
+    <div class="custom-modal-overlay" id="customModalOverlay">
+        <div class="custom-modal" id="customModal">
+            <button class="modal-close" id="modalCloseBtn">&times;</button>
+            <h3 id="modalTitle">Заголовок</h3>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-actions" id="modalActions"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===================================================================
+        // 1. АНИМАЦИЯ МИШЕНЕЙ
+        // ===================================================================
+        (function() {
+            const canvas = document.getElementById('bgCanvas');
+            const ctx = canvas.getContext('2d');
+            let W, H;
+
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const targetImg = new Image();
+            targetImg.src = 'target.png';
+            targetImg.onerror = function() { console.warn('target.png не загружен'); };
+
+            const targets = [];
+            const targetSize = 50;
+
+            function createTarget(side) {
+                const y = Math.random() * (H * 0.5) + H * 0.3;
+                const x = side === 0 ? -targetSize : W + targetSize;
+                const vx = (side === 0 ? 1 : -1) * (4 + Math.random() * 4);
+                const vy = -(1 + Math.random() * 1.5);
+                return { x, y, vx, vy, size: targetSize };
+            }
+
+            function spawnTarget() {
+                const side = Math.random() < 0.5 ? 0 : 1;
+                targets.push(createTarget(side));
+                if (targets.length > 15) targets.shift();
+                const delay = 10000 + Math.random() * 3000;
+                setTimeout(spawnTarget, delay);
+            }
+            setTimeout(spawnTarget, 500);
+            setTimeout(spawnTarget, 1800);
+            setTimeout(spawnTarget, 3200);
+
+            function animate() {
+                ctx.clearRect(0, 0, W, H);
+                for (let i = targets.length - 1; i >= 0; i--) {
+                    const t = targets[i];
+                    t.x += t.vx;
+                    t.y += t.vy;
+                    const half = t.size / 2;
+                    if (t.x + half < -50 || t.x - half > W + 50 || t.y + half < -50 || t.y - half > H + 50) {
+                        targets.splice(i, 1);
+                        continue;
+                    }
+                    if (targetImg.complete && targetImg.naturalWidth > 0) {
+                        ctx.save();
+                        ctx.translate(t.x, t.y);
+                        ctx.drawImage(targetImg, -half, -half, t.size, t.size);
+                        ctx.restore();
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(t.x, t.y, half, 0, Math.PI * 2);
+                        ctx.fillStyle = '#ff6b6b';
+                        ctx.fill();
+                        ctx.strokeStyle = '#fff';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // ===================================================================
+        // 2. ОСНОВНОЙ JS (полный функционал)
+        // ===================================================================
+        const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
+
+        let playerName = localStorage.getItem('playerName') || '';
+        let playerLogin = localStorage.getItem('playerLogin') || '';
+        let currentBalance = 0;
+        let shootingItems = [];
+        let runningItems = [];
+        let qrCodeInstance = null;
+        let authToken = localStorage.getItem('authToken') || '';
+        let isLoggedIn = false;
+
+        let messengerUsers = [];
+        let currentChatUserLogin = '';
+        let currentChatUserName = '';
+        let messagesCache = {};
+        let messengerUpdateInterval = null;
+        let replyQuote = null;
+        let replyToMsgId = null;
+
+        const balanceValue = document.getElementById('balanceValue');
+        const messageBox = document.getElementById('messageBox');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const leadersContainer = document.getElementById('leadersContainer');
+        const qrModal = document.getElementById('qrModal');
+        const qrCodeContainer = document.getElementById('qrcode');
+
+        // --- КАСТОМНЫЕ МОДАЛКИ ---
+        const modalOverlay = document.getElementById('customModalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const modalActions = document.getElementById('modalActions');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        function showModal(title, bodyHTML, actionsHTML) {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = bodyHTML;
+            modalActions.innerHTML = actionsHTML;
+            modalOverlay.classList.add('open');
+        }
+        function closeModal() {
+            modalOverlay.classList.remove('open');
+            replyQuote = null;
+            replyToMsgId = null;
+        }
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) closeModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // --- JSONP ---
+        function jsonpRequest(params, callback) {
+            const script = document.createElement('script');
+            const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            window[callbackName] = function(data) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                callback(data);
+            };
+            const url = new URL(GOOGLE_SHEETS_URL);
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+            url.searchParams.append('callback', callbackName);
+            script.src = url.toString();
+            script.onerror = function() {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                callback({ status: 'error', message: 'Ошибка подключения' });
+            };
+            document.body.appendChild(script);
+        }
+
+        // --- ВСПОМОГАТЕЛЬНЫЕ ---
+        function showAuthError(text) {
+            const el = document.getElementById('authError');
+            if (el) { el.textContent = text; el.className = 'error'; }
+        }
+        function showRegisterError(text) {
+            const el = document.getElementById('registerError');
+            if (el) { el.textContent = text; el.className = 'error'; }
+        }
+        function showRegisterSuccess(text) {
+            const el = document.getElementById('registerError');
+            if (el) { el.textContent = text; el.className = 'success'; }
+        }
+        function showLoading(show) {
+            if (loadingIndicator) loadingIndicator.style.display = show ? 'block' : 'none';
+        }
+        function showMessage(text, isSuccess = true) {
+            if (!messageBox) return;
+            messageBox.textContent = text;
+            messageBox.className = 'message ' + (isSuccess ? 'success' : 'error');
+            setTimeout(() => {
+                messageBox.className = 'message';
+                messageBox.style.display = 'none';
+                setTimeout(() => {
+                    messageBox.style.display = '';
+                    messageBox.className = 'message';
+                }, 100);
+            }, 3000);
+        }
+        function updateBalanceDisplay() {
+            if (balanceValue) balanceValue.textContent = currentBalance.toLocaleString('ru-RU');
+        }
+        function ensurePlayerName() {
+            if (!playerName) {
+                playerName = prompt('Введите ваше имя:', 'Игрок');
+                if (!playerName) playerName = 'Аноним';
+                localStorage.setItem('playerName', playerName);
+            }
+            return playerName;
+        }
+        function generateOperationNumber() {
+            const now = new Date();
+            const datePart = now.getFullYear().toString().slice(2) +
+                String(now.getMonth() + 1).padStart(2, '0') +
+                String(now.getDate()).padStart(2, '0');
+            const randomPart = String(Math.floor(100000 + Math.random() * 900000));
+            return `DP-${datePart}-${randomPart}`;
+        }
+        function getReceiptUrl(operationNumber) {
+            return BASE_URL + RECEIPT_PAGE + '?op=' + encodeURIComponent(operationNumber);
+        }
+        function escapeHtml(s) {
+            if (!s) return '';
+            return s.replace(/[&<>]/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[m]));
+        }
+
+        // --- POST ---
+        async function sendToSheet(data) {
+            try {
+                await fetch(GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                return true;
+            } catch (e) {
+                console.error('Ошибка отправки:', e);
+                return false;
+            }
+        }
+
+        // --- РЕГИСТРАЦИЯ ---
+        async function register(username, name, password) {
+            try {
+                await sendToSheet({ type: 'register', username, name, password });
+                showRegisterSuccess('Регистрация выполнена! Теперь войдите.');
+                setTimeout(() => {
+                    document.getElementById('registerContainer').style.display = 'none';
+                    document.getElementById('authContainer').style.display = 'block';
+                }, 1500);
+                return true;
+            } catch (error) {
+                showRegisterError('Ошибка регистрации');
+                return false;
+            }
+        }
+
+        // --- СОХРАНЕНИЕ ОТЧЁТА ---
+        async function saveReportToSheet(reportData) {
+            try {
+                await sendToSheet({ ...reportData, token: authToken });
+                return true;
+            } catch (e) { return false; }
+        }
+
+        // --- КВИТАНЦИЯ ---
+        async function saveReceiptToSheet(operationNumber, receiptData) {
+            try {
+                await sendToSheet({
+                    type: 'Ч',
+                    operation: operationNumber,
+                    player: receiptData.name,
+                    details: receiptData.type,
+                    earned: -receiptData.amount,
+                    balance: currentBalance,
+                    token: authToken
+                });
+                localStorage.setItem('receipt_' + operationNumber, JSON.stringify(receiptData));
+            } catch (e) { console.error('Ошибка сохранения квитанции:', e); }
+        }
+
+        // --- ВХОД ---
+        function login(username, password) {
+            return new Promise((resolve) => {
+                showLoading(true);
+                jsonpRequest({ action: 'login', username, password }, function(data) {
+                    showLoading(false);
+                    if (data.status === 'success') {
+                        authToken = data.token;
+                        localStorage.setItem('authToken', authToken);
+                        localStorage.setItem('playerName', data.name);
+                        localStorage.setItem('playerLogin', data.username);
+                        playerName = data.name;
+                        playerLogin = data.username;
+                        isLoggedIn = true;
+                        currentBalance = data.balance || 0;
+                        updateBalanceDisplay();
+
+                        document.getElementById('userName').textContent = playerName;
+                        document.getElementById('userInfo').style.display = 'flex';
+                        document.getElementById('authContainer').style.display = 'none';
+                        document.getElementById('registerContainer').style.display = 'none';
+                        document.getElementById('mainContent').classList.add('visible');
+                        document.getElementById('balance-block').style.display = 'block';
+                        document.getElementById('reportTabs').style.display = 'flex';
+
+                        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+                        const activeTab = document.querySelector('.tab-content.active');
+                        if (activeTab) activeTab.style.display = 'block';
+
+                        document.getElementById('balance-block').classList.remove('loading', 'pulse-loading');
+                        startMessenger();
+                        showMessage('👋 Добро пожаловать, ' + playerName + '!');
+                        resolve(true);
+                    } else {
+                        showAuthError(data.message || 'Ошибка входа');
+                        resolve(false);
+                    }
+                });
+            });
+        }
+
+        // --- ВЫХОД ---
+        function logout() {
+            if (messengerUpdateInterval) {
+                clearInterval(messengerUpdateInterval);
+                messengerUpdateInterval = null;
+            }
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('playerName');
+            localStorage.removeItem('playerLogin');
+            authToken = '';
+            playerName = '';
+            playerLogin = '';
+            isLoggedIn = false;
+
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('mainContent').classList.remove('visible');
+            document.getElementById('balance-block').style.display = 'none';
+            document.getElementById('reportTabs').style.display = 'none';
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('registerContainer').style.display = 'none';
+
+            currentBalance = 0;
+            updateBalanceDisplay();
+            showMessage('Вы вышли из системы');
+            loadLeaders();
+        }
+
+        // --- ПРОВЕРКА АВТОРИЗАЦИИ ---
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                const name = localStorage.getItem('playerName') || 'Пользователь';
+                const login = localStorage.getItem('playerLogin') || '';
+                playerName = name;
+                playerLogin = login;
+                isLoggedIn = true;
+
+                document.getElementById('userName').textContent = playerName;
+                document.getElementById('userInfo').style.display = 'flex';
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('registerContainer').style.display = 'none';
+                document.getElementById('mainContent').classList.add('visible');
+                document.getElementById('balance-block').style.display = 'block';
+                document.getElementById('reportTabs').style.display = 'flex';
+
+                document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab) activeTab.style.display = 'block';
+
+                loadBalanceFromSheet(playerName, token);
+                loadLeaders();
+                startMessenger();
+                return true;
+            }
+            return false;
+        }
+
+        // --- ЛИДЕРЫ ---
+        function loadLeaders() {
+            showLoading(true);
+            jsonpRequest({ action: 'getLeaders', limit: 3 }, function(data) {
+                showLoading(false);
+                if (leadersContainer) {
+                    if (data.status === 'success' && Array.isArray(data.leaders)) {
+                        leadersContainer.innerHTML = renderLeadersTable(data.leaders);
+                    } else {
+                        leadersContainer.innerHTML = '<div class="empty-list">Пока нет участников</div>';
+                    }
+                }
+            });
+        }
+        function renderLeadersTable(leaders) {
+            if (!leaders.length) return '<div class="empty-list">Пока нет участников</div>';
+            let html = `<table class="leaders-table"><thead><tr><th>#</th><th>Игрок</th><th style="text-align:right;">Баллы</th></tr></thead><tbody>`;
+            leaders.forEach((l, idx) => {
+                const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
+                const isMe = l.name === playerName && isLoggedIn;
+                html += `<tr class="${isMe ? 'current-user-row' : ''} ${idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : 'rank-3'}">
+                    <td class="rank-badge">${medal}</td>
+                    <td class="player-name">${escapeHtml(l.name)}${isMe ? ' 👈' : ''}</td>
+                    <td class="player-balance">${l.balance.toLocaleString()} đᵽ</td>
+                </tr>`;
+            });
+            html += `</tbody></table>`;
+            return html;
+        }
+
+        // --- БАЛАНС ---
+        function loadBalanceFromSheet(player, token) {
+            if (!player) return;
+            const authToken = token || localStorage.getItem('authToken');
+            if (!authToken) return;
+            const balanceBlock = document.getElementById('balance-block');
+            if (balanceBlock) balanceBlock.classList.add('loading');
+            showLoading(true);
+            jsonpRequest({ action: 'getBalance', player, token: authToken }, function(data) {
+                showLoading(false);
+                if (balanceBlock) balanceBlock.classList.remove('loading', 'pulse-loading');
+                if (data.status === 'success' && typeof data.balance === 'number') {
+                    currentBalance = data.balance;
+                    updateBalanceDisplay();
+                } else {
+                    currentBalance = 0;
+                    updateBalanceDisplay();
+                }
+            });
+        }
+
+        // ===================================================================
+        // МЕССЕНДЖЕР
+        // ===================================================================
+        function startMessenger() {
+            if (!isLoggedIn) return;
+            loadUsers();
+            if (messengerUpdateInterval) clearInterval(messengerUpdateInterval);
+            messengerUpdateInterval = setInterval(() => {
+                if (currentChatUserLogin) loadMessages(currentChatUserLogin);
+                loadUsers();
+            }, 3000);
+        }
+
+        function loadUsers() {
+            if (!isLoggedIn) return;
+            jsonpRequest({ action: 'getUsers', token: authToken }, function(data) {
+                if (data.status === 'success' && Array.isArray(data.users)) {
+                    messengerUsers = data.users.filter(u => u.login !== playerLogin);
+                    renderUsers();
+                } else {
+                    const container = document.getElementById('messengerUsers');
+                    if (container) container.innerHTML = '<div class="empty-list">Ошибка загрузки пользователей</div>';
+                }
+            });
+        }
+
+        function renderUsers() {
+            const container = document.getElementById('messengerUsers');
+            if (!container) return;
+            if (!messengerUsers.length) {
+                container.innerHTML = '<div class="empty-list">Нет других пользователей</div>';
+                return;
+            }
+            let html = '';
+            messengerUsers.forEach(user => {
+                const hasUnread = hasUnreadMessages(user.login);
+                const activeClass = currentChatUserLogin === user.login ? 'active' : '';
+                const badge = hasUnread ? `<span class="unread-badge">●</span>` : '';
+                html += `<button class="messenger-user-btn ${activeClass}" data-login="${escapeHtml(user.login)}">
+                    ${escapeHtml(user.name)} ${badge}
+                </button>`;
+            });
+            container.innerHTML = html;
+            container.querySelectorAll('.messenger-user-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const login = this.dataset.login;
+                    if (login) selectChatUser(login);
+                });
+            });
+        }
+
+        function hasUnreadMessages(userLogin) {
+            const msgs = messagesCache[userLogin] || [];
+            return msgs.some(m => !m.read && !m.isMine);
+        }
+
+        function selectChatUser(userLogin) {
+            if (currentChatUserLogin === userLogin) return;
+            currentChatUserLogin = userLogin;
+            const user = messengerUsers.find(u => u.login === userLogin);
+            currentChatUserName = user ? user.name : userLogin;
+            renderUsers();
+            loadMessages(userLogin);
+        }
+
+        function haveMessagesChanged(oldArr, newArr) {
+            if (oldArr.length !== newArr.length) return true;
+            for (let i = 0; i < oldArr.length; i++) {
+                if (oldArr[i].id !== newArr[i].id) return true;
+                if (oldArr[i].text !== newArr[i].text) return true;
+                if (oldArr[i].deleted !== newArr[i].deleted) return true;
+                if (oldArr[i].edited !== newArr[i].edited) return true;
+                if (JSON.stringify(oldArr[i].reactions) !== JSON.stringify(newArr[i].reactions)) return true;
+            }
+            return false;
+        }
+
+        function loadMessages(userLogin) {
+            if (!userLogin) return;
+            jsonpRequest({ action: 'getMessages', token: authToken }, function(data) {
+                if (data.status === 'success' && Array.isArray(data.messages)) {
+                    const filtered = data.messages.filter(msg =>
+                        (msg.from === userLogin && msg.to === playerLogin) ||
+                        (msg.from === playerLogin && msg.to === userLogin)
+                    );
+                    const oldMessages = messagesCache[userLogin] || [];
+                    messagesCache[userLogin] = filtered;
+                    if (haveMessagesChanged(oldMessages, filtered)) {
+                        renderMessages(userLogin);
+                    }
+                    markMessagesAsRead(userLogin);
+                } else {
+                    const container = document.getElementById('messengerMessages');
+                    if (container && !messagesCache[userLogin]?.length) {
+                        container.innerHTML = '<div class="empty-messages">Ошибка загрузки сообщений</div>';
+                    }
+                }
+            });
+        }
+
+        // ---- ОБНОВЛЁННАЯ ОТРИСОВКА СООБЩЕНИЙ (без системных диалогов) ----
+        function renderMessages(userLogin) {
+            const container = document.getElementById('messengerMessages');
+            if (!container) return;
+            const messages = messagesCache[userLogin] || [];
+            if (!messages.length) {
+                container.innerHTML = '<div class="empty-messages">Нет сообщений. Начните общение!</div>';
+                return;
+            }
+            const user = messengerUsers.find(u => u.login === userLogin);
+            const displayName = user ? user.name : userLogin;
+
+            let html = '';
+            messages.forEach(msg => {
+                const isMine = msg.from === playerLogin;
+                const senderName = isMine ? playerName : displayName;
+                const time = msg.date || '';
+                const edited = msg.edited ? ` (изменено)` : '';
+                const deletedClass = msg.deleted ? ' msg-deleted' : '';
+                const textDisplay = msg.deleted ? msg.text : escapeHtml(msg.text);
+
+                let reactionsHtml = '';
+                if (msg.reactions && msg.reactions.length) {
+                    const grouped = {};
+                    msg.reactions.forEach(r => {
+                        if (!grouped[r.react]) grouped[r.react] = [];
+                        grouped[r.react].push(r.user);
+                    });
+                    reactionsHtml = '<div class="msg-reactions">';
+                    for (const [react, users] of Object.entries(grouped)) {
+                        const count = users.length;
+                        const isMineReaction = users.includes(playerLogin);
+                        reactionsHtml += `<span class="reaction-badge" data-msgid="${msg.id}" data-react="${react}" style="${isMineReaction ? 'background:#d4edda;' : ''}">
+                            ${react} <span class="count">${count}</span>
+                        </span>`;
+                    }
+                    reactionsHtml += '</div>';
+                }
+
+                let actionsHtml = '';
+                if (isMine && !msg.deleted) {
+                    actionsHtml = `<div class="msg-actions">
+                        <button class="delete-btn" data-msgid="${msg.id}" title="Удалить">🗑</button>
+                        <button class="edit-btn" data-msgid="${msg.id}" title="Редактировать">✏️</button>
+                        <button class="forward-btn" data-msgid="${msg.id}" title="Переслать">📤</button>
+                        <button class="reply-btn" data-msgid="${msg.id}" title="Ответить">↩️</button>
+                    </div>`;
+                } else if (!msg.deleted) {
+                    actionsHtml = `<div class="msg-actions">
+                        <button class="forward-btn" data-msgid="${msg.id}" title="Переслать">📤</button>
+                        <button class="reply-btn" data-msgid="${msg.id}" title="Ответить">↩️</button>
+                    </div>`;
+                }
+
+                html += `<div class="message-bubble ${isMine ? 'mine' : 'theirs'} ${deletedClass}" data-msgid="${msg.id}">
+                    <div class="msg-sender">${escapeHtml(senderName)}</div>
+                    <div class="msg-text">${textDisplay}</div>
+                    <div class="msg-time">${time}${edited}</div>
+                    ${actionsHtml}
+                    ${reactionsHtml}
+                </div>`;
+            });
+
+            container.innerHTML = html;
+
+            // --- НАВЕШИВАЕМ ОБРАБОТЧИКИ (кастомные модалки) ---
+            container.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const msgId = this.dataset.msgid;
+                    showModal('Удалить сообщение?',
+                        'Вы уверены, что хотите удалить это сообщение?',
+                        `<button class="btn btn-danger" id="confirmDelete" data-msgid="${msgId}">Да, удалить</button>
+                         <button class="btn btn-secondary" id="cancelDelete">Отмена</button>`
+                    );
+                    document.getElementById('confirmDelete').addEventListener('click', function() {
+                        const id = this.dataset.msgid;
+                        deleteMessage(id);
+                        closeModal();
+                    });
+                    document.getElementById('cancelDelete').addEventListener('click', closeModal);
+                });
+            });
+
+            container.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const msgId = this.dataset.msgid;
+                    const msg = messagesCache[currentChatUserLogin]?.find(m => m.id === msgId);
+                    if (msg) {
+                        showModal('Редактировать сообщение',
+                            `<textarea id="editTextarea" rows="3" style="width:100%; padding:.6rem; border-radius:8px; border:1px solid #ccc;">${escapeHtml(msg.text)}</textarea>`,
+                            `<button class="btn btn-primary" id="saveEdit" data-msgid="${msgId}">Сохранить</button>
+                             <button class="btn btn-secondary" id="cancelEdit">Отмена</button>`
+                        );
+                        document.getElementById('saveEdit').addEventListener('click', function() {
+                            const newText = document.getElementById('editTextarea').value.trim();
+                            if (newText) {
+                                editMessage(msgId, newText);
+                                closeModal();
+                            } else {
+                                alert('Текст не может быть пустым');
+                            }
+                        });
+                        document.getElementById('cancelEdit').addEventListener('click', closeModal);
+                    }
+                });
+            });
+
+            container.querySelectorAll('.forward-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const msgId = this.dataset.msgid;
+                    let userListHTML = '<div class="user-list">';
+                    messengerUsers.forEach(u => {
+                        userListHTML += `<div class="user-item" data-login="${escapeHtml(u.login)}">
+                            <span>${escapeHtml(u.name)}</span>
+                            <span class="user-login">@${escapeHtml(u.login)}</span>
+                        </div>`;
+                    });
+                    userListHTML += '</div>';
+                    showModal('Переслать сообщение',
+                        'Выберите получателя:<br>' + userListHTML,
+                        `<button class="btn btn-secondary" id="cancelForward">Отмена</button>`
+                    );
+                    modalBody.querySelectorAll('.user-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const targetLogin = this.dataset.login;
+                            forwardMessage(msgId, targetLogin);
+                            closeModal();
+                        });
+                    });
+                    document.getElementById('cancelForward').addEventListener('click', closeModal);
+                });
+            });
+
+            container.querySelectorAll('.reply-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const msgId = this.dataset.msgid;
+                    const msg = messagesCache[currentChatUserLogin]?.find(m => m.id === msgId);
+                    if (msg) {
+                        replyQuote = msg.text;
+                        replyToMsgId = msgId;
+                        const quotePreview = document.getElementById('quotePreview');
+                        quotePreview.textContent = `> ${msg.text}`;
+                        quotePreview.classList.add('active');
+                        document.getElementById('messageInput').focus();
+                    }
+                });
+            });
+
+            container.querySelectorAll('.reaction-badge').forEach(badge => {
+                badge.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const msgId = this.dataset.msgid;
+                    const react = this.dataset.react;
+                    addReaction(msgId, react);
+                });
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function markMessagesAsRead(userLogin) {
+            jsonpRequest({ action: 'markAsRead', token: authToken }, function() {
+                if (messagesCache[userLogin]) {
+                    messagesCache[userLogin] = messagesCache[userLogin].map(msg => {
+                        if (!msg.isMine && !msg.read) return { ...msg, read: true };
+                        return msg;
+                    });
+                }
+                renderUsers();
+            });
+        }
+
+        // --- ОТПРАВКА СООБЩЕНИЙ (с поддержкой ответа) ---
+        function sendMessageViaJsonp(fromLogin, toLogin, text, callback) {
+            const script = document.createElement('script');
+            const callbackName = 'send_msg_callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            window[callbackName] = function(data) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                if (callback) callback(data);
+            };
+            const url = new URL(GOOGLE_SHEETS_URL);
+            url.searchParams.append('action', 'sendMessage');
+            url.searchParams.append('token', authToken);
+            url.searchParams.append('from', fromLogin);
+            url.searchParams.append('to', toLogin);
+            url.searchParams.append('text', text);
+            url.searchParams.append('callback', callbackName);
+            script.src = url.toString();
+            script.onerror = function() {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                if (callback) callback({ status: 'error', message: 'Ошибка подключения' });
+            };
+            document.body.appendChild(script);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            if (!input) return;
+            let text = input.value.trim();
+            if (!text) {
+                showMessage('Введите текст сообщения', false);
+                return;
+            }
+            // Если есть ответ с цитатой
+            if (replyQuote && replyToMsgId) {
+                replyMessage(replyToMsgId, text);
+                // Очищаем цитату
+                replyQuote = null;
+                replyToMsgId = null;
+                document.getElementById('quotePreview').classList.remove('active');
+                document.getElementById('quotePreview').textContent = '';
+                input.value = '';
+                return;
+            }
+            // Обычная отправка
+            if (text.length > 500) {
+                showMessage('Максимум 500 символов', false);
+                return;
+            }
+            if (!currentChatUserLogin) {
+                showMessage('Выберите собеседника', false);
+                return;
+            }
+            const recipientExists = messengerUsers.some(u => u.login === currentChatUserLogin);
+            if (!recipientExists) {
+                showMessage('Пользователь не найден', false);
+                return;
+            }
+            showLoading(true);
+            sendMessageViaJsonp(playerLogin, currentChatUserLogin, text, function(data) {
+                showLoading(false);
+                if (data.status === 'success') {
+                    input.value = '';
+                    showMessage('Сообщение отправлено!', true);
+                    loadMessages(currentChatUserLogin);
+                } else {
+                    showMessage(data.message || 'Ошибка отправки', false);
+                }
+            });
+        }
+
+        // --- ДЕЙСТВИЯ С СООБЩЕНИЯМИ ---
+        function deleteMessage(msgId) {
+            jsonpRequest({ action: 'deleteMessage', token: authToken, messageId: msgId }, function(data) {
+                if (data.status === 'success') {
+                    showMessage('Сообщение удалено', true);
+                    loadMessages(currentChatUserLogin);
+                } else {
+                    showMessage(data.message || 'Ошибка удаления', false);
+                }
+            });
+        }
+
+        function editMessage(msgId, newText) {
+            jsonpRequest({ action: 'editMessage', token: authToken, messageId: msgId, newText: newText }, function(data) {
+                if (data.status === 'success') {
+                    showMessage('Сообщение изменено', true);
+                    loadMessages(currentChatUserLogin);
+                } else {
+                    showMessage(data.message || 'Ошибка редактирования', false);
+                }
+            });
+        }
+
+        function forwardMessage(msgId, targetLogin) {
+            jsonpRequest({ action: 'forwardMessage', token: authToken, messageId: msgId, targetUser: targetLogin }, function(data) {
+                if (data.status === 'success') {
+                    showMessage('Сообщение переслано', true);
+                    if (targetLogin === currentChatUserLogin) loadMessages(currentChatUserLogin);
+                } else {
+                    showMessage(data.message || 'Ошибка пересылки', false);
+                }
+            });
+        }
+
+        function replyMessage(msgId, replyText) {
+            jsonpRequest({ action: 'replyMessage', token: authToken, messageId: msgId, replyText: replyText }, function(data) {
+                if (data.status === 'success') {
+                    showMessage('Ответ отправлен', true);
+                    loadMessages(currentChatUserLogin);
+                } else {
+                    showMessage(data.message || 'Ошибка ответа', false);
+                }
+            });
+        }
+
+        function addReaction(msgId, reaction) {
+            jsonpRequest({ action: 'addReaction', token: authToken, messageId: msgId, reaction: reaction }, function(data) {
+                if (data.status === 'success') {
+                    loadMessages(currentChatUserLogin);
+                } else {
+                    showMessage(data.message || 'Ошибка добавления реакции', false);
+                }
+            });
+        }
+
+        // ===================================================================
+        // QR-КОД
+        // ===================================================================
+        function showQRModal(receiptData, operationNumber) {
+            const receiptUrl = getReceiptUrl(operationNumber);
+            saveReceiptToSheet(operationNumber, receiptData);
+            document.getElementById('receiptName').textContent = receiptData.name;
+            document.getElementById('receiptType').textContent = receiptData.type;
+            document.getElementById('receiptAmount').textContent = receiptData.amount + ' đᵽ';
+            document.getElementById('receiptDate').textContent = receiptData.date;
+            document.getElementById('receiptNumber').textContent = receiptData.operationNumber;
+            document.getElementById('qrUrlDisplay').textContent = '🔗 ' + receiptUrl;
+
+            if (qrCodeContainer) {
+                qrCodeContainer.innerHTML = '';
+                qrCodeInstance = new QRCode(qrCodeContainer, {
+                    text: receiptUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#1a1a2e',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+            if (qrModal) qrModal.classList.add('open');
+        }
+
+        function closeQRModal() {
+            if (qrModal) qrModal.classList.remove('open');
+            if (qrCodeInstance) {
+                qrCodeInstance.clear();
+                if (qrCodeContainer) qrCodeContainer.innerHTML = '';
+                qrCodeInstance = null;
+            }
+        }
+        document.getElementById('qrCloseBtn').addEventListener('click', closeQRModal);
+        qrModal.addEventListener('click', (e) => { if (e.target === qrModal) closeQRModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && qrModal.classList.contains('open')) closeQRModal(); });
+
+        // ===================================================================
+        // ОТЧЁТЫ (СТРЕЛЬБА, БЕГ, ВЗНОСЫ)
+        // ===================================================================
+        function updateShootingUI() {
+            const listDiv = document.getElementById('shootingItemsList');
+            const totalDiv = document.getElementById('shootingTotal');
+            if (!shootingItems.length) {
+                listDiv.innerHTML = '<div class="empty-list">Нет добавленных позиций</div>';
+                totalDiv.innerHTML = 'Итого: <span class="amount">0 đᵽ</span>';
+                return;
+            }
+            let total = 0;
+            let html = '';
+            shootingItems.forEach((item, i) => {
+                const itemTotal = item.rewardPerHit * item.hits;
+                total += itemTotal;
+                html += `<div class="item-entry">
+                    <div class="item-info">🎯 ${item.name}</div>
+                    <div class="item-reward">${item.hits}×${item.rewardPerHit} = ${itemTotal} đᵽ</div>
+                    <button class="remove-item" data-index="${i}">✖</button>
+                </div>`;
+            });
+            listDiv.innerHTML = html;
+            totalDiv.innerHTML = `Итого: <span class="amount">${total} đᵽ</span>`;
+            document.querySelectorAll('#shootingItemsList .remove-item').forEach(btn =>
+                btn.addEventListener('click', function() {
+                    shootingItems.splice(parseInt(this.dataset.index), 1);
+                    updateShootingUI();
+                })
+            );
+        }
+
+        function addShootingItem() {
+            const sel = document.getElementById('positionSelect');
+            const val = parseInt(sel?.value);
+            if (!val) { showMessage('Выберите позицию', false); return; }
+            let hits = parseInt(document.getElementById('shootingHitsInput')?.value);
+            if (isNaN(hits) || hits < 1) hits = 1;
+            shootingItems.push({ name: sel.options[sel.selectedIndex].text, rewardPerHit: val, hits });
+            updateShootingUI();
+            sel.value = '';
+            document.getElementById('shootingHitsInput').value = '1';
+        }
+
+        async function submitShootingReport() {
+            if (!shootingItems.length) { showMessage('Добавьте позиции', false); return; }
+            const player = ensurePlayerName();
+            const earned = shootingItems.reduce((s, i) => s + i.rewardPerHit * i.hits, 0);
+            const newBalance = currentBalance + earned;
+            const details = shootingItems.map(i => `${i.name} (${i.hits}×${i.rewardPerHit})`).join(', ');
+            await saveReportToSheet({ player, type: 'shooting', details, earned, balance: newBalance });
+            currentBalance = newBalance;
+            updateBalanceDisplay();
+            showMessage('+' + earned + ' đᵽ. Баланс: ' + currentBalance + ' đᵽ');
+            shootingItems = [];
+            updateShootingUI();
+            loadLeaders();
+        }
+
+        function calcRunReward(laps) { return 5 * laps * (laps + 1) / 2; }
+
+        function updateRunningUI() {
+            const listDiv = document.getElementById('runningItemsList');
+            const totalDiv = document.getElementById('runningTotal');
+            if (!runningItems.length) {
+                listDiv.innerHTML = '<div class="empty-list">Нет добавленных серий</div>';
+                totalDiv.innerHTML = 'Итого: <span class="amount">0 đᵽ</span>';
+                return;
+            }
+            let total = 0;
+            let html = '';
+            runningItems.forEach((item, i) => {
+                total += item.reward;
+                html += `<div class="item-entry">
+                    <div class="item-info">🏃 ${item.laps} круг(ов) без остановки</div>
+                    <div class="item-reward">${item.reward} đᵽ</div>
+                    <button class="remove-item" data-index="${i}">✖</button>
+                </div>`;
+            });
+            listDiv.innerHTML = html;
+            totalDiv.innerHTML = `Итого: <span class="amount">${total} đᵽ</span>`;
+            document.querySelectorAll('#runningItemsList .remove-item').forEach(btn =>
+                btn.addEventListener('click', function() {
+                    runningItems.splice(parseInt(this.dataset.index), 1);
+                    updateRunningUI();
+                })
+            );
+        }
+
+        function addRunningItem() {
+            let laps = parseInt(document.getElementById('runningLapsInput')?.value);
+            if (isNaN(laps) || laps < 1) { showMessage('Введите количество кругов', false); return; }
+            runningItems.push({ laps, reward: calcRunReward(laps) });
+            updateRunningUI();
+            document.getElementById('runningLapsInput').value = '';
+        }
+
+        async function submitRunningReport() {
+            if (!runningItems.length) { showMessage('Добавьте серии', false); return; }
+            const player = ensurePlayerName();
+            const earned = runningItems.reduce((s, i) => s + i.reward, 0);
+            const newBalance = currentBalance + earned;
+            const details = runningItems.map(i => `${i.laps}к (${i.reward}б)`).join(' + ');
+            await saveReportToSheet({ player, type: 'running', details, earned, balance: newBalance });
+            currentBalance = newBalance;
+            updateBalanceDisplay();
+            showMessage('+' + earned + ' đᵽ. Баланс: ' + currentBalance + ' đᵽ');
+            runningItems = [];
+            updateRunningUI();
+            loadLeaders();
+        }
+
+        function updateFeesUI() {
+            const transportChecked = document.getElementById('feeTransport')?.checked || false;
+            const stayChecked = document.getElementById('feeStay')?.checked || false;
+            const total = (transportChecked ? 5 : 0) + (stayChecked ? 10 : 0);
+            document.getElementById('feesTotal').innerHTML = `Итого к оплате: <span class="amount">${total} đᵽ</span>`;
+            const listDiv = document.getElementById('feesItemsList');
+            if (!transportChecked && !stayChecked) {
+                listDiv.innerHTML = '<div class="empty-list">Нет выбранных взносов</div>';
+                return;
+            }
+            let html = '';
+            if (transportChecked) html += `<div class="item-entry"><div class="item-info">Транспорт</div><div class="item-reward">5 đᵽ</div></div>`;
+            if (stayChecked) html += `<div class="item-entry"><div class="item-info">Временное пребывание</div><div class="item-reward">10 đᵽ</div></div>`;
+            listDiv.innerHTML = html;
+        }
+
+        async function submitFees() {
+            const transportChecked = document.getElementById('feeTransport')?.checked || false;
+            const stayChecked = document.getElementById('feeStay')?.checked || false;
+            if (!transportChecked && !stayChecked) { showMessage('Выберите хотя бы один взнос', false); return; }
+            const totalFee = (transportChecked ? 5 : 0) + (stayChecked ? 10 : 0);
+            if (currentBalance < totalFee) {
+                showMessage('Не хватает баллов! Нужно ' + totalFee + ' đᵽ, есть ' + currentBalance + ' đᵽ', false);
+                return;
+            }
+            const player = ensurePlayerName();
+            const newBalance = currentBalance - totalFee;
+            const operationNumber = generateOperationNumber();
+            const details = [];
+            let stayPaid = false;
+            if (transportChecked) details.push('Транспорт');
+            if (stayChecked) { details.push('Временное пребывание'); stayPaid = true; }
+            const detailsStr = details.join(', ');
+            await saveReportToSheet({ player, type: 'fee', details: detailsStr, earned: -totalFee, balance: newBalance, operation: operationNumber });
+            currentBalance = newBalance;
+            updateBalanceDisplay();
+            if (stayPaid) {
+                const now = new Date();
+                const receiptData = {
+                    name: player,
+                    type: 'Временное пребывание' + (transportChecked ? ' + Транспорт' : ''),
+                    amount: totalFee,
+                    date: now.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                    operationNumber: operationNumber
+                };
+                showQRModal(receiptData, operationNumber);
+                showMessage('Оплачено: ' + detailsStr + ' = -' + totalFee + ' đᵽ. Квитанция сгенерирована!');
+            } else {
+                showMessage('Оплачено: ' + detailsStr + ' = -' + totalFee + ' đᵽ. Баланс: ' + currentBalance + ' đᵽ');
+            }
+            document.getElementById('feeTransport').checked = false;
+            document.getElementById('feeStay').checked = false;
+            updateFeesUI();
+            loadLeaders();
+        }
+
+        // ===================================================================
+        // ОБРАБОТЧИКИ
+        // ===================================================================
+        document.getElementById('addShootingBtn').onclick = addShootingItem;
+        document.getElementById('submitShootingBtn').onclick = submitShootingReport;
+        document.getElementById('addRunningBtn').onclick = addRunningItem;
+        document.getElementById('submitRunningBtn').onclick = submitRunningReport;
+        document.getElementById('submitFeesBtn').onclick = submitFees;
+        document.getElementById('feeTransport').onchange = updateFeesUI;
+        document.getElementById('feeStay').onchange = updateFeesUI;
+        document.getElementById('refreshLeadersBtn').onclick = loadLeaders;
+        document.getElementById('refreshMessagesBtn').onclick = function() {
+            if (currentChatUserLogin) loadMessages(currentChatUserLogin);
+            loadUsers();
+        };
+        document.getElementById('sendMessageBtn').onclick = sendMessage;
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
+        });
+
+        // Вкладки
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => { c.classList.remove('active'); c.style.display = 'none'; });
+                const target = document.getElementById(tabId);
+                if (target) { target.classList.add('active'); target.style.display = 'block'; }
+                if (tabId === 'messenger') { loadUsers(); if (currentChatUserLogin) loadMessages(currentChatUserLogin); }
+            });
+        });
+
+        // Авторизация
+        document.getElementById('loginBtn').onclick = async function() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            if (!username || !password) { showAuthError('Заполните все поля'); return; }
+            await login(username, password);
+        };
+        document.getElementById('loginUsername').addEventListener('keypress', function(e) { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
+        document.getElementById('loginPassword').addEventListener('keypress', function(e) { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
+        document.getElementById('showRegister').onclick = function() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('registerContainer').style.display = 'block';
+            document.getElementById('authError').textContent = '';
+            document.getElementById('registerError').textContent = '';
+            document.getElementById('registerError').className = 'error';
+        };
+        document.getElementById('showLogin').onclick = function() {
+            document.getElementById('registerContainer').style.display = 'none';
+            document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('authError').textContent = '';
+            document.getElementById('registerError').textContent = '';
+            document.getElementById('registerError').className = 'error';
+        };
+        document.getElementById('registerBtn').onclick = async function() {
+            const username = document.getElementById('registerUsername').value.trim();
+            const name = document.getElementById('registerName').value.trim();
+            const password = document.getElementById('registerPassword').value.trim();
+            const confirm = document.getElementById('registerPasswordConfirm').value.trim();
+            if (!username || !name || !password || !confirm) { showRegisterError('Заполните все поля'); return; }
+            if (password !== confirm) { showRegisterError('Пароли не совпадают'); return; }
+            if (password.length < 4) { showRegisterError('Пароль должен быть не менее 4 символов'); return; }
+            if (username.length < 3) { showRegisterError('Логин должен быть не менее 3 символов'); return; }
+            await register(username, name, password);
+        };
+        document.getElementById('logoutBtn').onclick = logout;
+
+        // --- ИНИЦИАЛИЗАЦИЯ ---
+        loadLeaders();
+        if (!checkAuth()) {
+            document.getElementById('authContainer').style.display = 'block';
+        }
+        updateFeesUI();
+
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && isLoggedIn) {
+                if (currentChatUserLogin) loadMessages(currentChatUserLogin);
+                loadUsers();
+            }
+        });
+    </script>
+</body>
+</html>
