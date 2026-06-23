@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="config.js"></script>
     <style>
-        /* ===== ВСЕ СТИЛИ (как в предыдущей версии, плюс стили переключателя) ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         html { background:#1a1a2e; scroll-behavior:smooth; max-width:100%; overflow-x:hidden; }
         body { background:#e1e1e1; min-height:100vh; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; color:#1a1a2e; margin:0; padding:0; padding-top:env(safe-area-inset-top,0); padding-bottom:env(safe-area-inset-bottom,0); max-width:100%; overflow-x:hidden; display:flex; flex-direction:column; position:relative; }
@@ -97,43 +96,11 @@
         .tab-btn.active::before { opacity:0; }
         .tab-content { display:none; background:rgba(255,255,255,0.65) !important; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); border-radius:20px; padding:1.8rem; box-shadow:0 4px 20px rgba(0,0,0,.05); animation:fadeSlideUp .5s ease; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; }
         .tab-content.active { display:block; }
-
-        /* ===== ПЕРЕКЛЮЧАТЕЛЬ ЛИЧНЫЙ / ОБЩИЙ ЧАТ ===== */
-        .chat-mode-switch {
-            display: flex;
-            gap: .5rem;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
-        .chat-mode-switch button {
-            padding: .4rem 1.2rem;
-            border-radius: 20px;
-            border: 2px solid rgba(232,236,241,0.7);
-            background: rgba(248,250,252,0.7);
-            cursor: pointer;
-            font-weight: 500;
-            font-size: .9rem;
-            transition: all .3s ease;
-            color: #555;
-        }
-        .chat-mode-switch button.active {
-            border-color: #2c7da0;
-            background: #2c7da0;
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(44,125,160,.25);
-        }
-        .chat-mode-switch button:hover:not(.active) {
-            border-color: #2c7da0;
-            background: rgba(232,240,248,0.8);
-        }
-        .chat-mode-indicator {
-            text-align: center;
-            font-size: .9rem;
-            color: #888;
-            margin-bottom: .5rem;
-        }
-
-        /* ===== МЕССЕНДЖЕР (общий) ===== */
+        .chat-mode-switch { display:flex; gap:.5rem; justify-content:center; margin-bottom:1rem; }
+        .chat-mode-switch button { padding:.4rem 1.2rem; border-radius:20px; border:2px solid rgba(232,236,241,0.7); background:rgba(248,250,252,0.7); cursor:pointer; font-weight:500; font-size:.9rem; transition:all .3s ease; color:#555; }
+        .chat-mode-switch button.active { border-color:#2c7da0; background:#2c7da0; color:#fff; box-shadow:0 4px 15px rgba(44,125,160,.25); }
+        .chat-mode-switch button:hover:not(.active) { border-color:#2c7da0; background:rgba(232,240,248,0.8); }
+        .chat-mode-indicator { text-align:center; font-size:.9rem; color:#888; margin-bottom:.5rem; }
         .messenger-container { display:flex; flex-direction:column; gap:1rem; height:500px; max-height:70vh; }
         .messenger-users { display:flex; gap:.5rem; flex-wrap:wrap; padding-bottom:.5rem; border-bottom:2px solid rgba(240,244,248,0.7); overflow-x:auto; }
         .messenger-user-btn { padding:.5rem 1.2rem; border-radius:20px; border:2px solid rgba(232,236,241,0.7); background:rgba(248,250,252,0.7); cursor:pointer; font-weight:500; font-size:.9rem; transition:all .3s ease; white-space:nowrap; color:#555; }
@@ -177,8 +144,6 @@
         .empty-messages { text-align:center; color:#999; padding:2rem; font-style:italic; }
         .messenger-refresh { background:none; border:none; cursor:pointer; font-size:1.1rem; color:#2c7da0; transition:all .3s ease; padding:.2rem .5rem; }
         .messenger-refresh:hover { transform:rotate(180deg) scale(1.1); }
-
-        /* ===== ОСТАЛЬНЫЕ СТИЛИ (списки, панели, итого, подсказки) ===== */
         .items-list { background:rgba(248,250,252,0.7); border-radius:12px; padding:.5rem; margin:1rem 0; max-height:200px; overflow-y:auto; border:1px solid rgba(232,236,241,0.7); transition:all .3s ease; width:100%; }
         .items-list:hover { border-color:#2c7da0; }
         .items-list::-webkit-scrollbar { width:6px; }
@@ -265,17 +230,15 @@
         .fee-options input[type="checkbox"]:hover { transform:scale(1.1); }
         .fee-options .fee-label { flex:1; font-size:1rem; font-weight:500; }
         .fee-options .fee-price { font-weight:700; color:#dc3545; font-size:1.1rem; }
-        @media (max-width:768px) { /* адаптив */ }
-        @media (max-width:480px) { /* адаптив */ }
+        @media (max-width:768px) { header{padding:.6rem 1rem;}.header-inner{gap:.8rem;}.header-title{font-size:1rem;}.header-nav{margin-left:0;width:100%;justify-content:center;}.user-info{margin-left:0;width:100%;justify-content:center;}.footer-inner{max-width:100%;gap:1rem 1.5rem;justify-items:center;}.footer-section{align-items:center;}.footer-link{justify-content:center;font-size:.8rem;}.footer-link:hover{transform:translateY(2px);}.footer-link img{width:16px;height:16px;}main{padding:1.5rem 1rem 2rem;}.balance-amount{font-size:2.8rem;}.auth-container{padding:1.8rem;margin:1.5rem auto;}.report-tabs{flex-direction:column;padding:.3rem;}.tab-btn{padding:.6rem;font-size:.9rem;width:100%;}.tab-content{padding:1.2rem;}.add-panel{flex-direction:column;}.add-panel select,.add-panel input{min-width:unset;width:100%;}.leaders-table th,.leaders-table td{padding:.5rem .6rem;font-size:.85rem;}.qr-content{padding:1.5rem;width:95%;}#balance-block,#leaders-block,#messenger-block{scroll-margin-top:120px;}.messenger-container{height:400px;max-height:60vh;}.messenger-messages{max-height:200px;min-height:150px;}.message-bubble{max-width:90%;font-size:.9rem;} }
+        @media (max-width:480px) { main{padding:1rem .8rem 1.5rem;}.balance-amount{font-size:2.2rem;}.leaders-title{font-size:1.1rem;}.qr-content{padding:1.2rem;}.auth-container{padding:1.2rem;margin:1rem auto;}.auth-container h2{font-size:1.3rem;}.tab-content h2{font-size:1.1rem;}#balance-block,#leaders-block,#messenger-block{scroll-margin-top:140px;}.footer-inner{gap:.5rem 1rem;}.footer-section-title{font-size:.6rem;}.footer-link{font-size:.7rem;}.footer-link img{width:14px;height:14px;}.messenger-container{height:350px;max-height:55vh;}.messenger-messages{max-height:150px;min-height:120px;}.messenger-user-btn{padding:.3rem .8rem;font-size:.8rem;} }
         @media (prefers-reduced-motion:reduce) { *{animation-duration:.01ms !important;transition-duration:.01ms !important;} html{scroll-behavior:auto !important;} }
     </style>
 </head>
 <body>
 
-    <!-- ФОН: МИШЕНИ -->
     <canvas id="bgCanvas"></canvas>
 
-    <!-- ШАПКА -->
     <header>
         <div class="header-inner">
             <div class="header-brand">
@@ -295,7 +258,6 @@
     </header>
 
     <main>
-        <!-- АВТОРИЗАЦИЯ -->
         <div id="authContainer" class="auth-container">
             <h2>🔐 Вход</h2>
             <p class="subtitle">Войдите в систему учёта баллов</p>
@@ -307,7 +269,6 @@
             <button class="btn-primary" id="loginBtn">Войти</button>
             <div class="auth-switch">Нет аккаунта? <a id="showRegister">Зарегистрироваться</a></div>
         </div>
-        <!-- РЕГИСТРАЦИЯ -->
         <div id="registerContainer" class="auth-container" style="display:none;">
             <h2>📝 Регистрация</h2>
             <p class="subtitle">Создайте новый аккаунт</p>
@@ -320,22 +281,17 @@
             <div class="auth-switch">Уже есть аккаунт? <a id="showLogin">Войти</a></div>
         </div>
 
-        <!-- ОСНОВНОЙ КОНТЕНТ -->
         <div id="mainContent" class="main-content">
-            <!-- ===== СООБЩЕНИЯ СИСТЕМЫ ===== -->
             <div id="messageBox" class="message"></div>
 
-            <!-- ЛИДЕРЫ -->
             <div id="leaders-block" class="leaders-block">
                 <div class="leaders-title">🏆 Лидеры <button class="refresh-leaders" id="refreshLeadersBtn">🔄</button></div>
                 <div id="leadersContainer"><div class="loading">Загрузка...</div></div>
             </div>
-            <!-- БАЛАНС -->
             <div id="balance-block" class="balance-block" style="display:none;">
                 <div class="balance-title">💰 Баланс</div>
                 <div class="balance-amount"><span id="balanceValue">0</span><span class="currency">đᵽ</span></div>
             </div>
-            <!-- ВКЛАДКИ -->
             <div class="report-tabs" id="reportTabs" style="display:none;">
                 <button class="tab-btn active" data-tab="shooting">🎯 Стрельба</button>
                 <button class="tab-btn" data-tab="running">🏃 Бег</button>
@@ -343,7 +299,6 @@
                 <button class="tab-btn" data-tab="messenger">💬 Чат</button>
             </div>
 
-            <!-- СТРЕЛЬБА -->
             <div id="shooting" class="tab-content active">
                 <h2>📋 Подать отчёт по стрельбе</h2>
                 <div id="shootingItemsList" class="items-list"><div class="empty-list">Нет добавленных позиций</div></div>
@@ -375,7 +330,6 @@
                 <button class="submit-btn" id="submitShootingBtn">Отправить отчёт</button>
             </div>
 
-            <!-- БЕГ -->
             <div id="running" class="tab-content">
                 <h2>📋 Подать отчёт о беге</h2>
                 <div id="runningItemsList" class="items-list"><div class="empty-list">Нет добавленных серий</div></div>
@@ -388,7 +342,6 @@
                 <button class="submit-btn" id="submitRunningBtn">Отправить отчёт</button>
             </div>
 
-            <!-- ВЗНОСЫ -->
             <div id="fees" class="tab-content">
                 <h2>💰 Оплатить взносы</h2>
                 <div class="fee-options">
@@ -401,27 +354,16 @@
                 <button class="submit-btn fee" id="submitFeesBtn">Оплатить отмеченные взносы</button>
             </div>
 
-            <!-- ЧАТ (личный и общий) -->
             <div id="messenger" class="tab-content">
                 <h2>💬 Чат <button class="messenger-refresh" id="refreshMessagesBtn">🔄</button></h2>
-
-                <!-- Переключатель режимов -->
                 <div class="chat-mode-switch">
                     <button id="modePrivate" class="active" data-mode="private">👤 Личные</button>
                     <button id="modeGroup" data-mode="group">👥 Общий чат</button>
                 </div>
                 <div class="chat-mode-indicator" id="modeIndicator">Личные сообщения</div>
-
                 <div class="messenger-container">
-                    <!-- Список пользователей (только для личных) -->
-                    <div class="messenger-users" id="messengerUsers">
-                        <div class="empty-list">Загрузка пользователей...</div>
-                    </div>
-                    <!-- Сообщения -->
-                    <div class="messenger-messages" id="messengerMessages">
-                        <div class="empty-messages">Выберите собеседника</div>
-                    </div>
-                    <!-- Поле ввода -->
+                    <div class="messenger-users" id="messengerUsers"><div class="empty-list">Загрузка пользователей...</div></div>
+                    <div class="messenger-messages" id="messengerMessages"><div class="empty-messages">Выберите собеседника</div></div>
                     <div class="messenger-input-area">
                         <div class="input-wrapper">
                             <div class="quote-preview" id="quotePreview"></div>
@@ -433,12 +375,10 @@
                 <div class="hint">Сообщения видят только вы и собеседник (в личном) или все (в общем чате). Макс. 500 символов.</div>
             </div>
 
-            <!-- Загрузчик -->
             <div id="loadingIndicator" class="loading" style="display:none;">Загрузка...</div>
         </div>
     </main>
 
-    <!-- ФУТЕР -->
     <footer>
         <div class="footer-inner">
             <div class="footer-section">
@@ -455,7 +395,6 @@
         </div>
     </footer>
 
-    <!-- QR-МОДАЛ -->
     <div id="qrModal" class="qr-modal">
         <div class="qr-content">
             <button class="qr-close" id="qrCloseBtn">&times;</button>
@@ -474,7 +413,6 @@
         </div>
     </div>
 
-    <!-- КАСТОМНЫЕ МОДАЛКИ -->
     <div class="custom-modal-overlay" id="customModalOverlay">
         <div class="custom-modal" id="customModal">
             <button class="modal-close" id="modalCloseBtn">&times;</button>
@@ -485,9 +423,6 @@
     </div>
 
     <script>
-        // ===================================================================
-        // 1. АНИМАЦИЯ МИШЕНЕЙ (без изменений)
-        // ===================================================================
         (function() {
             const canvas = document.getElementById('bgCanvas');
             const ctx = canvas.getContext('2d');
@@ -551,9 +486,6 @@
             animate();
         })();
 
-        // ===================================================================
-        // 2. ОСНОВНОЙ JS (с поддержкой личного и общего чата)
-        // ===================================================================
         const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
 
         let playerName = localStorage.getItem('playerName') || '';
@@ -565,16 +497,15 @@
         let authToken = localStorage.getItem('authToken') || '';
         let isLoggedIn = false;
 
-        // Переменные для мессенджера
         let messengerUsers = [];
-        let currentChatUserLogin = '';      // для личных сообщений
+        let currentChatUserLogin = '';
         let currentChatUserName = '';
-        let messagesCache = {};             // { login: [msg] } для личных
-        let groupMessagesCache = [];        // для общего чата
+        let messagesCache = {};
+        let groupMessagesCache = [];
         let messengerUpdateInterval = null;
         let replyQuote = null;
         let replyToMsgId = null;
-        let chatMode = 'private';           // 'private' или 'group'
+        let chatMode = 'private';
 
         const balanceValue = document.getElementById('balanceValue');
         const messageBox = document.getElementById('messageBox');
@@ -583,7 +514,6 @@
         const qrModal = document.getElementById('qrModal');
         const qrCodeContainer = document.getElementById('qrcode');
 
-        // --- КАСТОМНЫЕ МОДАЛКИ ---
         const modalOverlay = document.getElementById('customModalOverlay');
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
@@ -609,7 +539,6 @@
             if (e.key === 'Escape') closeModal();
         });
 
-        // --- JSONP ---
         function jsonpRequest(params, callback) {
             const script = document.createElement('script');
             const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
@@ -630,7 +559,6 @@
             document.body.appendChild(script);
         }
 
-        // --- ВСПОМОГАТЕЛЬНЫЕ ---
         function showAuthError(text) {
             const el = document.getElementById('authError');
             if (el) { el.textContent = text; el.className = 'error'; }
@@ -683,7 +611,6 @@
             return s.replace(/[&<>]/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[m]));
         }
 
-        // --- POST ---
         async function sendToSheet(data) {
             try {
                 await fetch(GOOGLE_SHEETS_URL, {
@@ -699,7 +626,6 @@
             }
         }
 
-        // --- РЕГИСТРАЦИЯ ---
         async function register(username, name, password) {
             try {
                 await sendToSheet({ type: 'register', username, name, password });
@@ -715,15 +641,13 @@
             }
         }
 
-        // --- СОХРАНЕНИЕ ОТЧЁТА ---
         async function saveReportToSheet(reportData) {
             try {
-                await sendToSheet({ ...reportData, token: authToken });
+                await sendToSheet({ login: playerLogin, ...reportData, token: authToken });
                 return true;
             } catch (e) { return false; }
         }
 
-        // --- КВИТАНЦИЯ ---
         async function saveReceiptToSheet(operationNumber, receiptData) {
             try {
                 await sendToSheet({
@@ -733,13 +657,13 @@
                     details: receiptData.type,
                     earned: -receiptData.amount,
                     balance: currentBalance,
+                    login: playerLogin,
                     token: authToken
                 });
                 localStorage.setItem('receipt_' + operationNumber, JSON.stringify(receiptData));
             } catch (e) { console.error('Ошибка сохранения квитанции:', e); }
         }
 
-        // --- ВХОД ---
         function login(username, password) {
             return new Promise((resolve) => {
                 showLoading(true);
@@ -780,7 +704,6 @@
             });
         }
 
-        // --- ВЫХОД ---
         function logout() {
             if (messengerUpdateInterval) {
                 clearInterval(messengerUpdateInterval);
@@ -808,7 +731,6 @@
             loadLeaders();
         }
 
-        // --- ПРОВЕРКА АВТОРИЗАЦИИ ---
         function checkAuth() {
             const token = localStorage.getItem('authToken');
             if (token) {
@@ -830,7 +752,7 @@
                 const activeTab = document.querySelector('.tab-content.active');
                 if (activeTab) activeTab.style.display = 'block';
 
-                loadBalanceFromSheet(playerName, token);
+                loadBalanceFromSheet(playerLogin, token);
                 loadLeaders();
                 startMessenger();
                 return true;
@@ -838,28 +760,25 @@
             return false;
         }
 
-        // --- ЗАГРУЗКА БАЛАНСА ---
-        function loadBalanceFromSheet(player, token) {
-            if (!player) return;
+        function loadBalanceFromSheet(login, token) {
+            if (!login) return;
             const authToken = token || localStorage.getItem('authToken');
             if (!authToken) return;
             const balanceBlock = document.getElementById('balance-block');
             if (balanceBlock) balanceBlock.classList.add('loading');
             showLoading(true);
-            jsonpRequest({ action: 'getBalance', player, token: authToken }, function(data) {
+            jsonpRequest({ action: 'getBalance', login: login, token: authToken }, function(data) {
                 showLoading(false);
                 if (balanceBlock) balanceBlock.classList.remove('loading', 'pulse-loading');
                 if (data.status === 'success' && typeof data.balance === 'number') {
                     currentBalance = data.balance;
                     updateBalanceDisplay();
-                    console.log('✅ Баланс загружен с сервера:', currentBalance);
                 } else {
-                    console.warn('⚠️ Не удалось загрузить баланс:', data.message);
+                    console.warn('Не удалось загрузить баланс:', data.message);
                 }
             });
         }
 
-        // --- ЛИДЕРЫ ---
         function loadLeaders() {
             showLoading(true);
             jsonpRequest({ action: 'getLeaders', limit: 3 }, function(data) {
@@ -889,50 +808,38 @@
             return html;
         }
 
-        // ===================================================================
-        // МЕССЕНДЖЕР (личный + групповой)
-        // ===================================================================
-
-        // --- Инициализация ---
         function startMessenger() {
             if (!isLoggedIn) return;
-            // Загружаем пользователей (для личного режима)
             loadUsers();
-            // Загружаем групповые сообщения
             loadGroupMessages();
             if (messengerUpdateInterval) clearInterval(messengerUpdateInterval);
             messengerUpdateInterval = setInterval(() => {
                 if (chatMode === 'private') {
                     if (currentChatUserLogin) loadMessages(currentChatUserLogin);
-                    loadUsers(); // для обновления бейджей непрочитанных
+                    loadUsers();
                 } else {
                     loadGroupMessages();
                 }
             }, 3000);
         }
 
-        // --- Переключение режимов ---
         function setChatMode(mode) {
             chatMode = mode;
             document.getElementById('modePrivate').classList.toggle('active', mode === 'private');
             document.getElementById('modeGroup').classList.toggle('active', mode === 'group');
             document.getElementById('modeIndicator').textContent = mode === 'private' ? 'Личные сообщения' : 'Общий чат';
-            // Скрываем/показываем список пользователей
             document.getElementById('messengerUsers').style.display = mode === 'private' ? 'flex' : 'none';
             if (mode === 'private') {
-                // Если есть выбранный собеседник, показываем его сообщения, иначе пустой экран
                 if (currentChatUserLogin) {
                     loadMessages(currentChatUserLogin);
                 } else {
                     document.getElementById('messengerMessages').innerHTML = '<div class="empty-messages">Выберите собеседника</div>';
                 }
             } else {
-                // Групповой чат
                 loadGroupMessages();
             }
         }
 
-        // --- Личные сообщения (все функции как раньше) ---
         function loadUsers() {
             if (!isLoggedIn) return;
             jsonpRequest({ action: 'getUsers', token: authToken }, function(data) {
@@ -1084,7 +991,6 @@
 
             container.innerHTML = html;
 
-            // Обработчики (как раньше)
             container.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -1176,7 +1082,7 @@
                     e.stopPropagation();
                     const msgId = this.dataset.msgid;
                     const react = this.dataset.react;
-                    addReaction(msgId, react);
+                    addReaction(msgId, react, 'private');
                 });
             });
 
@@ -1219,7 +1125,6 @@
             document.body.appendChild(script);
         }
 
-        // --- Отправка сообщения (с учётом режима) ---
         function sendMessage() {
             const input = document.getElementById('messageInput');
             if (!input) return;
@@ -1233,15 +1138,12 @@
                 return;
             }
 
-            // Если есть ответ с цитатой (работает в обоих режимах)
             if (replyQuote && replyToMsgId) {
-                // Отправляем как reply (для личных или групповых)
                 if (chatMode === 'private') {
                     replyMessage(replyToMsgId, text);
                 } else {
                     replyGroupMessage(replyToMsgId, text);
                 }
-                // Очищаем цитату
                 replyQuote = null;
                 replyToMsgId = null;
                 document.getElementById('quotePreview').classList.remove('active');
@@ -1250,15 +1152,12 @@
                 return;
             }
 
-            // Если режим групповой
             if (chatMode === 'group') {
-                // Отправляем групповое сообщение
                 sendGroupMessage(text);
                 input.value = '';
                 return;
             }
 
-            // Личный режим
             if (!currentChatUserLogin) {
                 showMessage('Выберите собеседника', false);
                 return;
@@ -1281,7 +1180,6 @@
             });
         }
 
-        // --- Действия с личными сообщениями (без изменений) ---
         function deleteMessage(msgId) {
             jsonpRequest({ action: 'deleteMessage', token: authToken, messageId: msgId }, function(data) {
                 if (data.status === 'success') {
@@ -1326,8 +1224,15 @@
             });
         }
 
-        function addReaction(msgId, reaction) {
-            jsonpRequest({ action: 'addReaction', token: authToken, messageId: msgId, reaction: reaction }, function(data) {
+        function addReaction(msgId, reaction, chatType) {
+            chatType = chatType || 'private';
+            jsonpRequest({
+                action: 'addReaction',
+                token: authToken,
+                messageId: msgId,
+                reaction: reaction,
+                chatType: chatType
+            }, function(data) {
                 if (data.status === 'success') {
                     if (chatMode === 'private') loadMessages(currentChatUserLogin);
                     else loadGroupMessages();
@@ -1336,10 +1241,6 @@
                 }
             });
         }
-
-        // ===================================================================
-        // ГРУППОВОЙ ЧАТ
-        // ===================================================================
 
         function loadGroupMessages() {
             if (!isLoggedIn) return;
@@ -1393,7 +1294,6 @@
                     reactionsHtml += '</div>';
                 }
 
-                // Кнопки: удалить/редактировать только свои, ответить можно всем
                 let actionsHtml = '';
                 if (isMine && !msg.deleted) {
                     actionsHtml = `<div class="msg-actions">
@@ -1418,7 +1318,6 @@
 
             container.innerHTML = html;
 
-            // Обработчики (групповые)
             container.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -1483,14 +1382,13 @@
                     e.stopPropagation();
                     const msgId = this.dataset.msgid;
                     const react = this.dataset.react;
-                    addReaction(msgId, react);
+                    addReaction(msgId, react, 'group');
                 });
             });
 
             container.scrollTop = container.scrollHeight;
         }
 
-        // --- Отправка группового сообщения ---
         function sendGroupMessage(text) {
             showLoading(true);
             jsonpRequest({
@@ -1509,7 +1407,6 @@
             });
         }
 
-        // --- Действия с групповыми сообщениями ---
         function deleteGroupMessage(msgId) {
             jsonpRequest({ action: 'deleteGroupMessage', token: authToken, messageId: msgId }, function(data) {
                 if (data.status === 'success') {
@@ -1543,9 +1440,6 @@
             });
         }
 
-        // ===================================================================
-        // QR-КОД
-        // ===================================================================
         function showQRModal(receiptData, operationNumber) {
             const receiptUrl = getReceiptUrl(operationNumber);
             saveReceiptToSheet(operationNumber, receiptData);
@@ -1582,9 +1476,6 @@
         qrModal.addEventListener('click', (e) => { if (e.target === qrModal) closeQRModal(); });
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && qrModal.classList.contains('open')) closeQRModal(); });
 
-        // ===================================================================
-        // ОТЧЁТЫ
-        // ===================================================================
         function updateShootingUI() {
             const listDiv = document.getElementById('shootingItemsList');
             const totalDiv = document.getElementById('shootingTotal');
@@ -1632,9 +1523,9 @@
             const earned = shootingItems.reduce((s, i) => s + i.rewardPerHit * i.hits, 0);
             const newBalance = currentBalance + earned;
             const details = shootingItems.map(i => `${i.name} (${i.hits}×${i.rewardPerHit})`).join(', ');
-            const success = await saveReportToSheet({ player, type: 'shooting', details, earned, balance: newBalance });
+            const success = await saveReportToSheet({ name: player, login: playerLogin, type: 'shooting', details, earned, balance: newBalance });
             if (success) {
-                loadBalanceFromSheet(player, authToken);
+                loadBalanceFromSheet(playerLogin, authToken);
                 showMessage('+' + earned + ' đᵽ. Баланс обновлён.');
                 shootingItems = [];
                 updateShootingUI();
@@ -1688,9 +1579,9 @@
             const earned = runningItems.reduce((s, i) => s + i.reward, 0);
             const newBalance = currentBalance + earned;
             const details = runningItems.map(i => `${i.laps}к (${i.reward}б)`).join(' + ');
-            const success = await saveReportToSheet({ player, type: 'running', details, earned, balance: newBalance });
+            const success = await saveReportToSheet({ name: player, login: playerLogin, type: 'running', details, earned, balance: newBalance });
             if (success) {
-                loadBalanceFromSheet(player, authToken);
+                loadBalanceFromSheet(playerLogin, authToken);
                 showMessage('+' + earned + ' đᵽ. Баланс обновлён.');
                 runningItems = [];
                 updateRunningUI();
@@ -1733,9 +1624,9 @@
             if (transportChecked) details.push('Транспорт');
             if (stayChecked) { details.push('Временное пребывание'); stayPaid = true; }
             const detailsStr = details.join(', ');
-            const success = await saveReportToSheet({ player, type: 'fee', details: detailsStr, earned: -totalFee, balance: newBalance, operation: operationNumber });
+            const success = await saveReportToSheet({ name: player, login: playerLogin, type: 'fee', details: detailsStr, earned: -totalFee, balance: newBalance, operation: operationNumber });
             if (success) {
-                loadBalanceFromSheet(player, authToken);
+                loadBalanceFromSheet(playerLogin, authToken);
                 if (stayPaid) {
                     const now = new Date();
                     const receiptData = {
@@ -1759,9 +1650,6 @@
             }
         }
 
-        // ===================================================================
-        // ОБРАБОТЧИКИ
-        // ===================================================================
         document.getElementById('addShootingBtn').onclick = addShootingItem;
         document.getElementById('submitShootingBtn').onclick = submitShootingReport;
         document.getElementById('addRunningBtn').onclick = addRunningItem;
@@ -1783,7 +1671,6 @@
             if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
         });
 
-        // Переключение режимов
         document.getElementById('modePrivate').addEventListener('click', function() {
             setChatMode('private');
         });
@@ -1791,7 +1678,6 @@
             setChatMode('group');
         });
 
-        // Вкладки
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const tabId = this.dataset.tab;
@@ -1801,7 +1687,6 @@
                 const target = document.getElementById(tabId);
                 if (target) { target.classList.add('active'); target.style.display = 'block'; }
                 if (tabId === 'messenger') {
-                    // При переключении на чат обновляем данные
                     if (chatMode === 'private') {
                         loadUsers();
                         if (currentChatUserLogin) loadMessages(currentChatUserLogin);
@@ -1812,7 +1697,6 @@
             });
         });
 
-        // Авторизация
         document.getElementById('loginBtn').onclick = async function() {
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
@@ -1848,13 +1732,11 @@
         };
         document.getElementById('logoutBtn').onclick = logout;
 
-        // --- ИНИЦИАЛИЗАЦИЯ ---
         loadLeaders();
         if (!checkAuth()) {
             document.getElementById('authContainer').style.display = 'block';
         }
         updateFeesUI();
-        // Устанавливаем режим по умолчанию
         setChatMode('private');
 
         document.addEventListener('visibilitychange', function() {
@@ -1865,12 +1747,12 @@
                 } else {
                     loadGroupMessages();
                 }
-                if (playerName) loadBalanceFromSheet(playerName, authToken);
+                if (playerLogin) loadBalanceFromSheet(playerLogin, authToken);
             }
         });
         setTimeout(function() {
-            if (isLoggedIn && playerName) {
-                loadBalanceFromSheet(playerName, authToken);
+            if (isLoggedIn && playerLogin) {
+                loadBalanceFromSheet(playerLogin, authToken);
             }
         }, 1000);
     </script>
