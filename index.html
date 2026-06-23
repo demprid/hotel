@@ -8,10 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="config.js"></script>
     <style>
-        /* ===== ВСЕ СТИЛИ (полная копия из предыдущего ответа) ===== */
-        /* ... (вставьте сюда все стили из предыдущего ответа, включая кастомные модалки) ... */
-        /* Для краткости я пропускаю их, но в реальном файле они должны быть */
-        /* Ниже я даю их в полной версии */
+        /* ===== ВСЕ СТИЛИ (как в предыдущей версии, плюс стили переключателя) ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         html { background:#1a1a2e; scroll-behavior:smooth; max-width:100%; overflow-x:hidden; }
         body { background:#0d0d1a; min-height:100vh; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; color:#1a1a2e; margin:0; padding:0; padding-top:env(safe-area-inset-top,0); padding-bottom:env(safe-area-inset-bottom,0); max-width:100%; overflow-x:hidden; display:flex; flex-direction:column; position:relative; }
@@ -48,7 +45,7 @@
         .footer-link img { width:18px; height:18px; object-fit:contain; opacity:.8; transition:opacity .3s ease; flex-shrink:0; }
         .footer-link:hover img { opacity:1; }
         .footer-copyright { grid-column:1/-1; text-align:center; color:rgba(255,255,255,.25); font-size:.65rem; margin-top:.3rem; padding-top:.5rem; border-top:1px solid rgba(255,255,255,.05); }
-        .auth-container { max-width:420px; margin:3rem auto; padding:2.5rem; width:100%; background:rgba(255,255,255,0.92) !important; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,.08); transition:all .4s cubic-bezier(.34,1.56,.64,1); animation:fadeSlideUp .6s ease; border:1px solid rgba(255,255,255,.3); }
+        .auth-container { max-width:420px; margin:3rem auto; padding:2.5rem; width:100%; background:rgba(255,255,255,0.75) !important; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,.08); transition:all .4s cubic-bezier(.34,1.56,.64,1); animation:fadeSlideUp .6s ease; border:1px solid rgba(255,255,255,.3); }
         .auth-container:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,.12); }
         @keyframes fadeSlideUp { from{opacity:0;transform:translateY(30px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);} }
         .auth-container h2 { text-align:center; color:#1a1a2e; font-size:1.6rem; font-weight:700; margin-bottom:.3rem; }
@@ -65,7 +62,7 @@
         .auth-container .auth-switch { text-align:center; margin-top:1.5rem; color:#888; font-size:.9rem; }
         .auth-container .auth-switch a { color:#2c7da0; cursor:pointer; font-weight:600; text-decoration:none; transition:color .3s ease; }
         .auth-container .auth-switch a:hover { color:#1a5276; text-decoration:underline; }
-        .leaders-block { background:rgba(255,255,255,0.85) !important; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); border-radius:20px; padding:1.8rem; margin-bottom:2rem; box-shadow:0 4px 20px rgba(0,0,0,.05); transition:all .4s ease; animation:fadeSlideUp .6s ease .1s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; }
+        .leaders-block { background:rgba(255,255,255,0.65) !important; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); border-radius:20px; padding:1.8rem; margin-bottom:2rem; box-shadow:0 4px 20px rgba(0,0,0,.05); transition:all .4s ease; animation:fadeSlideUp .6s ease .1s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; }
         .leaders-block:hover { box-shadow:0 8px 30px rgba(0,0,0,.08); }
         .leaders-title { font-size:1.4rem; font-weight:700; color:#1a1a2e; margin-bottom:1rem; text-align:center; display:flex; align-items:center; justify-content:center; gap:.8rem; }
         .refresh-leaders { background:none; border:none; cursor:pointer; font-size:1.3rem; color:#2c7da0; transition:all .6s ease; padding:.2rem; }
@@ -85,21 +82,58 @@
         .player-name { font-weight:500; }
         .player-balance { font-weight:700; color:#2c7da0; text-align:right; }
         .current-user-row { background:rgba(44,125,160,.08) !important; font-weight:600; border-left:3px solid #2c7da0; }
-        .balance-block { text-align:center; padding:2rem; background:linear-gradient(135deg,rgba(26,82,118,0.9),rgba(44,125,160,0.9)); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border-radius:20px; margin-bottom:2rem; box-shadow:0 8px 30px rgba(44,125,160,.25); transition:all .4s ease; animation:fadeSlideUp .6s ease .2s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; border:1px solid rgba(255,255,255,.2); }
+        .balance-block { text-align:center; padding:2rem; background:linear-gradient(135deg,rgba(26,82,118,0.7),rgba(44,125,160,0.7)); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border-radius:20px; margin-bottom:2rem; box-shadow:0 8px 30px rgba(44,125,160,.25); transition:all .4s ease; animation:fadeSlideUp .6s ease .2s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; border:1px solid rgba(255,255,255,.2); }
         .balance-block:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(44,125,160,.35); }
         .balance-title { color:rgba(255,255,255,.8); font-size:1rem; font-weight:500; margin-bottom:.5rem; text-transform:uppercase; letter-spacing:1px; }
         .balance-amount { font-size:3.8rem; font-weight:700; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.1); transition:all .5s ease; }
         .balance-amount:hover { transform:scale(1.02); }
         .balance-amount .currency { font-size:2rem; opacity:.7; }
-        .report-tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; background:rgba(255,255,255,0.85) !important; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); border-radius:16px; padding:.5rem; box-shadow:0 2px 10px rgba(0,0,0,.04); animation:fadeSlideUp .6s ease .3s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; flex-wrap:wrap; }
+        .report-tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; background:rgba(255,255,255,0.65) !important; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); border-radius:16px; padding:.5rem; box-shadow:0 2px 10px rgba(0,0,0,.04); animation:fadeSlideUp .6s ease .3s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; flex-wrap:wrap; }
         .tab-btn { flex:1; background:none; border:none; padding:.8rem 1.2rem; font-size:.95rem; font-weight:600; cursor:pointer; color:#999; border-radius:12px; transition:all .4s cubic-bezier(.34,1.56,.64,1); position:relative; overflow:hidden; min-width:80px; }
         .tab-btn::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,#2c7da0,#1a5276); border-radius:12px; opacity:0; transition:opacity .4s ease; transform:scale(.9); }
         .tab-btn:hover::before { opacity:.05; }
         .tab-btn:hover { color:#2c7da0; transform:translateY(-1px); }
         .tab-btn.active { color:#fff; background:linear-gradient(135deg,#2c7da0,#1a5276); box-shadow:0 4px 15px rgba(44,125,160,.25); transform:scale(1.02); }
         .tab-btn.active::before { opacity:0; }
-        .tab-content { display:none; background:rgba(255,255,255,0.85) !important; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); border-radius:20px; padding:1.8rem; box-shadow:0 4px 20px rgba(0,0,0,.05); animation:fadeSlideUp .5s ease; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; }
+        .tab-content { display:none; background:rgba(255,255,255,0.65) !important; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); border-radius:20px; padding:1.8rem; box-shadow:0 4px 20px rgba(0,0,0,.05); animation:fadeSlideUp .5s ease; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; }
         .tab-content.active { display:block; }
+
+        /* ===== ПЕРЕКЛЮЧАТЕЛЬ ЛИЧНЫЙ / ОБЩИЙ ЧАТ ===== */
+        .chat-mode-switch {
+            display: flex;
+            gap: .5rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .chat-mode-switch button {
+            padding: .4rem 1.2rem;
+            border-radius: 20px;
+            border: 2px solid rgba(232,236,241,0.7);
+            background: rgba(248,250,252,0.7);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: .9rem;
+            transition: all .3s ease;
+            color: #555;
+        }
+        .chat-mode-switch button.active {
+            border-color: #2c7da0;
+            background: #2c7da0;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(44,125,160,.25);
+        }
+        .chat-mode-switch button:hover:not(.active) {
+            border-color: #2c7da0;
+            background: rgba(232,240,248,0.8);
+        }
+        .chat-mode-indicator {
+            text-align: center;
+            font-size: .9rem;
+            color: #888;
+            margin-bottom: .5rem;
+        }
+
+        /* ===== МЕССЕНДЖЕР (общий) ===== */
         .messenger-container { display:flex; flex-direction:column; gap:1rem; height:500px; max-height:70vh; }
         .messenger-users { display:flex; gap:.5rem; flex-wrap:wrap; padding-bottom:.5rem; border-bottom:2px solid rgba(240,244,248,0.7); overflow-x:auto; }
         .messenger-user-btn { padding:.5rem 1.2rem; border-radius:20px; border:2px solid rgba(232,236,241,0.7); background:rgba(248,250,252,0.7); cursor:pointer; font-weight:500; font-size:.9rem; transition:all .3s ease; white-space:nowrap; color:#555; }
@@ -143,6 +177,8 @@
         .empty-messages { text-align:center; color:#999; padding:2rem; font-style:italic; }
         .messenger-refresh { background:none; border:none; cursor:pointer; font-size:1.1rem; color:#2c7da0; transition:all .3s ease; padding:.2rem .5rem; }
         .messenger-refresh:hover { transform:rotate(180deg) scale(1.1); }
+
+        /* ===== ОСТАЛЬНЫЕ СТИЛИ (списки, панели, итого, подсказки) ===== */
         .items-list { background:rgba(248,250,252,0.7); border-radius:12px; padding:.5rem; margin:1rem 0; max-height:200px; overflow-y:auto; border:1px solid rgba(232,236,241,0.7); transition:all .3s ease; width:100%; }
         .items-list:hover { border-color:#2c7da0; }
         .items-list::-webkit-scrollbar { width:6px; }
@@ -177,6 +213,31 @@
         .message { margin-top:1rem; padding:.8rem 1.2rem; border-radius:12px; text-align:center; font-weight:500; display:none; animation:fadeSlideUp .4s ease; }
         .message.success { background:rgba(212,237,218,0.9); color:#155724; display:block; }
         .message.error { background:rgba(248,215,218,0.9); color:#721c24; display:block; }
+        .loading { text-align:center; padding:2rem; color:#2c7da0; font-weight:500; animation:pulse 1.5s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:.4;} }
+        .main-content { display:none; }
+        .main-content.visible { display:block; }
+        .custom-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:9999; justify-content:center; align-items:center; animation:fadeIn .2s ease; }
+        .custom-modal-overlay.open { display:flex; }
+        @keyframes fadeIn { from{opacity:0;}to{opacity:1;} }
+        .custom-modal { background:rgba(255,255,255,0.95); backdrop-filter:blur(6px); border-radius:24px; padding:2rem; max-width:420px; width:92%; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.2); animation:scaleIn .3s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes scaleIn { from{opacity:0;transform:scale(.85);}to{opacity:1;transform:scale(1);} }
+        .custom-modal h3 { font-size:1.3rem; margin-bottom:.8rem; text-align:center; color:#1a1a2e; }
+        .custom-modal .modal-close { float:right; background:none; border:none; font-size:1.8rem; cursor:pointer; color:#aaa; transition:color .2s; }
+        .custom-modal .modal-close:hover { color:#333; }
+        .custom-modal .modal-body { margin:1rem 0; }
+        .custom-modal .modal-actions { display:flex; gap:.8rem; justify-content:center; margin-top:1.2rem; flex-wrap:wrap; }
+        .custom-modal .modal-actions .btn { padding:.6rem 1.8rem; border-radius:12px; border:none; font-weight:600; cursor:pointer; transition:all .2s; }
+        .custom-modal .modal-actions .btn-primary { background:#2c7da0; color:#fff; }
+        .custom-modal .modal-actions .btn-primary:hover { transform:scale(1.05); }
+        .custom-modal .modal-actions .btn-danger { background:#dc3545; color:#fff; }
+        .custom-modal .modal-actions .btn-danger:hover { transform:scale(1.05); }
+        .custom-modal .modal-actions .btn-secondary { background:#e8ecf1; color:#333; }
+        .custom-modal .modal-actions .btn-secondary:hover { transform:scale(1.05); }
+        .custom-modal .user-list { max-height:200px; overflow-y:auto; }
+        .custom-modal .user-list .user-item { padding:.5rem 1rem; cursor:pointer; border-radius:8px; transition:background .2s; display:flex; align-items:center; gap:.5rem; }
+        .custom-modal .user-list .user-item:hover { background:#f0f4f8; }
+        .custom-modal .user-list .user-item .user-login { font-size:.8rem; color:#888; }
         .qr-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); justify-content:center; align-items:center; z-index:9999; animation:fadeIn .3s ease; }
         .qr-modal.open { display:flex; }
         .qr-content { background:rgba(255,255,255,0.95); backdrop-filter:blur(4px); border-radius:24px; padding:2.5rem; max-width:480px; width:92%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.2); position:relative; animation:scaleIn .4s cubic-bezier(.34,1.56,.64,1); margin:0 auto; }
@@ -204,32 +265,9 @@
         .fee-options input[type="checkbox"]:hover { transform:scale(1.1); }
         .fee-options .fee-label { flex:1; font-size:1rem; font-weight:500; }
         .fee-options .fee-price { font-weight:700; color:#dc3545; font-size:1.1rem; }
-        .loading { text-align:center; padding:2rem; color:#2c7da0; font-weight:500; animation:pulse 1.5s ease-in-out infinite; }
-        @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:.4;} }
-        .main-content { display:none; }
-        .main-content.visible { display:block; }
-        .custom-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:9999; justify-content:center; align-items:center; animation:fadeIn .2s ease; }
-        .custom-modal-overlay.open { display:flex; }
-        .custom-modal { background:rgba(255,255,255,0.95); backdrop-filter:blur(6px); border-radius:24px; padding:2rem; max-width:420px; width:92%; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.2); animation:scaleIn .3s cubic-bezier(.34,1.56,.64,1); }
-        .custom-modal h3 { font-size:1.3rem; margin-bottom:.8rem; text-align:center; color:#1a1a2e; }
-        .custom-modal .modal-close { float:right; background:none; border:none; font-size:1.8rem; cursor:pointer; color:#aaa; transition:color .2s; }
-        .custom-modal .modal-close:hover { color:#333; }
-        .custom-modal .modal-body { margin:1rem 0; }
-        .custom-modal .modal-actions { display:flex; gap:.8rem; justify-content:center; margin-top:1.2rem; flex-wrap:wrap; }
-        .custom-modal .modal-actions .btn { padding:.6rem 1.8rem; border-radius:12px; border:none; font-weight:600; cursor:pointer; transition:all .2s; }
-        .custom-modal .modal-actions .btn-primary { background:#2c7da0; color:#fff; }
-        .custom-modal .modal-actions .btn-primary:hover { transform:scale(1.05); }
-        .custom-modal .modal-actions .btn-danger { background:#dc3545; color:#fff; }
-        .custom-modal .modal-actions .btn-danger:hover { transform:scale(1.05); }
-        .custom-modal .modal-actions .btn-secondary { background:#e8ecf1; color:#333; }
-        .custom-modal .modal-actions .btn-secondary:hover { transform:scale(1.05); }
-        .custom-modal .user-list { max-height:200px; overflow-y:auto; }
-        .custom-modal .user-list .user-item { padding:.5rem 1rem; cursor:pointer; border-radius:8px; transition:background .2s; display:flex; align-items:center; gap:.5rem; }
-        .custom-modal .user-list .user-item:hover { background:#f0f4f8; }
-        .custom-modal .user-list .user-item .user-login { font-size:.8rem; color:#888; }
-        @media (max-width:768px) { /* адаптив — можно скопировать из предыдущего ответа */ }
+        @media (max-width:768px) { /* адаптив */ }
         @media (max-width:480px) { /* адаптив */ }
-        @media (prefers-reduced-motion:reduce) { *{animation-duration:.01ms !important;transition-duration:.01ms !important;} }
+        @media (prefers-reduced-motion:reduce) { *{animation-duration:.01ms !important;transition-duration:.01ms !important;} html{scroll-behavior:auto !important;} }
     </style>
 </head>
 <body>
@@ -284,6 +322,9 @@
 
         <!-- ОСНОВНОЙ КОНТЕНТ -->
         <div id="mainContent" class="main-content">
+            <!-- ===== СООБЩЕНИЯ СИСТЕМЫ ===== -->
+            <div id="messageBox" class="message"></div>
+
             <!-- ЛИДЕРЫ -->
             <div id="leaders-block" class="leaders-block">
                 <div class="leaders-title">🏆 Лидеры <button class="refresh-leaders" id="refreshLeadersBtn">🔄</button></div>
@@ -307,7 +348,25 @@
                 <h2>📋 Подать отчёт по стрельбе</h2>
                 <div id="shootingItemsList" class="items-list"><div class="empty-list">Нет добавленных позиций</div></div>
                 <div class="add-panel">
-                    <select id="positionSelect"><option value="">-- выберите --</option><option value="1">1В (1 балл)</option><option value="1">7Н (1 балл)</option><option value="1">1Н (1 балл)</option><option value="1">7В (1 балл)</option><option value="2">2Н (2 балла)</option><option value="2">6В (2 балла)</option><option value="3">6Н (3 балла)</option><option value="3">2В (3 балла)</option><option value="4">5В (4 балла)</option><option value="4">3Н (4 балла)</option><option value="5">3В (5 баллов)</option><option value="5">5Н (5 баллов)</option><option value="6">4В (6 баллов)</option><option value="6">4Н (6 баллов)</option><option value="7">8В (7 баллов)</option><option value="7">8Н (7 баллов)</option></select>
+                    <select id="positionSelect">
+                        <option value="">-- выберите позицию --</option>
+                        <option value="11">1В (11 баллов)</option>
+                        <option value="11">7Н (11 баллов)</option>
+                        <option value="11">1Н (11 баллов)</option>
+                        <option value="11">7В (11 баллов)</option>
+                        <option value="12">2Н (12 баллов)</option>
+                        <option value="12">6В (12 баллов)</option>
+                        <option value="13">6Н (13 баллов)</option>
+                        <option value="13">2В (13 баллов)</option>
+                        <option value="14">5В (14 баллов)</option>
+                        <option value="14">3Н (14 баллов)</option>
+                        <option value="15">3В (15 баллов)</option>
+                        <option value="15">5Н (15 баллов)</option>
+                        <option value="16">4В (16 баллов)</option>
+                        <option value="16">4Н (16 баллов)</option>
+                        <option value="17">8В (17 баллов)</option>
+                        <option value="17">8Н (17 баллов)</option>
+                    </select>
                     <input type="number" id="shootingHitsInput" placeholder="Попаданий" min="1" max="99" value="1" step="1">
                     <button class="btn-add" id="addShootingBtn">Добавить</button>
                 </div>
@@ -342,12 +401,27 @@
                 <button class="submit-btn fee" id="submitFeesBtn">Оплатить отмеченные взносы</button>
             </div>
 
-            <!-- МЕССЕНДЖЕР (обновлённый) -->
+            <!-- ЧАТ (личный и общий) -->
             <div id="messenger" class="tab-content">
                 <h2>💬 Чат <button class="messenger-refresh" id="refreshMessagesBtn">🔄</button></h2>
+
+                <!-- Переключатель режимов -->
+                <div class="chat-mode-switch">
+                    <button id="modePrivate" class="active" data-mode="private">👤 Личные</button>
+                    <button id="modeGroup" data-mode="group">👥 Общий чат</button>
+                </div>
+                <div class="chat-mode-indicator" id="modeIndicator">Личные сообщения</div>
+
                 <div class="messenger-container">
-                    <div class="messenger-users" id="messengerUsers"><div class="empty-list">Загрузка пользователей...</div></div>
-                    <div class="messenger-messages" id="messengerMessages"><div class="empty-messages">Выберите собеседника</div></div>
+                    <!-- Список пользователей (только для личных) -->
+                    <div class="messenger-users" id="messengerUsers">
+                        <div class="empty-list">Загрузка пользователей...</div>
+                    </div>
+                    <!-- Сообщения -->
+                    <div class="messenger-messages" id="messengerMessages">
+                        <div class="empty-messages">Выберите собеседника</div>
+                    </div>
+                    <!-- Поле ввода -->
                     <div class="messenger-input-area">
                         <div class="input-wrapper">
                             <div class="quote-preview" id="quotePreview"></div>
@@ -356,10 +430,10 @@
                         <button class="btn-send" id="sendMessageBtn">Отправить</button>
                     </div>
                 </div>
-                <div class="hint">Сообщения видят только вы и ваш собеседник. Макс. 500 символов.</div>
+                <div class="hint">Сообщения видят только вы и собеседник (в личном) или все (в общем чате). Макс. 500 символов.</div>
             </div>
 
-            <div id="messageBox" class="message"></div>
+            <!-- Загрузчик -->
             <div id="loadingIndicator" class="loading" style="display:none;">Загрузка...</div>
         </div>
     </main>
@@ -412,27 +486,23 @@
 
     <script>
         // ===================================================================
-        // 1. АНИМАЦИЯ МИШЕНЕЙ
+        // 1. АНИМАЦИЯ МИШЕНЕЙ (без изменений)
         // ===================================================================
         (function() {
             const canvas = document.getElementById('bgCanvas');
             const ctx = canvas.getContext('2d');
             let W, H;
-
             function resize() {
                 W = canvas.width = window.innerWidth;
                 H = canvas.height = window.innerHeight;
             }
             window.addEventListener('resize', resize);
             resize();
-
             const targetImg = new Image();
             targetImg.src = 'target.png';
             targetImg.onerror = function() { console.warn('target.png не загружен'); };
-
             const targets = [];
             const targetSize = 50;
-
             function createTarget(side) {
                 const y = Math.random() * (H * 0.5) + H * 0.3;
                 const x = side === 0 ? -targetSize : W + targetSize;
@@ -440,7 +510,6 @@
                 const vy = -(1 + Math.random() * 1.5);
                 return { x, y, vx, vy, size: targetSize };
             }
-
             function spawnTarget() {
                 const side = Math.random() < 0.5 ? 0 : 1;
                 targets.push(createTarget(side));
@@ -451,7 +520,6 @@
             setTimeout(spawnTarget, 500);
             setTimeout(spawnTarget, 1800);
             setTimeout(spawnTarget, 3200);
-
             function animate() {
                 ctx.clearRect(0, 0, W, H);
                 for (let i = targets.length - 1; i >= 0; i--) {
@@ -484,7 +552,7 @@
         })();
 
         // ===================================================================
-        // 2. ОСНОВНОЙ JS (полный функционал)
+        // 2. ОСНОВНОЙ JS (с поддержкой личного и общего чата)
         // ===================================================================
         const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
 
@@ -497,13 +565,16 @@
         let authToken = localStorage.getItem('authToken') || '';
         let isLoggedIn = false;
 
+        // Переменные для мессенджера
         let messengerUsers = [];
-        let currentChatUserLogin = '';
+        let currentChatUserLogin = '';      // для личных сообщений
         let currentChatUserName = '';
-        let messagesCache = {};
+        let messagesCache = {};             // { login: [msg] } для личных
+        let groupMessagesCache = [];        // для общего чата
         let messengerUpdateInterval = null;
         let replyQuote = null;
         let replyToMsgId = null;
+        let chatMode = 'private';           // 'private' или 'group'
 
         const balanceValue = document.getElementById('balanceValue');
         const messageBox = document.getElementById('messageBox');
@@ -579,14 +650,11 @@
             if (!messageBox) return;
             messageBox.textContent = text;
             messageBox.className = 'message ' + (isSuccess ? 'success' : 'error');
-            setTimeout(() => {
+            clearTimeout(window._msgTimeout);
+            window._msgTimeout = setTimeout(() => {
                 messageBox.className = 'message';
                 messageBox.style.display = 'none';
-                setTimeout(() => {
-                    messageBox.style.display = '';
-                    messageBox.className = 'message';
-                }, 100);
-            }, 3000);
+            }, 4000);
         }
         function updateBalanceDisplay() {
             if (balanceValue) balanceValue.textContent = currentBalance.toLocaleString('ru-RU');
@@ -770,6 +838,27 @@
             return false;
         }
 
+        // --- ЗАГРУЗКА БАЛАНСА ---
+        function loadBalanceFromSheet(player, token) {
+            if (!player) return;
+            const authToken = token || localStorage.getItem('authToken');
+            if (!authToken) return;
+            const balanceBlock = document.getElementById('balance-block');
+            if (balanceBlock) balanceBlock.classList.add('loading');
+            showLoading(true);
+            jsonpRequest({ action: 'getBalance', player, token: authToken }, function(data) {
+                showLoading(false);
+                if (balanceBlock) balanceBlock.classList.remove('loading', 'pulse-loading');
+                if (data.status === 'success' && typeof data.balance === 'number') {
+                    currentBalance = data.balance;
+                    updateBalanceDisplay();
+                    console.log('✅ Баланс загружен с сервера:', currentBalance);
+                } else {
+                    console.warn('⚠️ Не удалось загрузить баланс:', data.message);
+                }
+            });
+        }
+
         // --- ЛИДЕРЫ ---
         function loadLeaders() {
             showLoading(true);
@@ -800,40 +889,50 @@
             return html;
         }
 
-        // --- БАЛАНС ---
-        function loadBalanceFromSheet(player, token) {
-            if (!player) return;
-            const authToken = token || localStorage.getItem('authToken');
-            if (!authToken) return;
-            const balanceBlock = document.getElementById('balance-block');
-            if (balanceBlock) balanceBlock.classList.add('loading');
-            showLoading(true);
-            jsonpRequest({ action: 'getBalance', player, token: authToken }, function(data) {
-                showLoading(false);
-                if (balanceBlock) balanceBlock.classList.remove('loading', 'pulse-loading');
-                if (data.status === 'success' && typeof data.balance === 'number') {
-                    currentBalance = data.balance;
-                    updateBalanceDisplay();
-                } else {
-                    currentBalance = 0;
-                    updateBalanceDisplay();
-                }
-            });
-        }
+        // ===================================================================
+        // МЕССЕНДЖЕР (личный + групповой)
+        // ===================================================================
 
-        // ===================================================================
-        // МЕССЕНДЖЕР
-        // ===================================================================
+        // --- Инициализация ---
         function startMessenger() {
             if (!isLoggedIn) return;
+            // Загружаем пользователей (для личного режима)
             loadUsers();
+            // Загружаем групповые сообщения
+            loadGroupMessages();
             if (messengerUpdateInterval) clearInterval(messengerUpdateInterval);
             messengerUpdateInterval = setInterval(() => {
-                if (currentChatUserLogin) loadMessages(currentChatUserLogin);
-                loadUsers();
+                if (chatMode === 'private') {
+                    if (currentChatUserLogin) loadMessages(currentChatUserLogin);
+                    loadUsers(); // для обновления бейджей непрочитанных
+                } else {
+                    loadGroupMessages();
+                }
             }, 3000);
         }
 
+        // --- Переключение режимов ---
+        function setChatMode(mode) {
+            chatMode = mode;
+            document.getElementById('modePrivate').classList.toggle('active', mode === 'private');
+            document.getElementById('modeGroup').classList.toggle('active', mode === 'group');
+            document.getElementById('modeIndicator').textContent = mode === 'private' ? 'Личные сообщения' : 'Общий чат';
+            // Скрываем/показываем список пользователей
+            document.getElementById('messengerUsers').style.display = mode === 'private' ? 'flex' : 'none';
+            if (mode === 'private') {
+                // Если есть выбранный собеседник, показываем его сообщения, иначе пустой экран
+                if (currentChatUserLogin) {
+                    loadMessages(currentChatUserLogin);
+                } else {
+                    document.getElementById('messengerMessages').innerHTML = '<div class="empty-messages">Выберите собеседника</div>';
+                }
+            } else {
+                // Групповой чат
+                loadGroupMessages();
+            }
+        }
+
+        // --- Личные сообщения (все функции как раньше) ---
         function loadUsers() {
             if (!isLoggedIn) return;
             jsonpRequest({ action: 'getUsers', token: authToken }, function(data) {
@@ -921,7 +1020,6 @@
             });
         }
 
-        // ---- ОБНОВЛЁННАЯ ОТРИСОВКА СООБЩЕНИЙ (без системных диалогов) ----
         function renderMessages(userLogin) {
             const container = document.getElementById('messengerMessages');
             if (!container) return;
@@ -986,7 +1084,7 @@
 
             container.innerHTML = html;
 
-            // --- НАВЕШИВАЕМ ОБРАБОТЧИКИ (кастомные модалки) ---
+            // Обработчики (как раньше)
             container.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -1097,7 +1195,6 @@
             });
         }
 
-        // --- ОТПРАВКА СООБЩЕНИЙ (с поддержкой ответа) ---
         function sendMessageViaJsonp(fromLogin, toLogin, text, callback) {
             const script = document.createElement('script');
             const callbackName = 'send_msg_callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
@@ -1122,6 +1219,7 @@
             document.body.appendChild(script);
         }
 
+        // --- Отправка сообщения (с учётом режима) ---
         function sendMessage() {
             const input = document.getElementById('messageInput');
             if (!input) return;
@@ -1130,9 +1228,19 @@
                 showMessage('Введите текст сообщения', false);
                 return;
             }
-            // Если есть ответ с цитатой
+            if (text.length > 500) {
+                showMessage('Максимум 500 символов', false);
+                return;
+            }
+
+            // Если есть ответ с цитатой (работает в обоих режимах)
             if (replyQuote && replyToMsgId) {
-                replyMessage(replyToMsgId, text);
+                // Отправляем как reply (для личных или групповых)
+                if (chatMode === 'private') {
+                    replyMessage(replyToMsgId, text);
+                } else {
+                    replyGroupMessage(replyToMsgId, text);
+                }
                 // Очищаем цитату
                 replyQuote = null;
                 replyToMsgId = null;
@@ -1141,11 +1249,16 @@
                 input.value = '';
                 return;
             }
-            // Обычная отправка
-            if (text.length > 500) {
-                showMessage('Максимум 500 символов', false);
+
+            // Если режим групповой
+            if (chatMode === 'group') {
+                // Отправляем групповое сообщение
+                sendGroupMessage(text);
+                input.value = '';
                 return;
             }
+
+            // Личный режим
             if (!currentChatUserLogin) {
                 showMessage('Выберите собеседника', false);
                 return;
@@ -1168,7 +1281,7 @@
             });
         }
 
-        // --- ДЕЙСТВИЯ С СООБЩЕНИЯМИ ---
+        // --- Действия с личными сообщениями (без изменений) ---
         function deleteMessage(msgId) {
             jsonpRequest({ action: 'deleteMessage', token: authToken, messageId: msgId }, function(data) {
                 if (data.status === 'success') {
@@ -1216,9 +1329,216 @@
         function addReaction(msgId, reaction) {
             jsonpRequest({ action: 'addReaction', token: authToken, messageId: msgId, reaction: reaction }, function(data) {
                 if (data.status === 'success') {
-                    loadMessages(currentChatUserLogin);
+                    if (chatMode === 'private') loadMessages(currentChatUserLogin);
+                    else loadGroupMessages();
                 } else {
                     showMessage(data.message || 'Ошибка добавления реакции', false);
+                }
+            });
+        }
+
+        // ===================================================================
+        // ГРУППОВОЙ ЧАТ
+        // ===================================================================
+
+        function loadGroupMessages() {
+            if (!isLoggedIn) return;
+            jsonpRequest({ action: 'getGroupMessages', token: authToken }, function(data) {
+                if (data.status === 'success' && Array.isArray(data.messages)) {
+                    const oldMessages = groupMessagesCache;
+                    groupMessagesCache = data.messages;
+                    if (haveMessagesChanged(oldMessages, groupMessagesCache)) {
+                        renderGroupMessages();
+                    }
+                } else {
+                    const container = document.getElementById('messengerMessages');
+                    if (container && !groupMessagesCache.length) {
+                        container.innerHTML = '<div class="empty-messages">Ошибка загрузки групповых сообщений</div>';
+                    }
+                }
+            });
+        }
+
+        function renderGroupMessages() {
+            const container = document.getElementById('messengerMessages');
+            if (!container) return;
+            if (!groupMessagesCache.length) {
+                container.innerHTML = '<div class="empty-messages">Пока нет сообщений в общем чате. Напишите что-нибудь!</div>';
+                return;
+            }
+            let html = '';
+            groupMessagesCache.forEach(msg => {
+                const isMine = msg.from === playerLogin;
+                const senderName = msg.fromName || msg.from;
+                const time = msg.date || '';
+                const edited = msg.edited ? ` (изменено)` : '';
+                const deletedClass = msg.deleted ? ' msg-deleted' : '';
+                const textDisplay = msg.deleted ? msg.text : escapeHtml(msg.text);
+
+                let reactionsHtml = '';
+                if (msg.reactions && msg.reactions.length) {
+                    const grouped = {};
+                    msg.reactions.forEach(r => {
+                        if (!grouped[r.react]) grouped[r.react] = [];
+                        grouped[r.react].push(r.user);
+                    });
+                    reactionsHtml = '<div class="msg-reactions">';
+                    for (const [react, users] of Object.entries(grouped)) {
+                        const count = users.length;
+                        const isMineReaction = users.includes(playerLogin);
+                        reactionsHtml += `<span class="reaction-badge" data-msgid="${msg.id}" data-react="${react}" style="${isMineReaction ? 'background:#d4edda;' : ''}">
+                            ${react} <span class="count">${count}</span>
+                        </span>`;
+                    }
+                    reactionsHtml += '</div>';
+                }
+
+                // Кнопки: удалить/редактировать только свои, ответить можно всем
+                let actionsHtml = '';
+                if (isMine && !msg.deleted) {
+                    actionsHtml = `<div class="msg-actions">
+                        <button class="delete-btn" data-msgid="${msg.id}" title="Удалить">🗑</button>
+                        <button class="edit-btn" data-msgid="${msg.id}" title="Редактировать">✏️</button>
+                        <button class="reply-btn" data-msgid="${msg.id}" title="Ответить">↩️</button>
+                    </div>`;
+                } else if (!msg.deleted) {
+                    actionsHtml = `<div class="msg-actions">
+                        <button class="reply-btn" data-msgid="${msg.id}" title="Ответить">↩️</button>
+                    </div>`;
+                }
+
+                html += `<div class="message-bubble ${isMine ? 'mine' : 'theirs'} ${deletedClass}" data-msgid="${msg.id}">
+                    <div class="msg-sender">${escapeHtml(senderName)}</div>
+                    <div class="msg-text">${textDisplay}</div>
+                    <div class="msg-time">${time}${edited}</div>
+                    ${actionsHtml}
+                    ${reactionsHtml}
+                </div>`;
+            });
+
+            container.innerHTML = html;
+
+            // Обработчики (групповые)
+            container.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const msgId = this.dataset.msgid;
+                    showModal('Удалить сообщение?',
+                        'Вы уверены, что хотите удалить это сообщение?',
+                        `<button class="btn btn-danger" id="confirmDeleteGroup" data-msgid="${msgId}">Да, удалить</button>
+                         <button class="btn btn-secondary" id="cancelDeleteGroup">Отмена</button>`
+                    );
+                    document.getElementById('confirmDeleteGroup').addEventListener('click', function() {
+                        const id = this.dataset.msgid;
+                        deleteGroupMessage(id);
+                        closeModal();
+                    });
+                    document.getElementById('cancelDeleteGroup').addEventListener('click', closeModal);
+                });
+            });
+
+            container.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const msgId = this.dataset.msgid;
+                    const msg = groupMessagesCache.find(m => m.id === msgId);
+                    if (msg) {
+                        showModal('Редактировать сообщение',
+                            `<textarea id="editGroupTextarea" rows="3" style="width:100%; padding:.6rem; border-radius:8px; border:1px solid #ccc;">${escapeHtml(msg.text)}</textarea>`,
+                            `<button class="btn btn-primary" id="saveEditGroup" data-msgid="${msgId}">Сохранить</button>
+                             <button class="btn btn-secondary" id="cancelEditGroup">Отмена</button>`
+                        );
+                        document.getElementById('saveEditGroup').addEventListener('click', function() {
+                            const newText = document.getElementById('editGroupTextarea').value.trim();
+                            if (newText) {
+                                editGroupMessage(msgId, newText);
+                                closeModal();
+                            } else {
+                                alert('Текст не может быть пустым');
+                            }
+                        });
+                        document.getElementById('cancelEditGroup').addEventListener('click', closeModal);
+                    }
+                });
+            });
+
+            container.querySelectorAll('.reply-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const msgId = this.dataset.msgid;
+                    const msg = groupMessagesCache.find(m => m.id === msgId);
+                    if (msg) {
+                        replyQuote = msg.text;
+                        replyToMsgId = msgId;
+                        const quotePreview = document.getElementById('quotePreview');
+                        quotePreview.textContent = `> ${msg.text}`;
+                        quotePreview.classList.add('active');
+                        document.getElementById('messageInput').focus();
+                    }
+                });
+            });
+
+            container.querySelectorAll('.reaction-badge').forEach(badge => {
+                badge.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const msgId = this.dataset.msgid;
+                    const react = this.dataset.react;
+                    addReaction(msgId, react);
+                });
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // --- Отправка группового сообщения ---
+        function sendGroupMessage(text) {
+            showLoading(true);
+            jsonpRequest({
+                action: 'sendGroupMessage',
+                token: authToken,
+                from: playerLogin,
+                text: text
+            }, function(data) {
+                showLoading(false);
+                if (data.status === 'success') {
+                    showMessage('Сообщение отправлено в общий чат!', true);
+                    loadGroupMessages();
+                } else {
+                    showMessage(data.message || 'Ошибка отправки', false);
+                }
+            });
+        }
+
+        // --- Действия с групповыми сообщениями ---
+        function deleteGroupMessage(msgId) {
+            jsonpRequest({ action: 'deleteGroupMessage', token: authToken, messageId: msgId }, function(data) {
+                if (data.status === 'success') {
+                    showMessage('Сообщение удалено', true);
+                    loadGroupMessages();
+                } else {
+                    showMessage(data.message || 'Ошибка удаления', false);
+                }
+            });
+        }
+
+        function editGroupMessage(msgId, newText) {
+            jsonpRequest({ action: 'editGroupMessage', token: authToken, messageId: msgId, newText: newText }, function(data) {
+                if (data.status === 'success') {
+                    showMessage('Сообщение изменено', true);
+                    loadGroupMessages();
+                } else {
+                    showMessage(data.message || 'Ошибка редактирования', false);
+                }
+            });
+        }
+
+        function replyGroupMessage(msgId, replyText) {
+            jsonpRequest({ action: 'replyGroupMessage', token: authToken, messageId: msgId, replyText: replyText }, function(data) {
+                if (data.status === 'success') {
+                    showMessage('Ответ отправлен', true);
+                    loadGroupMessages();
+                } else {
+                    showMessage(data.message || 'Ошибка ответа', false);
                 }
             });
         }
@@ -1263,7 +1583,7 @@
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && qrModal.classList.contains('open')) closeQRModal(); });
 
         // ===================================================================
-        // ОТЧЁТЫ (СТРЕЛЬБА, БЕГ, ВЗНОСЫ)
+        // ОТЧЁТЫ
         // ===================================================================
         function updateShootingUI() {
             const listDiv = document.getElementById('shootingItemsList');
@@ -1312,13 +1632,16 @@
             const earned = shootingItems.reduce((s, i) => s + i.rewardPerHit * i.hits, 0);
             const newBalance = currentBalance + earned;
             const details = shootingItems.map(i => `${i.name} (${i.hits}×${i.rewardPerHit})`).join(', ');
-            await saveReportToSheet({ player, type: 'shooting', details, earned, balance: newBalance });
-            currentBalance = newBalance;
-            updateBalanceDisplay();
-            showMessage('+' + earned + ' đᵽ. Баланс: ' + currentBalance + ' đᵽ');
-            shootingItems = [];
-            updateShootingUI();
-            loadLeaders();
+            const success = await saveReportToSheet({ player, type: 'shooting', details, earned, balance: newBalance });
+            if (success) {
+                loadBalanceFromSheet(player, authToken);
+                showMessage('+' + earned + ' đᵽ. Баланс обновлён.');
+                shootingItems = [];
+                updateShootingUI();
+                loadLeaders();
+            } else {
+                showMessage('Ошибка отправки отчёта', false);
+            }
         }
 
         function calcRunReward(laps) { return 5 * laps * (laps + 1) / 2; }
@@ -1365,13 +1688,16 @@
             const earned = runningItems.reduce((s, i) => s + i.reward, 0);
             const newBalance = currentBalance + earned;
             const details = runningItems.map(i => `${i.laps}к (${i.reward}б)`).join(' + ');
-            await saveReportToSheet({ player, type: 'running', details, earned, balance: newBalance });
-            currentBalance = newBalance;
-            updateBalanceDisplay();
-            showMessage('+' + earned + ' đᵽ. Баланс: ' + currentBalance + ' đᵽ');
-            runningItems = [];
-            updateRunningUI();
-            loadLeaders();
+            const success = await saveReportToSheet({ player, type: 'running', details, earned, balance: newBalance });
+            if (success) {
+                loadBalanceFromSheet(player, authToken);
+                showMessage('+' + earned + ' đᵽ. Баланс обновлён.');
+                runningItems = [];
+                updateRunningUI();
+                loadLeaders();
+            } else {
+                showMessage('Ошибка отправки отчёта', false);
+            }
         }
 
         function updateFeesUI() {
@@ -1407,27 +1733,30 @@
             if (transportChecked) details.push('Транспорт');
             if (stayChecked) { details.push('Временное пребывание'); stayPaid = true; }
             const detailsStr = details.join(', ');
-            await saveReportToSheet({ player, type: 'fee', details: detailsStr, earned: -totalFee, balance: newBalance, operation: operationNumber });
-            currentBalance = newBalance;
-            updateBalanceDisplay();
-            if (stayPaid) {
-                const now = new Date();
-                const receiptData = {
-                    name: player,
-                    type: 'Временное пребывание' + (transportChecked ? ' + Транспорт' : ''),
-                    amount: totalFee,
-                    date: now.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                    operationNumber: operationNumber
-                };
-                showQRModal(receiptData, operationNumber);
-                showMessage('Оплачено: ' + detailsStr + ' = -' + totalFee + ' đᵽ. Квитанция сгенерирована!');
+            const success = await saveReportToSheet({ player, type: 'fee', details: detailsStr, earned: -totalFee, balance: newBalance, operation: operationNumber });
+            if (success) {
+                loadBalanceFromSheet(player, authToken);
+                if (stayPaid) {
+                    const now = new Date();
+                    const receiptData = {
+                        name: player,
+                        type: 'Временное пребывание' + (transportChecked ? ' + Транспорт' : ''),
+                        amount: totalFee,
+                        date: now.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                        operationNumber: operationNumber
+                    };
+                    showQRModal(receiptData, operationNumber);
+                    showMessage('Оплачено: ' + detailsStr + ' = -' + totalFee + ' đᵽ. Квитанция сгенерирована!');
+                } else {
+                    showMessage('Оплачено: ' + detailsStr + ' = -' + totalFee + ' đᵽ. Баланс обновлён.');
+                }
+                document.getElementById('feeTransport').checked = false;
+                document.getElementById('feeStay').checked = false;
+                updateFeesUI();
+                loadLeaders();
             } else {
-                showMessage('Оплачено: ' + detailsStr + ' = -' + totalFee + ' đᵽ. Баланс: ' + currentBalance + ' đᵽ');
+                showMessage('Ошибка оплаты', false);
             }
-            document.getElementById('feeTransport').checked = false;
-            document.getElementById('feeStay').checked = false;
-            updateFeesUI();
-            loadLeaders();
         }
 
         // ===================================================================
@@ -1442,12 +1771,24 @@
         document.getElementById('feeStay').onchange = updateFeesUI;
         document.getElementById('refreshLeadersBtn').onclick = loadLeaders;
         document.getElementById('refreshMessagesBtn').onclick = function() {
-            if (currentChatUserLogin) loadMessages(currentChatUserLogin);
-            loadUsers();
+            if (chatMode === 'private') {
+                if (currentChatUserLogin) loadMessages(currentChatUserLogin);
+                loadUsers();
+            } else {
+                loadGroupMessages();
+            }
         };
         document.getElementById('sendMessageBtn').onclick = sendMessage;
         document.getElementById('messageInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
+        });
+
+        // Переключение режимов
+        document.getElementById('modePrivate').addEventListener('click', function() {
+            setChatMode('private');
+        });
+        document.getElementById('modeGroup').addEventListener('click', function() {
+            setChatMode('group');
         });
 
         // Вкладки
@@ -1459,7 +1800,15 @@
                 document.querySelectorAll('.tab-content').forEach(c => { c.classList.remove('active'); c.style.display = 'none'; });
                 const target = document.getElementById(tabId);
                 if (target) { target.classList.add('active'); target.style.display = 'block'; }
-                if (tabId === 'messenger') { loadUsers(); if (currentChatUserLogin) loadMessages(currentChatUserLogin); }
+                if (tabId === 'messenger') {
+                    // При переключении на чат обновляем данные
+                    if (chatMode === 'private') {
+                        loadUsers();
+                        if (currentChatUserLogin) loadMessages(currentChatUserLogin);
+                    } else {
+                        loadGroupMessages();
+                    }
+                }
             });
         });
 
@@ -1505,13 +1854,25 @@
             document.getElementById('authContainer').style.display = 'block';
         }
         updateFeesUI();
+        // Устанавливаем режим по умолчанию
+        setChatMode('private');
 
         document.addEventListener('visibilitychange', function() {
             if (!document.hidden && isLoggedIn) {
-                if (currentChatUserLogin) loadMessages(currentChatUserLogin);
-                loadUsers();
+                if (chatMode === 'private') {
+                    if (currentChatUserLogin) loadMessages(currentChatUserLogin);
+                    loadUsers();
+                } else {
+                    loadGroupMessages();
+                }
+                if (playerName) loadBalanceFromSheet(playerName, authToken);
             }
         });
+        setTimeout(function() {
+            if (isLoggedIn && playerName) {
+                loadBalanceFromSheet(playerName, authToken);
+            }
+        }, 1000);
     </script>
 </body>
 </html>
