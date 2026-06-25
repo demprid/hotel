@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квитанция об оплате | Отель ДП</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="config.js"></script>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { background:#f0f4f8; min-height:100vh; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; color:#1a1a2e; display:flex; justify-content:center; align-items:center; padding:2rem 1rem; }
+        .receipt-container { background:#fff; border-radius:24px; padding:2.5rem; max-width:520px; width:100%; box-shadow:0 10px 40px rgba(0,0,0,0.08); text-align:center; transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1); animation:fadeSlideUp 0.6s ease; }
+        .receipt-container:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,0.12); }
+        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(30px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);} }
+        .receipt-logo { width:64px; height:64px; margin:0 auto 0.3rem; }
+        .receipt-logo img { width:100%; height:100%; object-fit:contain; }
+        .receipt-title { font-size:1.8rem; font-weight:700; color:#1a1a2e; margin-bottom:0.2rem; }
+        .receipt-title span { color:#2c7da0; }
+        .receipt-subtitle { color:#888; font-size:0.9rem; margin-bottom:1.5rem; }
+        .receipt-divider { border:none; height:2px; background:linear-gradient(to right,transparent,#2c7da0,transparent); margin:1.2rem 0; }
+        .receipt-detail { display:flex; justify-content:space-between; padding:0.7rem 0; border-bottom:1px solid #f0f4f8; transition:all .3s ease; }
+        .receipt-detail:last-child { border-bottom:none; }
+        .receipt-detail:hover { background:#f8fafc; padding-left:0.5rem; padding-right:0.5rem; border-radius:8px; }
+        .receipt-detail .label { color:#888; font-weight:400; }
+        .receipt-detail .value { font-weight:600; color:#1a1a2e; }
+        .receipt-detail .value.amount { color:#dc3545; font-size:1.2rem; }
+        .receipt-status { background:#d4edda; color:#155724; padding:0.8rem; border-radius:12px; margin-top:1.2rem; font-weight:600; font-size:1rem; transition:all .3s ease; }
+        .receipt-status:hover { transform:scale(1.02); }
+        .receipt-back { display:inline-block; margin-top:1.2rem; color:#2c7da0; text-decoration:none; font-weight:500; padding:0.5rem 1.5rem; border-radius:20px; border:2px solid #2c7da0; transition:all .3s ease; }
+        .receipt-back:hover { background:#2c7da0; color:#fff; transform:translateY(-2px); box-shadow:0 4px 15px rgba(44,125,160,0.3); }
+        .receipt-error { color:#dc3545; padding:2rem; font-size:1.1rem; animation:shake 0.4s ease; }
+        @keyframes shake { 0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);} }
+        .loading-receipt { padding:2rem; color:#2c7da0; font-weight:500; animation:pulse 1.5s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:.4;} }
+        .receipt-footer { margin-top:1.5rem; font-size:0.75rem; color:#aaa; }
+        @media print { .receipt-back{display:none!important;} .receipt-container{box-shadow:none!important;padding:1rem!important;} body{background:#fff!important;padding:0!important;} }
+        @media (max-width:480px) { .receipt-container{padding:1.5rem;} .receipt-title{font-size:1.4rem;} }
+        @media (prefers-reduced-motion:reduce) { *{animation-duration:.01ms!important;transition-duration:.01ms!important;} html{scroll-behavior:auto!important;} }
+    </style>
+</head>
+<body>
+    <div class="receipt-container" id="receiptContainer">
+        <div id="loadingState" class="loading-receipt">Загрузка квитанции...</div>
+        <div id="receiptContent" style="display:none;">
+            <div class="receipt-logo"><img src="icon.png" alt="Отель ДП"></div>
+            <div class="receipt-title">Отель <span>ДП</span></div>
+            <div class="receipt-subtitle">Введенская слобода</div>
+            <hr class="receipt-divider">
+            <div id="receiptData">
+                <div class="receipt-detail"><span class="label">Номер операции</span><span class="value" id="opNumber">—</span></div>
+                <div class="receipt-detail"><span class="label">ФИО</span><span class="value" id="opName">—</span></div>
+                <div class="receipt-detail"><span class="label">Тип взноса</span><span class="value" id="opType">—</span></div>
+                <div class="receipt-detail"><span class="label">Сумма</span><span class="value amount" id="opAmount">—</span></div>
+                <div class="receipt-detail"><span class="label">Дата оплаты</span><span class="value" id="opDate">—</span></div>
+                <div class="receipt-detail" id="trainingRow" style="display:none;"><span class="label">Тренировка</span><span class="value" id="opTraining">—</span></div>
+            </div>
+            <hr class="receipt-divider">
+            <div class="receipt-status">✅ Оплата подтверждена</div>
+            <br>
+            <a href="index.html" class="receipt-back">← Вернуться на главную</a>
+        </div>
+        <div id="receiptError" style="display:none;">
+            <div class="receipt-error">❌ Квитанция не найдена</div>
+            <p style="color:#888;margin-top:.5rem;font-size:.9rem;">Проверьте правильность ссылки или обратитесь к администратору.</p>
+            <br><a href="index.html" class="receipt-back">← Вернуться на главную</a>
+        </div>
+        <div class="receipt-footer">Отель ДП | Введенская слобода · Система учёта баллов</div>
+    </div>
+
+    <script>
+        // ===================================================================
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // ===================================================================
+        function escapeHtml(s) {
+            if (!s) return '';
+            return s.replace(/[&<>]/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[m]));
+        }
+
+        function jsonpRequest(params, callback) {
+            const script = document.createElement('script');
+            const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+            window[callbackName] = function(data) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                callback(data);
+            };
+            const url = new URL(GOOGLE_SHEETS_URL);
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+            url.searchParams.append('callback', callbackName);
+            script.src = url.toString();
+            script.onerror = function() {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                callback({ status:'error', message:'Ошибка подключения к серверу' });
+            };
+            document.body.appendChild(script);
+        }
+
+        // ===================================================================
+        // ПОЛУЧЕНИЕ КВИТАНЦИИ
+        // ===================================================================
+        async function getReceiptFromSheet(operationNumber) {
+            return new Promise((resolve) => {
+                jsonpRequest({ action:'getReceipt', operation:operationNumber }, function(data) {
+                    if (data.status === 'success' && data.receipt) {
+                        resolve(data.receipt);
+                    } else {
+                        // Пытаемся найти в localStorage (если сохранена локально)
+                        const local = localStorage.getItem('receipt_' + operationNumber);
+                        if (local) {
+                            try { resolve(JSON.parse(local)); } catch(e) { resolve(null); }
+                        } else {
+                            resolve(null);
+                        }
+                    }
+                });
+            });
+        }
+
+        async function displayReceipt() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const opNumber = urlParams.get('op');
+            const loadingState = document.getElementById('loadingState');
+            const receiptContent = document.getElementById('receiptContent');
+            const receiptError = document.getElementById('receiptError');
+
+            if (!opNumber) {
+                loadingState.style.display = 'none';
+                receiptError.style.display = 'block';
+                return;
+            }
+
+            const receiptData = await getReceiptFromSheet(opNumber);
+            if (!receiptData) {
+                loadingState.style.display = 'none';
+                receiptError.style.display = 'block';
+                return;
+            }
+
+            // Заполняем данные с экранированием
+            document.getElementById('opNumber').textContent = escapeHtml(receiptData.operationNumber || opNumber);
+            document.getElementById('opName').textContent = escapeHtml(receiptData.name || '—');
+            document.getElementById('opType').textContent = escapeHtml(receiptData.type || 'Взнос');
+            document.getElementById('opAmount').textContent = (receiptData.amount || 0) + ' đᵽ';
+            document.getElementById('opDate').textContent = escapeHtml(receiptData.date || new Date().toLocaleString('ru-RU'));
+
+            if (receiptData.trainingId) {
+                document.getElementById('opTraining').textContent = '#' + escapeHtml(receiptData.trainingId);
+                document.getElementById('trainingRow').style.display = 'flex';
+            }
+
+            loadingState.style.display = 'none';
+            receiptContent.style.display = 'block';
+        }
+
+        displayReceipt();
+    </script>
+</body>
+</html>
