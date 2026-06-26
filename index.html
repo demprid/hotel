@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="config.js"></script>
     <style>
-        /* ===== ГЛОБАЛЬНЫЕ СТИЛИ (светлая тема) ===== */
+        /* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         html { background:#1a1a2e; scroll-behavior:smooth; max-width:100%; overflow-x:hidden; }
         body { background:#e1e1e1; min-height:100vh; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; color:#1a1a2e; margin:0; padding:0; padding-top:env(safe-area-inset-top,0); padding-bottom:env(safe-area-inset-bottom,0); max-width:100%; overflow-x:hidden; display:flex; flex-direction:column; position:relative; }
@@ -36,6 +36,10 @@
         .balance-block.loading .balance-title,.balance-block.loading .balance-amount { opacity:.5; }
         .balance-block.loading::after { content:''; position:absolute; top:0; left:-100%; width:300%; height:100%; background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.15) 25%,rgba(255,255,255,.3) 50%,rgba(255,255,255,.15) 75%,rgba(255,255,255,0) 100%); animation:shimmer 1.8s ease-in-out infinite; pointer-events:none; }
         @keyframes shimmer { 0%{transform:translateX(-30%);}100%{transform:translateX(30%);} }
+        .balance-block .refresh-balance { position:absolute; top:10px; right:15px; background:rgba(255,255,255,0.2); border:none; color:#fff; font-size:1.2rem; cursor:pointer; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; transition:all .3s; backdrop-filter:blur(4px); }
+        .balance-block .refresh-balance:hover { background:rgba(255,255,255,0.4); transform:rotate(180deg) scale(1.1); }
+        .balance-block .balance-error { color:#ffcccc; font-size:.9rem; margin-top:.5rem; display:none; cursor:pointer; text-decoration:underline; }
+        .balance-block .balance-error.visible { display:block; }
         footer { background:linear-gradient(0deg,rgba(26,26,46,0.92) 0%,rgba(44,62,80,0.92) 100%); padding:1.2rem 1.5rem; padding-bottom:calc(1.2rem + env(safe-area-inset-bottom,0rem)); box-shadow:0 -4px 20px rgba(0,0,0,.15); margin-top:auto; width:100%; border-top:1px solid rgba(255,255,255,.05); position:relative; z-index:1; }
         .footer-inner { max-width:600px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:.5rem 2rem; justify-items:center; align-items:start; }
         .footer-section { display:flex; flex-direction:column; gap:.3rem; align-items:center; }
@@ -88,12 +92,14 @@
         .current-user-row { background:rgba(44,125,160,.08) !important; font-weight:600; border-left:3px solid #2c7da0; }
 
         /* ===== БАЛАНС ===== */
-        .balance-block { text-align:center; padding:2rem; background:linear-gradient(135deg,rgba(26,82,118,0.7),rgba(44,125,160,0.7)); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border-radius:20px; margin-bottom:2rem; box-shadow:0 8px 30px rgba(44,125,160,.25); transition:all .4s ease; animation:fadeSlideUp .6s ease .2s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; border:1px solid rgba(255,255,255,.2); }
+        .balance-block { text-align:center; padding:2rem; background:linear-gradient(135deg,rgba(26,82,118,0.7),rgba(44,125,160,0.7)); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); border-radius:20px; margin-bottom:2rem; box-shadow:0 8px 30px rgba(44,125,160,.25); transition:all .4s ease; animation:fadeSlideUp .6s ease .2s backwards; max-width:1000px; width:100%; margin-left:auto; margin-right:auto; border:1px solid rgba(255,255,255,.2); position:relative; }
         .balance-block:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(44,125,160,.35); }
         .balance-title { color:rgba(255,255,255,.8); font-size:1rem; font-weight:500; margin-bottom:.5rem; text-transform:uppercase; letter-spacing:1px; }
-        .balance-amount { font-size:3.8rem; font-weight:700; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.1); transition:all .5s ease; }
+        .balance-amount { font-size:3.8rem; font-weight:700; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.1); transition:all .5s ease; cursor:pointer; }
         .balance-amount:hover { transform:scale(1.02); }
         .balance-amount .currency { font-size:2rem; opacity:.7; }
+        .balance-error { color:#ffcccc; font-size:.9rem; margin-top:.5rem; display:none; cursor:pointer; }
+        .balance-error.visible { display:block; }
 
         /* ===== ТРЕНИРОВКИ (пошаговый интерфейс) ===== */
         .training-selector { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; margin-bottom:1.5rem; background:rgba(255,255,255,0.5); padding:1rem; border-radius:12px; backdrop-filter:blur(4px); }
@@ -279,8 +285,9 @@
                 <div id="leadersContainer"><div class="loading">Загрузка...</div></div>
             </div>
             <div id="balance-block" class="balance-block" style="display:none;">
-                <div class="balance-title">💰 Баланс</div>
+                <div class="balance-title">💰 Баланс <button class="refresh-balance" id="refreshBalanceBtn" title="Обновить баланс">⟳</button></div>
                 <div class="balance-amount"><span id="balanceValue">0</span><span class="currency">đᵽ</span></div>
+                <div class="balance-error" id="balanceError">⚠️ Не удалось загрузить баланс. Нажмите для повторной попытки.</div>
             </div>
 
             <!-- Тренировка -->
@@ -409,7 +416,7 @@
         })();
 
         // ===================================================================
-        // 2. ОСНОВНОЙ JS (все запросы через JSONP, без CORS)
+        // 2. ОСНОВНОЙ JS (с передачей баланса в запросах)
         // ===================================================================
         const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
         let playerName = localStorage.getItem('playerName') || '';
@@ -419,6 +426,8 @@
         let csrfToken = localStorage.getItem('csrfToken') || '';
         let isLoggedIn = false;
         let isAdmin = false;
+        let balanceLoadAttempts = 0;
+        const MAX_BALANCE_ATTEMPTS = 3;
 
         let activeTrainings = [];
         let selectedTrainingId = null;
@@ -430,6 +439,7 @@
         const leadersContainer = document.getElementById('leadersContainer');
         const qrModal = document.getElementById('qrModal');
         const qrCodeContainer = document.getElementById('qrcode');
+        const balanceError = document.getElementById('balanceError');
 
         // --- Модалки ---
         const modalOverlay = document.getElementById('customModalOverlay');
@@ -497,7 +507,14 @@
             }, 4000);
         }
         function updateBalanceDisplay() {
-            if (balanceValue) balanceValue.textContent = currentBalance.toLocaleString('ru-RU');
+            if (balanceValue) {
+                balanceValue.textContent = currentBalance.toLocaleString('ru-RU');
+                balanceError.classList.remove('visible');
+                balanceLoadAttempts = 0;
+            }
+        }
+        function showBalanceError() {
+            balanceError.classList.add('visible');
         }
         function ensurePlayerName() {
             if (!playerName) {
@@ -529,7 +546,6 @@
                 jsonpRequest({ action:'register', username, name, password }, function(data) {
                     if (data.status === 'success') {
                         showRegisterSuccess('Регистрация выполнена! Выполняется вход...');
-                        // Автоматический вход после регистрации
                         login(username, password).then(success => {
                             if (success) {
                                 resolve(true);
@@ -602,6 +618,8 @@
                         initTraining();
                         updateAdminButtons();
                         showMessage('👋 Добро пожаловать, ' + playerName + '!', true);
+                        // Принудительно загружаем баланс с сервера
+                        loadBalanceFromSheet(playerLogin, authToken);
                         resolve(true);
                     } else {
                         showAuthError(data.message || 'Ошибка входа');
@@ -646,6 +664,7 @@
                 document.getElementById('registerContainer').style.display = 'none';
                 document.getElementById('mainContent').classList.add('visible');
                 document.getElementById('balance-block').style.display = 'block';
+                // Всегда загружаем баланс с сервера при загрузке страницы
                 loadBalanceFromSheet(playerLogin, authToken);
                 loadLeaders();
                 initTraining();
@@ -677,24 +696,45 @@
             }
         }
 
-        // --- Загрузка баланса ---
-        function loadBalanceFromSheet(login, token) {
+        // --- Загрузка баланса (улучшенная) ---
+        function loadBalanceFromSheet(login, token, retryCount) {
             if (!login) return;
             const authToken = token || localStorage.getItem('authToken');
             if (!authToken) return;
+            
             const balanceBlock = document.getElementById('balance-block');
             if (balanceBlock) balanceBlock.classList.add('loading');
             showLoading(true);
+            balanceError.classList.remove('visible');
+            
             jsonpRequest({ action:'getBalance', login:login, token:authToken }, function(data) {
                 showLoading(false);
                 if (balanceBlock) balanceBlock.classList.remove('loading', 'pulse-loading');
+                
                 if (data.status === 'success' && typeof data.balance === 'number') {
                     currentBalance = data.balance;
                     updateBalanceDisplay();
+                    balanceLoadAttempts = 0;
                 } else {
                     console.warn('⚠️ Не удалось загрузить баланс:', data.message);
+                    if (!retryCount) retryCount = 0;
+                    if (retryCount < MAX_BALANCE_ATTEMPTS) {
+                        setTimeout(() => {
+                            loadBalanceFromSheet(login, token, retryCount + 1);
+                        }, 3000);
+                    } else {
+                        showBalanceError();
+                    }
                 }
             });
+        }
+
+        // --- Ручное обновление баланса ---
+        function refreshBalance() {
+            if (isLoggedIn && playerLogin) {
+                balanceLoadAttempts = 0;
+                loadBalanceFromSheet(playerLogin, authToken);
+            }
         }
 
         // --- Лидеры ---
@@ -728,7 +768,7 @@
         }
 
         // ===================================================================
-        // ТРЕНИРОВКИ (новая стрельба)
+        // ТРЕНИРОВКИ (с передачей баланса)
         // ===================================================================
         function loadActiveTrainings() {
             jsonpRequest({ action:'getActiveTrainings', token:authToken }, function(data) {
@@ -820,7 +860,9 @@
             return data;
         }
 
-        // Отправка стрельбы (JSONP)
+        // ===================================================================
+        // ОТПРАВКА СТРЕЛЬБЫ С ПЕРЕДАЧЕЙ БАЛАНСА
+        // ===================================================================
         function submitShooting() {
             const data = collectShootingData();
             if (!data.length) { showMessage('Выберите мишени', false); return; }
@@ -839,20 +881,31 @@
                 login: playerLogin,
                 name: playerName,
                 trainingId: selectedTrainingId,
-                shootingData: shootingDataJson
+                shootingData: shootingDataJson,
+                balance: currentBalance  // <-- передаём текущий баланс
             }, function(result) {
                 showLoading(false);
                 if (result.status === 'success') {
                     trainingState.shootingDone = true;
+                    // Обновляем баланс из ответа сервера
+                    if (result.newBalance !== undefined) {
+                        currentBalance = result.newBalance;
+                        updateBalanceDisplay();
+                    } else {
+                        // если сервер не вернул balance, загружаем отдельно
+                        loadBalanceFromSheet(playerLogin, authToken);
+                    }
                     showMessage('Отчёт по стрельбе принят! Награда: ' + result.earned + ' đᵽ', true);
                     renderTrainingContent();
-                    loadBalanceFromSheet(playerLogin, authToken);
                 } else {
                     showMessage(result.message || 'Ошибка отправки', false);
                 }
             });
         }
 
+        // ===================================================================
+        // ОСТАЛЬНЫЕ ФУНКЦИИ (без изменений, кроме submitRunning)
+        // ===================================================================
         function renderTrainingContent() {
             const container = document.getElementById('trainingContent');
             if (!container) return;
@@ -944,7 +997,7 @@
             trainingState = { visitDone:false, feesDone:false, shootingDone:false, runningDone:false };
         }
 
-        // --- Обработчики действий (посещение, взносы, бег) - все через JSONP ---
+        // --- Посещение (JSONP) ---
         function markVisit() {
             if (!selectedTrainingId) { showMessage('Выберите тренировку', false); return; }
             showLoading(true);
@@ -964,6 +1017,7 @@
             });
         }
 
+        // --- Взносы (JSONP с передачей баланса) ---
         function payFees() {
             if (!selectedTrainingId) { showMessage('Выберите тренировку', false); return; }
             const stay = document.getElementById('feeStay')?.checked || false;
@@ -984,14 +1038,21 @@
             jsonpRequest({
                 action:'fee', token:authToken, csrf:csrfToken, login:playerLogin, name:playerName,
                 trainingId:selectedTrainingId, amount:total, details:detailsStr,
-                operation:operationNumber
+                operation:operationNumber,
+                balance: currentBalance  // передаём текущий баланс
             }, function(data) {
                 showLoading(false);
                 if (data.status === 'success') {
                     trainingState.feesDone = true;
+                    // Обновляем баланс из ответа сервера
+                    if (data.newBalance !== undefined) {
+                        currentBalance = data.newBalance;
+                        updateBalanceDisplay();
+                    } else {
+                        loadBalanceFromSheet(playerLogin, authToken);
+                    }
                     showMessage('Взносы оплачены!', true);
                     renderTrainingContent();
-                    loadBalanceFromSheet(playerLogin, authToken);
                     if (stay) {
                         const now = new Date();
                         const receiptData = {
@@ -1010,6 +1071,7 @@
             });
         }
 
+        // --- Бег (JSONP с передачей баланса) ---
         function submitRunning() {
             if (!selectedTrainingId) { showMessage('Выберите тренировку', false); return; }
             const big = parseInt(document.getElementById('bigLapsInput')?.value) || 0;
@@ -1020,22 +1082,34 @@
             }
             showLoading(true);
             jsonpRequest({
-                action:'running', token:authToken, csrf:csrfToken, login:playerLogin, name:playerName,
-                trainingId:selectedTrainingId, big:big, small:small
+                action:'running',
+                token: authToken,
+                csrf: csrfToken,
+                login: playerLogin,
+                name: playerName,
+                trainingId: selectedTrainingId,
+                big: big,
+                small: small,
+                balance: currentBalance  // передаём текущий баланс
             }, function(data) {
                 showLoading(false);
                 if (data.status === 'success') {
                     trainingState.runningDone = true;
+                    if (data.newBalance !== undefined) {
+                        currentBalance = data.newBalance;
+                        updateBalanceDisplay();
+                    } else {
+                        loadBalanceFromSheet(playerLogin, authToken);
+                    }
                     showMessage('Отчёт по бегу принят! Награда: ' + data.earned + ' đᵽ', true);
                     renderTrainingContent();
-                    loadBalanceFromSheet(playerLogin, authToken);
                 } else {
                     showMessage(data.message || 'Ошибка отправки', false);
                 }
             });
         }
 
-        // --- Админ-функции (JSONP) ---
+        // --- Админ-функции (без изменений) ---
         function showCreateTrainingModal() {
             showModal('Создать тренировку',
                 `<label style="display:block; margin-bottom:.5rem;">Выберите дату тренировки:</label>
@@ -1138,6 +1212,11 @@
         // ===================================================================
         // ИНИЦИАЛИЗАЦИЯ
         // ===================================================================
+        // Обработчики для ручного обновления баланса
+        document.getElementById('refreshBalanceBtn').addEventListener('click', refreshBalance);
+        document.getElementById('balanceValue').addEventListener('click', refreshBalance);
+        balanceError.addEventListener('click', refreshBalance);
+
         loadLeaders();
         if (!checkAuth()) {
             document.getElementById('authContainer').style.display = 'block';
@@ -1149,11 +1228,12 @@
                 loadActiveTrainings();
             }
         });
-        setTimeout(function() {
+        // Дополнительно обновляем баланс каждые 60 секунд
+        setInterval(function() {
             if (isLoggedIn && playerLogin) {
                 loadBalanceFromSheet(playerLogin, authToken);
             }
-        }, 1000);
+        }, 60000);
 
         document.getElementById('loginBtn').onclick = async function() {
             const username = document.getElementById('loginUsername').value.trim();
