@@ -7,151 +7,18 @@
     <link rel="icon" type="image/png" href="icon.png">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="config.js"></script>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        html { background:#1a1a2e; scroll-behavior:smooth; max-width:100%; overflow-x:hidden; }
-        body { background:#e1e1e1; min-height:100vh; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; color:#1a1a2e; margin:0; padding:0; padding-top:env(safe-area-inset-top,0); padding-bottom:env(safe-area-inset-bottom,0); max-width:100%; overflow-x:hidden; display:flex; flex-direction:column; position:relative; }
-        #bgCanvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; display:block; }
-        header { background:linear-gradient(180deg,rgba(26,26,46,0.92) 0%,rgba(44,62,80,0.92) 100%); padding:.8rem 1.5rem; padding-top:calc(.8rem + env(safe-area-inset-top,0rem)); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(0,0,0,.2); position:sticky; top:0; z-index:100; transition:all .3s ease; margin-top:0; max-width:100%; width:100%; }
-        .header-inner { max-width:1000px; width:100%; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; margin:0 auto; }
-        .header-brand { display:flex; align-items:center; gap:.8rem; }
-        .header-icon-link { display:inline-block; line-height:0; }
-        .header-icon { display:block; height:42px; width:auto; border-radius:8px; background:rgba(255,255,255,.1); padding:2px; transition:transform .3s ease; }
-        .header-icon:hover { transform:scale(1.05) rotate(-5deg); }
-        .header-title { color:#fff; font-size:1.2rem; font-weight:700; letter-spacing:.5px; }
-        .header-title span { color:#5dade2; }
-        .header-nav { display:flex; gap:.5rem; flex-wrap:wrap; margin-left:auto; }
-        .header-nav .anchor-link { color:rgba(255,255,255,.7); text-decoration:none; font-size:.9rem; font-weight:500; padding:.4rem .8rem; border-radius:6px; transition:all .3s ease; position:relative; }
-        .header-nav .anchor-link::after { content:''; position:absolute; bottom:0; left:50%; width:0; height:2px; background:#5dade2; transition:all .3s ease; transform:translateX(-50%); }
-        .header-nav .anchor-link:hover::after { width:70%; }
-        .header-nav .anchor-link:hover { color:#fff; background:rgba(255,255,255,.1); }
-        .user-info { display:flex; align-items:center; gap:.8rem; color:#fff; font-size:.9rem; margin-left:auto; }
-        .user-info .user-name { font-weight:600; color:#5dade2; }
-        .logout-btn { background:rgba(220,53,69,.8); color:#fff; border:none; padding:.3rem .9rem; border-radius:20px; cursor:pointer; font-size:.8rem; font-weight:500; transition:all .3s ease; }
-        .logout-btn:hover { background:#dc3545; transform:scale(1.05); }
-        main { max-width:1000px; margin:0 auto; padding:2rem 1.5rem 3rem; width:100%; flex:1; position:relative; z-index:1; }
-        .main-content { display:block; }
-
-        .auth-container { max-width:420px; margin:3rem auto; padding:2.5rem; width:100%; background:rgba(255,255,255,0.75) !important; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,.08); transition:all .4s cubic-bezier(.34,1.56,.64,1); animation:fadeSlideUp .6s ease; border:1px solid rgba(255,255,255,.3); }
-        .auth-container:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,.12); }
-        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(30px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);} }
-        .auth-container h2 { text-align:center; color:#1a1a2e; font-size:1.6rem; font-weight:700; margin-bottom:.3rem; }
-        .auth-container .subtitle { text-align:center; color:#888; font-size:.9rem; margin-bottom:1.8rem; }
-        .auth-container .error { color:#dc3545; text-align:center; font-size:.9rem; margin-bottom:1rem; padding:.5rem; background:#fde8e8; border-radius:8px; animation:shake .4s ease; }
-        @keyframes shake { 0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);} }
-        .auth-container .success { color:#28a745; text-align:center; font-size:.9rem; margin-bottom:1rem; padding:.5rem; background:#e8f8ed; border-radius:8px; }
-        .auth-container label { display:block; font-weight:600; font-size:.85rem; color:#555; margin-bottom:.3rem; }
-        .auth-container input { width:100%; padding:.8rem 1rem; margin-bottom:1.2rem; border:2px solid #e8ecf1; border-radius:12px; font-size:1rem; font-family:inherit; transition:all .3s ease; background:#f8fafc; max-width:100%; }
-        .auth-container input:focus { outline:none; border-color:#2c7da0; background:#fff; box-shadow:0 0 0 4px rgba(44,125,160,.1); transform:scale(1.01); }
-        .auth-container .btn-primary { width:100%; padding:.9rem; background:linear-gradient(135deg,#2c7da0,#1a5276); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; transition:all .3s ease; }
-        .auth-container .btn-primary:hover { transform:translateY(-2px) scale(1.01); box-shadow:0 8px 25px rgba(44,125,160,.3); }
-        .auth-container .btn-primary:active { transform:scale(.98); }
-        .auth-container .auth-switch { text-align:center; margin-top:1.5rem; color:#888; font-size:.9rem; }
-        .auth-container .auth-switch a { color:#2c7da0; cursor:pointer; font-weight:600; text-decoration:none; transition:color .3s ease; }
-        .auth-container .auth-switch a:hover { color:#1a5276; text-decoration:underline; }
-
-        .chat-mode-switch { display:flex; gap:.5rem; justify-content:center; margin-bottom:1rem; flex-wrap:wrap; }
-        .chat-mode-switch button { padding:.4rem 1.2rem; border-radius:20px; border:2px solid rgba(232,236,241,0.7); background:rgba(248,250,252,0.7); cursor:pointer; font-weight:500; font-size:.9rem; transition:all .3s ease; color:#555; }
-        .chat-mode-switch button.active { border-color:#2c7da0; background:#2c7da0; color:#fff; box-shadow:0 4px 15px rgba(44,125,160,.25); }
-        .chat-mode-switch button:hover:not(.active) { border-color:#2c7da0; background:rgba(232,240,248,0.8); }
-        .chat-mode-indicator { text-align:center; font-size:.9rem; color:#888; margin-bottom:.5rem; }
-        .messenger-container { display:flex; flex-direction:column; gap:1rem; height:500px; max-height:70vh; }
-        .messenger-users { display:flex; gap:.5rem; flex-wrap:wrap; padding-bottom:.5rem; border-bottom:2px solid rgba(240,244,248,0.7); overflow-x:auto; }
-        .messenger-user-btn { padding:.5rem 1.2rem; border-radius:20px; border:2px solid rgba(232,236,241,0.7); background:rgba(248,250,252,0.7); cursor:pointer; font-weight:500; font-size:.9rem; transition:all .3s ease; white-space:nowrap; color:#555; }
-        .messenger-user-btn:hover { border-color:#2c7da0; background:rgba(232,240,248,0.8); transform:translateY(-2px); }
-        .messenger-user-btn.active { border-color:#2c7da0; background:#2c7da0; color:#fff; box-shadow:0 4px 15px rgba(44,125,160,.25); }
-        .messenger-user-btn .unread-badge { background:#dc3545; color:#fff; border-radius:50%; padding:.1rem .5rem; font-size:.7rem; margin-left:.3rem; }
-        .messenger-messages { flex:1; overflow-y:auto; padding:.5rem; background:rgba(248,250,252,0.7); border-radius:12px; display:flex; flex-direction:column; gap:.5rem; min-height:200px; max-height:300px; }
-        .messenger-messages::-webkit-scrollbar { width:6px; }
-        .messenger-messages::-webkit-scrollbar-track { background:rgba(240,244,248,0.7); border-radius:10px; }
-        .messenger-messages::-webkit-scrollbar-thumb { background:#2c7da0; border-radius:10px; }
-        .message-bubble { max-width:80%; padding:.6rem 1rem; border-radius:16px; word-wrap:break-word; animation:fadeSlideUp .3s ease; font-size:.95rem; line-height:1.4; position:relative; display:flex; flex-direction:column; }
-        .message-bubble.mine { align-self:flex-end; background:linear-gradient(135deg,rgba(44,125,160,0.9),rgba(26,82,118,0.9)); color:#fff; border-bottom-right-radius:4px; }
-        .message-bubble.theirs { align-self:flex-start; background:rgba(255,255,255,0.9); color:#1a1a2e; border-bottom-left-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
-        .message-bubble .msg-sender { font-size:.7rem; font-weight:600; opacity:.7; margin-bottom:.15rem; }
-        .message-bubble.mine .msg-sender { text-align:right; color:rgba(255,255,255,0.7); }
-        .message-bubble.theirs .msg-sender { text-align:left; color:#2c7da0; }
-        .message-bubble .msg-text { word-break:break-word; }
-        .message-bubble .msg-text img { max-width:150px; max-height:150px; border-radius:8px; display:block; margin:2px 0; }
-        .message-bubble .msg-time { font-size:.65rem; opacity:.6; margin-top:.2rem; align-self:flex-end; }
-        .message-bubble .msg-edited { font-size:.6rem; opacity:.5; font-style:italic; margin-left:.5rem; }
-        .msg-actions { display:flex; gap:.3rem; margin-top:.3rem; flex-wrap:wrap; opacity:.7; transition:opacity .2s; }
-        .message-bubble:hover .msg-actions { opacity:1; }
-        .msg-actions button { background:none; border:none; cursor:pointer; font-size:.85rem; padding:.05rem .3rem; border-radius:4px; transition:all .2s; color:#555; }
-        .msg-actions button:hover { background:rgba(0,0,0,.05); }
-        .msg-actions .delete-btn { color:#dc3545; }
-        .msg-actions .edit-btn { color:#2c7da0; }
-        .msg-actions .forward-btn { color:#28a745; }
-        .msg-actions .reply-btn { color:#6c757d; }
-        .msg-reactions { display:flex; gap:.2rem; margin-top:.2rem; flex-wrap:wrap; }
-        .msg-reactions .reaction-badge { background:rgba(240,244,248,0.7); padding:.05rem .4rem; border-radius:12px; font-size:.8rem; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:.2rem; }
-        .msg-reactions .reaction-badge:hover { background:rgba(224,230,237,0.8); }
-        .msg-reactions .reaction-badge .count { font-size:.7rem; color:#666; }
-        .messenger-input-area { display:flex; gap:.5rem; padding-top:.5rem; border-top:2px solid rgba(240,244,248,0.7); flex-wrap:wrap; }
-        .messenger-input-area .input-wrapper { flex:1; position:relative; }
-        .messenger-input-area .input-wrapper .sticker-btn { position:absolute; right:42px; top:50%; transform:translateY(-50%); background:none; border:none; font-size:1.5rem; cursor:pointer; color:#2c7da0; transition:transform .2s; }
-        .messenger-input-area .input-wrapper .sticker-btn:hover { transform:translateY(-50%) scale(1.1); }
-        .messenger-input-area .quote-preview { display:none; background:rgba(240,244,248,0.8); border-left:3px solid #2c7da0; padding:.4rem .8rem; border-radius:8px 8px 0 0; font-size:.8rem; color:#555; margin-bottom:.2rem; max-height:60px; overflow:hidden; }
-        .messenger-input-area .quote-preview.active { display:block; }
-        .messenger-input-area input { width:100%; padding:.7rem 3.8rem .7rem 1rem; border:2px solid rgba(232,236,241,0.7); border-radius:12px; font-size:.95rem; font-family:inherit; transition:all .3s ease; background:rgba(248,250,252,0.7); }
-        .messenger-input-area input:focus { outline:none; border-color:#2c7da0; background:rgba(255,255,255,0.9); box-shadow:0 0 0 4px rgba(44,125,160,.08); }
-        .messenger-input-area .btn-send { padding:.7rem 1.5rem; background:linear-gradient(135deg,#2c7da0,#1a5276); color:#fff; border:none; border-radius:12px; cursor:pointer; font-weight:600; transition:all .3s ease; white-space:nowrap; }
-        .messenger-input-area .btn-send:hover { transform:translateY(-2px) scale(1.02); box-shadow:0 4px 15px rgba(44,125,160,.3); }
-        .messenger-input-area .btn-send:active { transform:scale(.97); }
-        .empty-messages { text-align:center; color:#999; padding:2rem; font-style:italic; }
-        .messenger-refresh { background:none; border:none; cursor:pointer; font-size:1.1rem; color:#2c7da0; transition:all .3s ease; padding:.2rem .5rem; }
-        .messenger-refresh:hover { transform:rotate(180deg) scale(1.1); }
-
-        .sticker-panel { display:none; background:rgba(255,255,255,0.95); border-radius:16px; padding:.8rem; box-shadow:0 8px 30px rgba(0,0,0,0.2); border:1px solid rgba(232,236,241,0.7); margin-bottom:.5rem; max-height:200px; overflow-y:auto; }
-        .sticker-panel.open { display:block; }
-        .sticker-panel .sticker-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:.5rem; }
-        .sticker-panel .sticker-grid img { width:100%; aspect-ratio:1/1; object-fit:contain; cursor:pointer; border-radius:8px; transition:transform .2s; background:#f8fafc; padding:2px; }
-        .sticker-panel .sticker-grid img:hover { transform:scale(1.1); background:#e8ecf1; }
-        .sticker-panel .sticker-grid .sticker-placeholder { width:100%; aspect-ratio:1/1; background:#f0f0f0; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:.8rem; }
-        .sticker-panel::-webkit-scrollbar { width:4px; }
-        .sticker-panel::-webkit-scrollbar-thumb { background:#2c7da0; border-radius:10px; }
-        .sticker-panel::-webkit-scrollbar-track { background:#f0f4f8; border-radius:10px; }
-
-        .message { margin-top:1rem; padding:.8rem 1.2rem; border-radius:12px; text-align:center; font-weight:500; display:none; animation:fadeSlideUp .4s ease; }
-        .message.success { background:rgba(212,237,218,0.9); color:#155724; display:block; }
-        .message.error { background:rgba(248,215,218,0.9); color:#721c24; display:block; }
-        .loading { text-align:center; padding:2rem; color:#2c7da0; font-weight:500; animation:pulse 1.5s ease-in-out infinite; }
-        @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:.4;} }
-
-        .custom-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:9999; justify-content:center; align-items:center; animation:fadeIn .2s ease; }
-        .custom-modal-overlay.open { display:flex; }
-        @keyframes fadeIn { from{opacity:0;}to{opacity:1;} }
-        .custom-modal { background:rgba(255,255,255,0.95); backdrop-filter:blur(6px); border-radius:24px; padding:2rem; max-width:420px; width:92%; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.2); animation:scaleIn .3s cubic-bezier(.34,1.56,.64,1); }
-        @keyframes scaleIn { from{opacity:0;transform:scale(.85);}to{opacity:1;transform:scale(1);} }
-        .custom-modal h3 { font-size:1.3rem; margin-bottom:.8rem; text-align:center; color:#1a1a2e; }
-        .custom-modal .modal-close { float:right; background:none; border:none; font-size:1.8rem; cursor:pointer; color:#aaa; transition:color .2s; }
-        .custom-modal .modal-close:hover { color:#333; }
-        .custom-modal .modal-body { margin:1rem 0; }
-        .custom-modal .modal-actions { display:flex; gap:.8rem; justify-content:center; margin-top:1.2rem; flex-wrap:wrap; }
-        .custom-modal .modal-actions .btn { padding:.6rem 1.8rem; border-radius:12px; border:none; font-weight:600; cursor:pointer; transition:all .2s; }
-        .custom-modal .modal-actions .btn-primary { background:#2c7da0; color:#fff; }
-        .custom-modal .modal-actions .btn-primary:hover { transform:scale(1.05); }
-        .custom-modal .modal-actions .btn-danger { background:#dc3545; color:#fff; }
-        .custom-modal .modal-actions .btn-danger:hover { transform:scale(1.05); }
-        .custom-modal .modal-actions .btn-secondary { background:#e8ecf1; color:#333; }
-        .custom-modal .modal-actions .btn-secondary:hover { transform:scale(1.05); }
-        .custom-modal .user-list { max-height:200px; overflow-y:auto; }
-        .custom-modal .user-list .user-item { padding:.5rem 1rem; cursor:pointer; border-radius:8px; transition:background .2s; display:flex; align-items:center; gap:.5rem; }
-        .custom-modal .user-list .user-item:hover { background:#f0f4f8; }
-        .custom-modal .user-list .user-item .user-login { font-size:.8rem; color:#888; }
-
-        @media (max-width:768px) { .sticker-panel .sticker-grid { grid-template-columns:repeat(4,1fr); } }
-        @media (max-width:480px) { .sticker-panel .sticker-grid { grid-template-columns:repeat(3,1fr); } }
-        @media (prefers-reduced-motion:reduce) { *{animation-duration:.01ms !important;transition-duration:.01ms !important;} html{scroll-behavior:auto !important;} }
-
-        .chat-area { display:none; }
-        .chat-area.visible { display:block; }
-        .auth-area { display:block; }
-        .auth-area.hidden { display:none; }
+        /* ===== УНИКАЛЬНЫЕ СТИЛИ ДЛЯ chat.html ===== */
+        /* Все основные стили чата уже в styles.css, здесь только специфичные переопределения при необходимости */
+        .messenger-container {
+            max-height: 70vh;
+        }
     </style>
 </head>
 <body>
     <canvas id="bgCanvas"></canvas>
+
     <header>
         <div class="header-inner">
             <div class="header-brand">
@@ -159,20 +26,32 @@
                 <span class="header-title">Отель <span>ДП</span></span>
             </div>
             <nav class="header-nav">
-                <a href="index.html" class="anchor-link">Главная</a>
-                <a href="index.html#balance-block" class="anchor-link">Баланс</a>
-                <a href="index.html#leaders-block" class="anchor-link">Лидеры</a>
+                <a href="index.html" class="anchor-link">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Главная
+                </a>
+                <a href="index.html#balance-block" class="anchor-link">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg> Баланс
+                </a>
+                <a href="index.html#leaders-block" class="anchor-link">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg> Лидеры
+                </a>
             </nav>
             <div class="user-info" id="userInfo" style="display:none;">
-                <span>👤 <span class="user-name" id="userName">—</span></span>
-                <button class="logout-btn" id="logoutBtn">Выйти</button>
+                <span>
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    <span class="user-name" id="userName">—</span>
+                </span>
+                <button class="logout-btn" id="logoutBtn">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24" fill="currentColor"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg> Выйти
+                </button>
             </div>
         </div>
     </header>
+
     <main>
         <div id="authArea" class="auth-area">
             <div id="authContainer" class="auth-container">
-                <h2>🔐 Вход в чат</h2>
+                <h2><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Вход в чат</h2>
                 <p class="subtitle">Войдите, чтобы общаться</p>
                 <div id="authError" class="error"></div>
                 <label>Логин</label>
@@ -183,7 +62,7 @@
                 <div class="auth-switch">Нет аккаунта? <a id="showRegister">Зарегистрироваться</a></div>
             </div>
             <div id="registerContainer" class="auth-container" style="display:none;">
-                <h2>📝 Регистрация</h2>
+                <h2><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-2 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0-6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> Регистрация</h2>
                 <p class="subtitle">Создайте новый аккаунт</p>
                 <div id="registerError" class="error"></div>
                 <label>Ваше имя</label><input type="text" id="registerName" placeholder="Иван Петров">
@@ -196,10 +75,16 @@
         </div>
 
         <div id="chatArea" class="chat-area">
-            <h1 style="text-align:center; margin-bottom:1rem;">💬 Чат</h1>
+            <h1 style="text-align:center; margin-bottom:1rem;">
+                <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg> Чат
+            </h1>
             <div class="chat-mode-switch">
-                <button id="modePrivate" class="active" data-mode="private">👤 Личные</button>
-                <button id="modeGroup" data-mode="group">👥 Общий чат</button>
+                <button id="modePrivate" class="active" data-mode="private">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Личные
+                </button>
+                <button id="modeGroup" data-mode="group">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> Общий чат
+                </button>
             </div>
             <div class="chat-mode-indicator" id="modeIndicator">Личные сообщения</div>
             <div class="messenger-container">
@@ -208,10 +93,14 @@
                 <div class="messenger-input-area">
                     <div class="input-wrapper">
                         <div class="quote-preview" id="quotePreview"></div>
+                        <button class="sticker-btn" id="stickerBtn" title="Стикеры">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+                        </button>
                         <input type="text" id="messageInput" placeholder="Введите сообщение или выберите стикер..." maxlength="500">
-                        <button class="sticker-btn" id="stickerBtn" title="Стикеры">😊</button>
                     </div>
-                    <button class="btn-send" id="sendMessageBtn">Отправить</button>
+                    <button class="btn-send" id="sendMessageBtn">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Отправить
+                    </button>
                 </div>
                 <div class="sticker-panel" id="stickerPanel"><div class="sticker-grid" id="stickerGrid"></div></div>
             </div>
@@ -222,25 +111,27 @@
         <div id="loadingIndicator" class="loading" style="display:none;">Загрузка...</div>
     </main>
 
-    <footer style="background:linear-gradient(0deg,rgba(26,26,46,0.92) 0%,rgba(44,62,80,0.92) 100%); padding:1.2rem 1.5rem; padding-bottom:calc(1.2rem + env(safe-area-inset-bottom,0rem)); box-shadow:0 -4px 20px rgba(0,0,0,.15); margin-top:auto; width:100%; border-top:1px solid rgba(255,255,255,.05); position:relative; z-index:1;">
-        <div class="footer-inner" style="max-width:600px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:.5rem 2rem; justify-items:center; align-items:start;">
-            <div class="footer-section" style="display:flex; flex-direction:column; gap:.3rem; align-items:center;">
-                <span class="footer-section-title" style="color:rgba(255,255,255,.5); font-size:.7rem; text-transform:uppercase; letter-spacing:1px; font-weight:600; margin-bottom:.2rem;">Адреса</span>
-                <a href="https://yandex.ru/maps/-/CTATzJja" target="_blank" class="footer-link" style="color:rgba(255,255,255,.75); text-decoration:none; font-size:.85rem; transition:all .3s ease; display:inline-flex; align-items:center; gap:.5rem; padding:.15rem 0;"><img src="icon.png" alt="" style="width:18px; height:18px; object-fit:contain; opacity:.8; transition:opacity .3s ease; flex-shrink:0;"> Ресепшн</a>
-                <a href="https://yandex.ru/maps/-/CTATvGpM" target="_blank" class="footer-link" style="color:rgba(255,255,255,.75); text-decoration:none; font-size:.85rem; transition:all .3s ease; display:inline-flex; align-items:center; gap:.5rem; padding:.15rem 0;"><img src="icon.png" alt="" style="width:18px; height:18px; object-fit:contain; opacity:.8; transition:opacity .3s ease; flex-shrink:0;"> Отель</a>
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-section">
+                <span class="footer-section-title">Адреса</span>
+                <a href="https://yandex.ru/maps/-/CTATzJja" target="_blank" class="footer-link"><img src="icon.png" alt=""> Ресепшн</a>
+                <a href="https://yandex.ru/maps/-/CTATvGpM" target="_blank" class="footer-link"><img src="icon.png" alt=""> Отель</a>
             </div>
-            <div class="footer-section" style="display:flex; flex-direction:column; gap:.3rem; align-items:center;">
-                <span class="footer-section-title" style="color:rgba(255,255,255,.5); font-size:.7rem; text-transform:uppercase; letter-spacing:1px; font-weight:600; margin-bottom:.2rem;">Группы</span>
-                <a href="https://max.ru/join/nlfkDPaEmB2Ix310qDVV6c7s0qRNgzCD68pOgbTIMnI" target="_blank" class="footer-link" style="color:rgba(255,255,255,.75); text-decoration:none; font-size:.85rem; transition:all .3s ease; display:inline-flex; align-items:center; gap:.5rem; padding:.15rem 0;"><img src="max.png" alt="" style="width:18px; height:18px; object-fit:contain; opacity:.8; transition:opacity .3s ease; flex-shrink:0;"> Макс</a>
-                <a href="https://t.me/+yPDvR9dQPCJlZjdi" target="_blank" class="footer-link" style="color:rgba(255,255,255,.75); text-decoration:none; font-size:.85rem; transition:all .3s ease; display:inline-flex; align-items:center; gap:.5rem; padding:.15rem 0;"><img src="telegram.png" alt="" style="width:18px; height:18px; object-fit:contain; opacity:.8; transition:opacity .3s ease; flex-shrink:0;"> Телеграм</a>
+            <div class="footer-section">
+                <span class="footer-section-title">Группы</span>
+                <a href="https://max.ru/join/nlfkDPaEmB2Ix310qDVV6c7s0qRNgzCD68pOgbTIMnI" target="_blank" class="footer-link"><img src="max.png" alt=""> Макс</a>
+                <a href="https://t.me/+yPDvR9dQPCJlZjdi" target="_blank" class="footer-link"><img src="telegram.png" alt=""> Телеграм</a>
             </div>
-            <div class="footer-copyright" style="grid-column:1/-1; text-align:center; color:rgba(255,255,255,.25); font-size:.65rem; margin-top:.3rem; padding-top:.5rem; border-top:1px solid rgba(255,255,255,.05);">© 2026 Отель ДП | Введенская слобода</div>
+            <div class="footer-copyright">© 2026 Отель ДП | Введенская слобода</div>
         </div>
     </footer>
 
     <div class="custom-modal-overlay" id="customModalOverlay">
         <div class="custom-modal" id="customModal">
-            <button class="modal-close" id="modalCloseBtn">&times;</button>
+            <button class="modal-close" id="modalCloseBtn">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
             <h3 id="modalTitle">Заголовок</h3>
             <div class="modal-body" id="modalBody"></div>
             <div class="modal-actions" id="modalActions"></div>
@@ -248,6 +139,9 @@
     </div>
 
     <script>
+        // ================================================================
+        // 1. АНИМАЦИЯ МИШЕНЕЙ
+        // ================================================================
         (function() {
             const canvas = document.getElementById('bgCanvas');
             const ctx = canvas.getContext('2d');
@@ -308,12 +202,27 @@
             animate();
         })();
 
+        // ================================================================
+        // 2. ОБЪЕКТ С ИКОНКАМИ (для динамических шаблонов)
+        // ================================================================
+        const ICONS = {
+            admin: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="none"><circle cx="12" cy="12" r="12" fill="#0088cc"/><path d="M7 12l3 3 7-7" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+            delete: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2M10 10v6M14 10v6M5 6l1 14a2 2 0 002 2h8a2 2 0 002-2l1-14"/></svg>`,
+            edit: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5l4 4L7 21l-4 1 1-4L16.5 3.5z"/></svg>`,
+            forward: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>`,
+            reply: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v-2a5 5 0 00-5-5H8l3-3M8 8l-3 3 3 3"/><path d="M3 15v2a5 5 0 005 5h8"/></svg>`
+        };
+
+        // ================================================================
+        // 3. ОСНОВНОЙ JS ЧАТА
+        // ================================================================
         const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
         let playerName = localStorage.getItem('playerName') || '';
         let playerLogin = localStorage.getItem('playerLogin') || '';
         let authToken = localStorage.getItem('authToken') || '';
         let csrfToken = localStorage.getItem('csrfToken') || '';
         let isLoggedIn = false;
+        let isAdmin = false;
 
         const messageBox = document.getElementById('messageBox');
         const loadingIndicator = document.getElementById('loadingIndicator');
@@ -365,7 +274,7 @@
             document.body.appendChild(script);
         }
 
-        // Регистрация через JSONP
+        // Регистрация
         function register(username, name, password) {
             return new Promise((resolve) => {
                 jsonpRequest({ action:'register', username, name, password }, function(data) {
@@ -399,6 +308,7 @@
                         playerName = data.name;
                         playerLogin = data.username;
                         isLoggedIn = true;
+                        isAdmin = data.isAdmin || false;
 
                         document.getElementById('userName').textContent = playerName;
                         document.getElementById('userInfo').style.display = 'flex';
@@ -406,7 +316,7 @@
                         document.getElementById('authArea').classList.add('hidden');
                         document.getElementById('chatArea').classList.add('visible');
 
-                        showMessage('👋 Добро пожаловать, ' + playerName + '!');
+                        showMessage('Добро пожаловать, ' + playerName + '!');
                         startMessenger();
                         resolve(true);
                     } else {
@@ -429,7 +339,7 @@
             localStorage.removeItem('csrfToken');
             localStorage.removeItem('playerName');
             localStorage.removeItem('playerLogin');
-            authToken = ''; csrfToken = ''; playerName = ''; playerLogin = ''; isLoggedIn = false;
+            authToken = ''; csrfToken = ''; playerName = ''; playerLogin = ''; isLoggedIn = false; isAdmin = false;
             document.getElementById('userInfo').style.display = 'none';
             document.getElementById('chatArea').classList.remove('visible');
             document.getElementById('authArea').classList.remove('hidden');
@@ -447,11 +357,13 @@
                 authToken = token;
                 csrfToken = csrf;
                 isLoggedIn = true;
-                document.getElementById('userName').textContent = playerName;
-                document.getElementById('userInfo').style.display = 'flex';
-                document.getElementById('authArea').classList.add('hidden');
-                document.getElementById('chatArea').classList.add('visible');
-                startMessenger();
+                checkAdminStatus().then(() => {
+                    document.getElementById('userName').textContent = playerName;
+                    document.getElementById('userInfo').style.display = 'flex';
+                    document.getElementById('authArea').classList.add('hidden');
+                    document.getElementById('chatArea').classList.add('visible');
+                    startMessenger();
+                });
                 return true;
             } else {
                 document.getElementById('authArea').classList.remove('hidden');
@@ -460,6 +372,17 @@
             }
         }
 
+        function checkAdminStatus() {
+            return new Promise((resolve) => {
+                if (!authToken) { resolve(false); return; }
+                jsonpRequest({ action:'getAdminStatus', token:authToken }, function(data) {
+                    isAdmin = (data.status === 'success' && data.isAdmin === true);
+                    resolve(isAdmin);
+                });
+            });
+        }
+
+        // Обработчики авторизации
         document.getElementById('loginBtn').onclick = async function() {
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
@@ -495,6 +418,9 @@
         };
         document.getElementById('logoutBtn').onclick = logout;
 
+        // ================================================================
+        // 4. ОСНОВНЫЕ ФУНКЦИИ ЧАТА
+        // ================================================================
         let messengerUsers = [];
         let currentChatUserLogin = '';
         let currentChatUserName = '';
@@ -504,7 +430,8 @@
         let replyQuote = null;
         let replyToMsgId = null;
         let chatMode = 'private';
-        const MAX_STICKERS = 86;
+        const MAX_STICKERS = 83;
+        let userAdminMap = {};
 
         const modalOverlay = document.getElementById('customModalOverlay');
         const modalTitle = document.getElementById('modalTitle');
@@ -573,6 +500,9 @@
             loadStickers();
         }
 
+        // ================================================================
+        // СТИКЕРЫ (исправленная версия с fallback)
+        // ================================================================
         function loadStickers() {
             const stickerList = [];
             for (let i = 1; i <= MAX_STICKERS; i++) {
@@ -592,12 +522,14 @@
             stickerList.forEach(file => {
                 const safe = sanitizeSticker(file);
                 if (safe) {
-                    html += `<img src="${safe}" alt="стикер" data-sticker="${safe}">`;
+                    html += `<div class="sticker-item" data-sticker="${safe}">
+                        <img src="${safe}" alt="стикер" onerror="this.style.display='none'; this.parentNode.innerHTML='<span class=\\'sticker-fallback\\'>${safe}</span>'">
+                    </div>`;
                 }
             });
             grid.innerHTML = html;
-            grid.querySelectorAll('img').forEach(img => {
-                img.addEventListener('click', function() {
+            grid.querySelectorAll('.sticker-item').forEach(div => {
+                div.addEventListener('click', function() {
                     const file = this.dataset.sticker;
                     if (file) {
                         sendSticker(file);
@@ -609,16 +541,23 @@
 
         function sendSticker(file) {
             const safe = sanitizeSticker(file);
-            if (!safe) { showMessage('Недопустимый стикер', false); return; }
+            if (!safe) { 
+                showMessage('Недопустимый стикер', false); 
+                return; 
+            }
             const text = `[sticker:${safe}]`;
             const input = document.getElementById('messageInput');
             if (input) {
                 input.value = text;
-                sendMessage();
-                input.value = '';
+                input.focus();
+                input.setSelectionRange(input.value.length, input.value.length);
+                showMessage('Стикер вставлен! Нажмите "Отправить"', true);
             }
         }
 
+        // ================================================================
+        // ОСТАЛЬНЫЕ ФУНКЦИИ ЧАТА
+        // ================================================================
         function setChatMode(mode) {
             chatMode = mode;
             document.getElementById('modePrivate').classList.toggle('active', mode === 'private');
@@ -650,6 +589,10 @@
             jsonpRequest({ action:'getUsers', token:authToken }, function(data) {
                 if (data.status === 'success' && Array.isArray(data.users)) {
                     messengerUsers = data.users.filter(u => u.login !== playerLogin);
+                    userAdminMap = {};
+                    data.users.forEach(u => {
+                        userAdminMap[u.login] = u.isAdmin || false;
+                    });
                     renderUsers();
                 } else {
                     const container = document.getElementById('messengerUsers');
@@ -670,8 +613,9 @@
                 const hasUnread = hasUnreadMessages(user.login);
                 const activeClass = currentChatUserLogin === user.login ? 'active' : '';
                 const badge = hasUnread ? `<span class="unread-badge">●</span>` : '';
+                const adminBadge = userAdminMap[user.login] ? `<span class="admin-badge">${ICONS.admin}</span>` : '';
                 html += `<button class="messenger-user-btn ${activeClass}" data-login="${escapeHtml(user.login)}">
-                    ${escapeHtml(user.name)} ${badge}
+                    ${escapeHtml(user.name)} ${adminBadge} ${badge}
                 </button>`;
             });
             container.innerHTML = html;
@@ -752,7 +696,10 @@
                 const time = msg.date || '';
                 const edited = msg.edited ? ` (изменено)` : '';
                 const deletedClass = msg.deleted ? ' msg-deleted' : '';
-                const textDisplay = msg.deleted ? escapeHtml(msg.text) : renderMessageText(msg.text);
+                const textDisplay = msg.deleted ? 'Сообщение удалено' : renderMessageText(msg.text);
+
+                const isSenderAdmin = userAdminMap[msg.from] || false;
+                const adminBadge = isSenderAdmin ? `<span class="admin-badge">${ICONS.admin}</span>` : '';
 
                 let reactionsHtml = '';
                 if (msg.reactions && msg.reactions.length) {
@@ -775,20 +722,20 @@
                 let actionsHtml = '';
                 if (isMine && !msg.deleted) {
                     actionsHtml = `<div class="msg-actions">
-                        <button class="delete-btn" data-msgid="${escapeHtml(msg.id)}" title="Удалить">🗑</button>
-                        <button class="edit-btn" data-msgid="${escapeHtml(msg.id)}" title="Редактировать">✏️</button>
-                        <button class="forward-btn" data-msgid="${escapeHtml(msg.id)}" title="Переслать">📤</button>
-                        <button class="reply-btn" data-msgid="${escapeHtml(msg.id)}" title="Ответить">↩️</button>
+                        <button class="delete-btn" data-msgid="${escapeHtml(msg.id)}" title="Удалить">${ICONS.delete}</button>
+                        <button class="edit-btn" data-msgid="${escapeHtml(msg.id)}" title="Редактировать">${ICONS.edit}</button>
+                        <button class="forward-btn" data-msgid="${escapeHtml(msg.id)}" title="Переслать">${ICONS.forward}</button>
+                        <button class="reply-btn" data-msgid="${escapeHtml(msg.id)}" title="Ответить">${ICONS.reply}</button>
                     </div>`;
                 } else if (!msg.deleted) {
                     actionsHtml = `<div class="msg-actions">
-                        <button class="forward-btn" data-msgid="${escapeHtml(msg.id)}" title="Переслать">📤</button>
-                        <button class="reply-btn" data-msgid="${escapeHtml(msg.id)}" title="Ответить">↩️</button>
+                        <button class="forward-btn" data-msgid="${escapeHtml(msg.id)}" title="Переслать">${ICONS.forward}</button>
+                        <button class="reply-btn" data-msgid="${escapeHtml(msg.id)}" title="Ответить">${ICONS.reply}</button>
                     </div>`;
                 }
 
                 html += `<div class="message-bubble ${isMine ? 'mine' : 'theirs'} ${deletedClass}" data-msgid="${escapeHtml(msg.id)}">
-                    <div class="msg-sender">${escapeHtml(senderName)}</div>
+                    <div class="msg-sender">${escapeHtml(senderName)} ${adminBadge}</div>
                     <div class="msg-text">${textDisplay}</div>
                     <div class="msg-time">${escapeHtml(time)}${edited}</div>
                     ${actionsHtml}
@@ -804,7 +751,7 @@
                     const msgId = this.dataset.msgid;
                     showModal('Удалить сообщение?',
                         'Вы уверены, что хотите удалить это сообщение?',
-                        `<button class="btn btn-danger" id="confirmDelete" data-msgid="${escapeHtml(msgId)}">Да, удалить</button>
+                        `<button class="btn btn-danger" id="confirmDelete" data-msgid="${escapeHtml(msgId)}">${ICONS.delete} Да, удалить</button>
                          <button class="btn btn-secondary" id="cancelDelete">Отмена</button>`
                     );
                     document.getElementById('confirmDelete').addEventListener('click', function() {
@@ -824,7 +771,7 @@
                     if (msg) {
                         showModal('Редактировать сообщение',
                             `<textarea id="editTextarea" rows="3" style="width:100%; padding:.6rem; border-radius:8px; border:1px solid #ccc;">${escapeHtml(msg.text)}</textarea>`,
-                            `<button class="btn btn-primary" id="saveEdit" data-msgid="${escapeHtml(msgId)}">Сохранить</button>
+                            `<button class="btn btn-primary" id="saveEdit" data-msgid="${escapeHtml(msgId)}">${ICONS.edit} Сохранить</button>
                              <button class="btn btn-secondary" id="cancelEdit">Отмена</button>`
                         );
                         document.getElementById('saveEdit').addEventListener('click', function() {
@@ -1065,7 +1012,10 @@
                 const time = msg.date || '';
                 const edited = msg.edited ? ` (изменено)` : '';
                 const deletedClass = msg.deleted ? ' msg-deleted' : '';
-                const textDisplay = msg.deleted ? escapeHtml(msg.text) : renderMessageText(msg.text);
+                const textDisplay = msg.deleted ? 'Сообщение удалено' : renderMessageText(msg.text);
+
+                const isSenderAdmin = userAdminMap[msg.from] || false;
+                const adminBadge = isSenderAdmin ? `<span class="admin-badge">${ICONS.admin}</span>` : '';
 
                 let reactionsHtml = '';
                 if (msg.reactions && msg.reactions.length) {
@@ -1088,18 +1038,18 @@
                 let actionsHtml = '';
                 if (isMine && !msg.deleted) {
                     actionsHtml = `<div class="msg-actions">
-                        <button class="delete-btn" data-msgid="${escapeHtml(msg.id)}" title="Удалить">🗑</button>
-                        <button class="edit-btn" data-msgid="${escapeHtml(msg.id)}" title="Редактировать">✏️</button>
-                        <button class="reply-btn" data-msgid="${escapeHtml(msg.id)}" title="Ответить">↩️</button>
+                        <button class="delete-btn" data-msgid="${escapeHtml(msg.id)}" title="Удалить">${ICONS.delete}</button>
+                        <button class="edit-btn" data-msgid="${escapeHtml(msg.id)}" title="Редактировать">${ICONS.edit}</button>
+                        <button class="reply-btn" data-msgid="${escapeHtml(msg.id)}" title="Ответить">${ICONS.reply}</button>
                     </div>`;
                 } else if (!msg.deleted) {
                     actionsHtml = `<div class="msg-actions">
-                        <button class="reply-btn" data-msgid="${escapeHtml(msg.id)}" title="Ответить">↩️</button>
+                        <button class="reply-btn" data-msgid="${escapeHtml(msg.id)}" title="Ответить">${ICONS.reply}</button>
                     </div>`;
                 }
 
                 html += `<div class="message-bubble ${isMine ? 'mine' : 'theirs'} ${deletedClass}" data-msgid="${escapeHtml(msg.id)}">
-                    <div class="msg-sender">${escapeHtml(senderName)}</div>
+                    <div class="msg-sender">${escapeHtml(senderName)} ${adminBadge}</div>
                     <div class="msg-text">${textDisplay}</div>
                     <div class="msg-time">${escapeHtml(time)}${edited}</div>
                     ${actionsHtml}
@@ -1115,7 +1065,7 @@
                     const msgId = this.dataset.msgid;
                     showModal('Удалить сообщение?',
                         'Вы уверены, что хотите удалить это сообщение?',
-                        `<button class="btn btn-danger" id="confirmDeleteGroup" data-msgid="${escapeHtml(msgId)}">Да, удалить</button>
+                        `<button class="btn btn-danger" id="confirmDeleteGroup" data-msgid="${escapeHtml(msgId)}">${ICONS.delete} Да, удалить</button>
                          <button class="btn btn-secondary" id="cancelDeleteGroup">Отмена</button>`
                     );
                     document.getElementById('confirmDeleteGroup').addEventListener('click', function() {
@@ -1135,7 +1085,7 @@
                     if (msg) {
                         showModal('Редактировать сообщение',
                             `<textarea id="editGroupTextarea" rows="3" style="width:100%; padding:.6rem; border-radius:8px; border:1px solid #ccc;">${escapeHtml(msg.text)}</textarea>`,
-                            `<button class="btn btn-primary" id="saveEditGroup" data-msgid="${escapeHtml(msgId)}">Сохранить</button>
+                            `<button class="btn btn-primary" id="saveEditGroup" data-msgid="${escapeHtml(msgId)}">${ICONS.edit} Сохранить</button>
                              <button class="btn btn-secondary" id="cancelEditGroup">Отмена</button>`
                         );
                         document.getElementById('saveEditGroup').addEventListener('click', function() {
@@ -1239,17 +1189,34 @@
         document.getElementById('modePrivate').addEventListener('click', function() { setChatMode('private'); });
         document.getElementById('modeGroup').addEventListener('click', function() { setChatMode('group'); });
 
+        // ================================================================
+        // 5. ОБРАБОТЧИК СТИКЕРОВ (гарантированно работает)
+        // ================================================================
         const stickerBtn = document.getElementById('stickerBtn');
         const stickerPanel = document.getElementById('stickerPanel');
-        stickerBtn.addEventListener('click', function() {
-            stickerPanel.classList.toggle('open');
-        });
-        document.addEventListener('click', function(e) {
-            if (!stickerPanel.contains(e.target) && e.target !== stickerBtn) {
-                stickerPanel.classList.remove('open');
-            }
-        });
 
+        if (stickerBtn && stickerPanel) {
+            stickerBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                stickerPanel.classList.toggle('open');
+                console.log('Стикер-панель открыта:', stickerPanel.classList.contains('open'));
+            });
+
+            document.addEventListener('click', function(e) {
+                if (stickerPanel.classList.contains('open') &&
+                    !stickerPanel.contains(e.target) &&
+                    e.target !== stickerBtn &&
+                    !stickerBtn.contains(e.target)) {
+                    stickerPanel.classList.remove('open');
+                }
+            });
+        } else {
+            console.error('Элементы стикеров не найдены!');
+        }
+
+        // ================================================================
+        // 6. ИНИЦИАЛИЗАЦИЯ
+        // ================================================================
         if (!checkAuth()) {
             document.getElementById('authArea').classList.remove('hidden');
             document.getElementById('chatArea').classList.remove('visible');
