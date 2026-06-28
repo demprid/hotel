@@ -1,2 +1,2 @@
-const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwR5YeUftlnCbl0pd1UmzGQ4gWU-9uTPeQK4Gax8tNQnGM0LHtGbJZplXX8iG1BAjONgw/exec';
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyX5vhLQVm6K8dn2I0kwY6vwPA7uvXipfYSKuUC2T51fxnfAZwKTFfIF7Iz4uDXqndAgw/exec';
 const RECEIPT_PAGE = 'receipt.html';
