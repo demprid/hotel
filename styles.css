@@ -12,7 +12,7 @@
 
 * { margin:0; padding:0; box-sizing:border-box; }
 html { background:#1a1a2e; scroll-behavior:smooth; max-width:100%; overflow-x:hidden; }
-body { background:#e1e1e1; min-height:100vh; font-family: Moscow Sans; color:#1a1a2e; margin:0; padding:0; padding-top:env(safe-area-inset-top,0); padding-bottom:env(safe-area-inset-bottom,0); max-width:100%; overflow-x:hidden; display:flex; flex-direction:column; position:relative; }
+body { background:#e1e1e1; min-height:100vh; font-family: Moscow Sans, sans-serif; color:#1a1a2e; margin:0; padding:0; padding-top:env(safe-area-inset-top,0); padding-bottom:env(safe-area-inset-bottom,0); max-width:100%; overflow-x:hidden; display:flex; flex-direction:column; position:relative; }
 
 #bgCanvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; display:block; }
 
